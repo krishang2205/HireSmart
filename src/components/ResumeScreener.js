@@ -30,7 +30,8 @@ const ResumeScreener = () => {
     formData.append('job_description', jobDescription);
 
     try {
-      const response = await fetch('http://127.0.0.1:5000/evaluate', {
+  // Use relative path so it works both in dev (proxy) and production (same origin)
+  const response = await fetch('/evaluate', {
         method: 'POST',
         body: formData,
       });

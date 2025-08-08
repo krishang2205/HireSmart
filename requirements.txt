@@ -6,3 +6,5 @@ pandas
 nltk
 PyPDF2
 docx2txt
+flask
+flask-cors

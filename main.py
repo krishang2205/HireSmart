@@ -1,7 +1,7 @@
 import os
 import joblib
 import pandas as pd
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.feature_extraction.text import CountVectorizer
@@ -14,16 +14,31 @@ nlp = spacy.load("en_core_web_sm")  # Use spaCy's small English model
 # Load the pre-trained model
 model = joblib.load('app/models/resume_match_classifier.pkl')  # Ensure the path is correct
 
-# Initialize Flask app
-app = Flask(__name__)
+"""Main Flask application for HireSmart.
+
+Now also serves the production React build (./build) directly so you can run a
+single process (Flask API + static frontend). Run `npm run build` first when
+changing the frontend.
+"""
+
+# Initialize Flask app serving React build as static files
+app = Flask(__name__, static_folder='build', static_url_path='')
 
 # Update CORS configuration to allow requests from the frontend
 CORS(app)
 
-# Home route
 @app.route('/')
-def home():
-    return render_template('index.html')
+def root():  # Serve React index.html
+    return send_from_directory(app.static_folder, 'index.html')
+
+# Catch-all to support client-side routing (if added later)
+@app.route('/<path:path>')
+def static_proxy(path):
+    full_path = os.path.join(app.static_folder, path)
+    if os.path.isfile(full_path):
+        return send_from_directory(app.static_folder, path)
+    # Fallback to index.html for SPA routes
+    return send_from_directory(app.static_folder, 'index.html')
 
 # Enhanced skill extraction with fallback mechanism
 # Function to extract skills dynamically from the job description
@@ -151,4 +166,5 @@ def evaluate():
 
 # Run the app locally on the default port 5000
 if __name__ == '__main__':
-    app.run(debug=True)
+    # Disable the auto-reloader to avoid double model loading
+    app.run(debug=True, use_reloader=False, host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))

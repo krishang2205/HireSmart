@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # HireSmart
 
 HireSmart is an AI-powered resume screening application designed to help recruiters efficiently evaluate resumes against job descriptions. The application uses natural language processing (NLP) and machine learning to match resumes with job requirements and provide actionable insights.
@@ -102,3 +103,62 @@ For any inquiries, please contact:
 - **Name**: Krishang Darji
 - **Email**: krishangdarji@gmail.com
 - **GitHub**: [krishang2205](https://github.com/krishang2205)
+=======
+# HireSmart
+
+AI-powered resume screening (Flask + React).
+
+## Quick Start (Windows PowerShell)
+
+### 1. Backend
+```
+python -m venv venv
+venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+python -m spacy download en_core_web_sm
+python main.py  # (after you build frontend once if you want integrated serve)
+```
+Runs at: http://127.0.0.1:5000
+
+### 2. Frontend (new terminal / keep backend running)
+```
+npm install
+npm start
+```
+Runs at: http://localhost:3000
+
+The frontend calls POST http://127.0.0.1:5000/evaluate
+
+### 3. Use It
+1. Paste job description.
+2. Upload one or more .pdf/.docx resumes.
+3. Click Analyze Match.
+4. View ranked table.
+
+### 4. Production Build (optional)
+```
+npm run build
+```
+Outputs static files in ./build
+
+Then you can serve everything with just:
+```
+python main.py
+```
+Flask will serve the React build and the API on the same origin (port 5000).
+
+### 5. Troubleshooting
+- spaCy model missing: `python -m spacy download en_core_web_sm`
+- NLTK stopwords: In Python REPL `import nltk; nltk.download('stopwords')`
+- CORS / fetch errors: Ensure backend is running on 5000 before clicking.
+
+### 6. Tech Stack
+Backend: Flask, spaCy, scikit-learn
+Frontend: React, Tailwind CSS
+
+### 7. License
+MIT
+
+---
+For detailed feature info see `app/README.md`.
+>>>>>>> 017a905b (feat: integrate React build into Flask, add missing deps, relative API path, update docs)
