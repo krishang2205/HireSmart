@@ -1,0 +1,240 @@
+@layer utilities {
+  .bg-gradient-primary {
+    background-image: linear-gradient(135deg, #2563eb, #60a5fa);
+  }
+  .hover-scale {
+    transition: transform 0.2s;
+    will-change: transform;
+  }
+  .hover-scale:hover {
+    transform: scale(1.05);
+  }
+}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Base element tweaks (without @apply because of processing context) */
+h1, h2, h3, h4 { font-family: var(--font-display, 'Poppins', 'Inter', sans-serif); letter-spacing: -0.02em; color: hsl(var(--foreground)); }
+body { background: hsl(var(--background)); color: hsl(var(--foreground)); }
+a { transition: color .2s ease; }
+a:hover { color: hsl(var(--foreground)); }
+
+/* Button utility classes (fallback if Tailwind layer not processed) */
+.btn-primary { background: hsl(var(--primary)); color: hsl(var(--primary-foreground)); font-weight: 500; padding: .625rem 1.25rem; border-radius: .5rem; box-shadow: 0 2px 6px rgba(0,0,0,.15); display:inline-flex; align-items:center; gap:.5rem; }
+.btn-primary:hover { opacity:.9; }
+.btn-outline { border:1px solid hsl(var(--border)); color: hsl(var(--foreground)); padding:.625rem 1.25rem; border-radius:.5rem; display:inline-flex; align-items:center; gap:.5rem; }
+.btn-outline:hover { background:hsl(var(--accent)); }
+
+/* CSS Variable Design Tokens (light) */
+:root {
+  --background: 0 0% 100%;
+  --foreground: 222.2 47.4% 11.2%;
+  --muted: 210 40% 96.1%;
+  --muted-foreground: 215.4 16.3% 46.9%;
+  --accent: 215 40% 98%;
+  --accent-foreground: 222.2 47.4% 11.2%;
+  --border: 214.3 31.8% 91.4%;
+  --input: 214.3 31.8% 91.4%;
+  --ring: 215 20.2% 65.1%;
+  --primary: 221.2 83.2% 53.3%;
+  --primary-foreground: 210 40% 98%;
+  --secondary: 210 40% 96.1%;
+  --secondary-foreground: 222.2 47.4% 11.2%;
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 210 40% 98%;
+  --card: 0 0% 100%;
+  --card-foreground: 222.2 47.4% 11.2%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 222.2 47.4% 11.2%;
+  --radius: 0.6rem;
+}
+
+.dark {
+  --background: 222.2 47.4% 11.2%;
+  --foreground: 210 40% 98%;
+  --muted: 217.2 32.6% 17.5%;
+  --muted-foreground: 215 20.2% 65.1%;
+  --accent: 217.2 32.6% 17.5%;
+  --accent-foreground: 210 40% 98%;
+  --border: 217.2 32.6% 17.5%;
+  --input: 217.2 32.6% 17.5%;
+  --ring: 224.3 76.3% 48%;
+  --primary: 224.3 76.3% 48%;
+  --primary-foreground: 210 40% 98%;
+  --secondary: 217.2 32.6% 17.5%;
+  --secondary-foreground: 210 40% 98%;
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 210 40% 98%;
+  --card: 222.2 47.4% 11.2%;
+  --card-foreground: 210 40% 98%;
+  --popover: 222.2 47.4% 11.2%;
+  --popover-foreground: 210 40% 98%;
+}
+
+body { background-color: hsl(var(--background)); color: hsl(var(--foreground)); -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
+/* Utility classes for landing page */
+.btn-hero { position: relative; overflow: hidden; background-image: linear-gradient(to right,#2563eb,#4f46e5,#7e22ce); color:#fff; box-shadow:0 4px 12px -2px rgba(0,0,0,.25); transition:all .25s ease; }
+.btn-hero:hover { filter:brightness(1.08); box-shadow:0 6px 18px -2px rgba(0,0,0,.35); }
+.btn-hero::after { content:''; position:absolute; inset:0; opacity:0; transition:opacity .3s ease; background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.35), transparent 70%); }
+.btn-hero:hover::after { opacity:1; }
+.hover-scale { transition: transform .2s ease; }
+.hover-scale:hover { transform: translateY(-2px); }
+.bg-gradient-primary { background: radial-gradient(circle at 30% 30%, hsl(var(--primary)/0.35), transparent 60%), linear-gradient(120deg, hsl(var(--primary)/0.15), transparent 70%); }
+.story-link { color: hsl(var(--muted-foreground)); transition: color .25s ease; }
+.story-link:hover { color: hsl(var(--foreground)); }
+
+/* Smooth scroll behavior */
+html { scroll-behavior: smooth; }
+
+
+/* General Body & Font Setup */
+/* Legacy styles retained below until old components migrated */
+body.legacy-styles {
+  font-family: 'Poppins', sans-serif;
+  background-color: #f5f5f5;
+  margin: 0;
+  padding: 0;
+  color: #333;
+}
+
+/* Removed legacy .container box styling; Tailwind container now used */
+
+.header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 600;
+  color: #1a73e8;
+}
+
+.subtitle {
+  font-size: 1rem;
+  color: #666;
+}
+
+/* Form Styling */
+.form-container {
+  margin-top: 30px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-label {
+  font-weight: 500;
+  color: #555;
+}
+
+.form-input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.form-input:focus {
+  border-color: #1a73e8;
+  background-color: #fff;
+}
+
+.form-input:hover {
+  border-color: #007bff;
+}
+
+.submit-button {
+  width: 100%;
+  padding: 12px;
+  background-color: #1a73e8;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.submit-button:hover {
+  background-color: #0069c0;
+}
+
+.submit-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+/* File Upload & Info */
+.file-info {
+  margin-top: 10px;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.error {
+  color: #e74c3c;
+  font-size: 0.9rem;
+  margin-bottom: 20px;
+}
+
+/* Result Card Styling */
+.result-card {
+  margin-top: 30px;
+  padding: 20px;
+  background-color: #f0f8ff;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.result-item {
+  margin-bottom: 15px;
+  font-size: 1rem;
+}
+
+.good-match {
+  color: #27ae60;
+  font-weight: bold;
+}
+
+.bad-match {
+  color: #e74c3c;
+  font-weight: bold;
+}
+
+.skills-list {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.skill-item {
+  background-color: #dfe6e9;
+  padding: 8px;
+  border-radius: 5px;
+  margin: 5px 0;
+  font-size: 0.95rem;
+}
+
+.result-card h3 {
+  font-size: 1.5rem;
+  margin-bottom: 15px;
+  font-weight: bold;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .container {
+    padding: 20px;
+    width: 90%;
+  }
+
+  .title {
+    font-size: 1.5rem;
+  }
+}

@@ -1,0 +1,291 @@
+/* General Body & Font Setup */
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f5f5f5;
+    margin: 0;
+    padding: 0;
+    color: #333;
+  }
+  
+  .container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 30px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .header {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+  
+  .title {
+    font-size: 2rem;
+    font-weight: 600;
+    color: #1a73e8;
+  }
+  
+  .subtitle {
+    font-size: 1rem;
+    color: #666;
+  }
+  
+  /* Form Styling */
+  .form-container {
+    margin-top: 30px;
+  }
+  
+  .form-group {
+    margin-bottom: 20px;
+  }
+  
+  .form-label {
+    font-weight: 500;
+    color: #555;
+  }
+  
+  .form-input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+  }
+  
+  .form-input:focus {
+    border-color: #1a73e8;
+    background-color: #fff;
+  }
+  
+  .submit-button {
+    width: 100%;
+    padding: 12px;
+    background-color: #1a73e8;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .submit-button:hover {
+    background-color: #0069c0;
+  }
+  
+  .submit-button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+  
+  .file-info {
+    margin-top: 10px;
+    font-size: 0.9rem;
+    color: #555;
+  }
+  
+  .error {
+    color: #e74c3c;
+    font-size: 0.9rem;
+    margin-bottom: 20px;
+  }
+  
+  /* Result Card Styling */
+  .result-card {
+    margin-top: 30px;
+    padding: 20px;
+    background-color: #f0f8ff;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .result-item {
+    margin-bottom: 15px;
+    font-size: 1rem;
+  }
+  
+  .good-match {
+    color: #27ae60;
+    font-weight: bold;
+  }
+  
+  .bad-match {
+    color: #e74c3c;
+    font-weight: bold;
+  }
+  
+  .skills-list {
+    list-style-type: none;
+    padding-left: 0;
+  }
+  
+  .skill-item {
+    background-color: #dfe6e9;
+    padding: 8px;
+    border-radius: 5px;
+    margin: 5px 0;
+    font-size: 0.95rem;
+  }
+  
+  .result-card h3 {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+    font-weight: bold;
+  }
+  
+  /* Resume Uploader Styling */
+  .bg-white {
+    background-color: #fff;
+  }
+  
+  .p-6 {
+    padding: 1.5rem;
+  }
+  
+  .rounded-lg {
+    border-radius: 0.5rem;
+  }
+  
+  .shadow-md {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .text-lg {
+    font-size: 1.125rem;
+  }
+  
+  .font-bold {
+    font-weight: bold;
+  }
+  
+  .mb-4 {
+    margin-bottom: 1rem;
+  }
+  
+  .text-sm {
+    font-size: 0.875rem;
+  }
+  
+  .text-gray-600 {
+    color: #4b5563;
+  }
+  
+  .text-green-600 {
+    color: #16a34a;
+  }
+  
+  .bg-gray-100 {
+    background-color: #f3f4f6;
+  }
+  
+  .text-hiresmart-teal {
+    color: #1d9b7c;
+  }
+  
+  .text-gray-700 {
+    color: #374151;
+  }
+  
+  .text-red-100 {
+    color: #f87171;
+  }
+  
+  .text-red-800 {
+    color: #b91c1c;
+  }
+  
+  .border-2 {
+    border-width: 2px;
+  }
+  
+  .border-dashed {
+    border-style: dashed;
+  }
+  
+  .cursor-pointer {
+    cursor: pointer;
+  }
+  
+  .max-h-40 {
+    max-height: 10rem;
+  }
+  
+  .overflow-auto {
+    overflow: auto;
+  }
+  
+  .text-center {
+    text-align: center;
+  }
+  
+  .bg-red-100 {
+    background-color: #fef2f2;
+  }
+  
+  .bg-green-100 {
+    background-color: #d1fae5;
+  }
+  
+  .px-3 {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+  
+  .py-1 {
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
+  }
+  
+  .rounded-full {
+    border-radius: 9999px;
+  }
+  
+  .text-sm {
+    font-size: 0.875rem;
+  }
+
+/* Header Styles */
+header {
+  background-color: #1e3a8a; /* Dark blue background */
+  padding: 1rem 2rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+header .container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+header h1 {
+  color: #ffffff; /* White text */
+  font-size: 1.25rem;
+  font-weight: bold;
+  margin: 0;
+}
+
+header p {
+  color: #ffffff; /* White text */
+  font-size: 0.875rem;
+  margin: 0;
+}
+
+header .beta-badge {
+  background-color: #14b8a6; /* Teal background */
+  color: #ffffff; /* White text */
+  font-size: 0.75rem;
+  font-weight: bold;
+  padding: 0.25rem 0.5rem;
+  border-radius: 9999px; /* Fully rounded */
+}
+
+/* Icon Styles */
+header .icon {
+  color: #ffffff; /* White icon */
+  font-size: 1.5rem;
+  margin-right: 0.5rem;
+}
