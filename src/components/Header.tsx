@@ -1,15 +1,13 @@
 import { Button } from '@/components/ui/button';
 import { Menu, LogIn, UserPlus } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { Brand } from '@/components/Brand';
 
 const Header = () => (
   <div className="sticky top-0 z-50 animate-fade-in">
     <div className="bg-background/70 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border shadow-sm">
       <nav aria-label="Primary" className="container mx-auto px-6 md:px-8 h-16 flex items-center justify-between">
-        <a href="/" className="flex items-center gap-2" aria-label="HireSmart home">
-          <span className="h-7 w-7 rounded-md bg-gradient-to-br from-blue-600 via-blue-500 to-blue-400 shadow-sm ring-1 ring-white/40" aria-hidden />
-          <span className="font-display text-lg font-bold tracking-tight text-[#0f172a]">HireSmart</span>
-        </a>
+        <Brand />
         <div className="hidden md:flex items-center gap-6">
           <a href="#features" className="story-link text-sm text-muted-foreground hover:text-foreground">Features</a>
           <a href="#how-it-works" className="story-link text-sm text-muted-foreground hover:text-foreground">How it works</a>
