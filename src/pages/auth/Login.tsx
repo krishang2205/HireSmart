@@ -5,6 +5,7 @@ import { FloatingLabelInput, PasswordField } from '@/components/auth/FloatingLab
 import { Button } from '@/components/ui/button';
 import AuthLayout from '@/components/auth/AuthLayout';
 import { useToast } from '@/hooks/use-toast';
+import SocialLogin from '@/components/auth/SocialLogin';
 
 interface FormValues { 
   email: string; 
@@ -80,6 +81,23 @@ export default function Login() {
     }
   };
 
+  // Social login handlers
+  const handleGoogleLogin = () => {
+    push({ title: 'Google login', description: 'Google authentication coming soon!', variant: 'default' });
+  };
+
+  const handleAppleLogin = () => {
+    push({ title: 'Apple login', description: 'Apple authentication coming soon!', variant: 'default' });
+  };
+
+  const handleFacebookLogin = () => {
+    push({ title: 'Facebook login', description: 'Facebook authentication coming soon!', variant: 'default' });
+  };
+
+  const handleTwitterLogin = () => {
+    push({ title: 'Twitter login', description: 'Twitter authentication coming soon!', variant: 'default' });
+  };
+
   // Enhanced email validation
   const emailValidation = {
     required: 'Email is required',
@@ -111,8 +129,7 @@ export default function Login() {
 
   return (
     <AuthLayout title="Welcome back" subtitle="Hire smarter. Save time.">
-      {/* Social auth placeholder */}
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 md:space-y-7 pt-0.5">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         <FloatingLabelInput 
           label="Email" 
           type="email" 
@@ -151,8 +168,16 @@ export default function Login() {
         >
           {loading ? 'Logging in...' : 'Log In'}
         </Button>
+
+        {/* Social Login */}
+        <SocialLogin
+          onGoogleClick={handleGoogleLogin}
+          onAppleClick={handleAppleLogin}
+          onFacebookClick={handleFacebookLogin}
+          onTwitterClick={handleTwitterLogin}
+        />
         
-        <p className="text-[11px] text-center text-slate-500 leading-relaxed mt-1.5">
+        <p className="text-[11px] text-center text-slate-500 leading-relaxed">
           By continuing you agree to our{' '}
           <a href="/terms" className="underline decoration-dotted underline-offset-2">Terms</a> &{' '}
           <a href="/privacy" className="underline decoration-dotted underline-offset-2">Privacy Policy</a>.

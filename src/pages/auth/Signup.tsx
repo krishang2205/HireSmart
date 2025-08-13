@@ -5,6 +5,7 @@ import { FloatingLabelInput, PasswordField, FloatingLabelSelect } from '@/compon
 import { Button } from '@/components/ui/button';
 import AuthLayout from '@/components/auth/AuthLayout';
 import { useToast } from '@/hooks/use-toast';
+import SocialLogin from '@/components/auth/SocialLogin';
 // @ts-ignore - types not bundled
 import zxcvbn from 'zxcvbn';
 
@@ -146,6 +147,23 @@ export default function Signup() {
     }
   };
 
+  // Social login handlers
+  const handleGoogleLogin = () => {
+    push({ title: 'Google signup', description: 'Google authentication coming soon!', variant: 'default' });
+  };
+
+  const handleAppleLogin = () => {
+    push({ title: 'Apple signup', description: 'Apple authentication coming soon!', variant: 'default' });
+  };
+
+  const handleFacebookLogin = () => {
+    push({ title: 'Facebook signup', description: 'Facebook authentication coming soon!', variant: 'default' });
+  };
+
+  const handleTwitterLogin = () => {
+    push({ title: 'Twitter signup', description: 'Twitter authentication coming soon!', variant: 'default' });
+  };
+
   const strengthObj = useMemo(() => password ? zxcvbn(password) : null, [password]);
   const strengthScore = strengthObj?.score ?? -1; // 0-4
 
@@ -227,128 +245,132 @@ export default function Signup() {
 
   return (
     <AuthLayout title="Create your HireSmart account" subtitle="Hire smarter. Save time.">
-      <div className="flex items-center justify-between mb-3 text-[10px] font-semibold tracking-wide text-slate-500 uppercase">
-        <span>Create account</span>
-        <span className="text-blue-600">Step 1/1</span>
-      </div>
-      
-      <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 md:grid-cols-2 gap-3.5 md:gap-4 pb-0.5">
-        <div className="md:col-span-2">
-          <FloatingLabelInput 
-            dense 
-            autoComplete="organization" 
-            label="Company Name" 
-            placeholder="Acme Inc" 
-            {...register('companyName', companyNameValidation)} 
-            error={errors.companyName?.message} 
-          />
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="md:col-span-2">
+            <FloatingLabelInput 
+              dense 
+              autoComplete="organization" 
+              label="Company Name" 
+              placeholder="Acme Inc" 
+              {...register('companyName', companyNameValidation)} 
+              error={errors.companyName?.message} 
+            />
+          </div>
+          
+          <div>
+            <FloatingLabelInput 
+              dense 
+              autoComplete="name" 
+              label="Full Name" 
+              placeholder="Jane Doe" 
+              {...register('fullName', fullNameValidation)} 
+              error={errors.fullName?.message} 
+            />
+          </div>
+          
+          <div>
+            <FloatingLabelInput 
+              dense 
+              autoComplete="email" 
+              label="Email" 
+              type="email" 
+              placeholder="you@company.com" 
+              {...register('email', emailValidation)} 
+              error={errors.email?.message} 
+            />
+          </div>
+          
+          <div>
+            <FloatingLabelInput 
+              dense 
+              autoComplete="tel" 
+              label="Phone" 
+              placeholder="Optional" 
+              {...register('phone', phoneValidation)} 
+              error={errors.phone?.message} 
+            />
+          </div>
+          
+          <div>
+            <PasswordField 
+              dense 
+              autoComplete="new-password" 
+              label="Password" 
+              placeholder="Create a secure password" 
+              showStrength 
+              strength={strengthScore} 
+              {...register('password', passwordValidation)} 
+              error={errors.password?.message} 
+            />
+          </div>
+          
+          <div>
+            <PasswordField 
+              dense 
+              autoComplete="new-password" 
+              label="Confirm Password" 
+              placeholder="Repeat password" 
+              {...register('confirmPassword', confirmPasswordValidation)} 
+              error={errors.confirmPassword?.message} 
+            />
+          </div>
+          
+          <div>
+            <FloatingLabelSelect
+              dense
+              label="Role"
+              placeholder="Select role"
+              options={roles}
+              {...register('role', selectValidation)}
+              error={errors.role?.message}
+            />
+          </div>
+          
+          <div>
+            <FloatingLabelSelect
+              dense
+              label="Company Size"
+              placeholder="Select company size"
+              options={companySizes}
+              {...register('companySize', selectValidation)}
+              error={errors.companySize?.message}
+            />
+          </div>
+          
+          <div className="md:col-span-2">
+            <FloatingLabelSelect
+              dense
+              label="Industry"
+              placeholder="Select industry"
+              options={industries}
+              {...register('industry', selectValidation)}
+              error={errors.industry?.message}
+            />
+          </div>
         </div>
         
-        <div>
-          <FloatingLabelInput 
-            dense 
-            autoComplete="name" 
-            label="Full Name" 
-            placeholder="Jane Doe" 
-            {...register('fullName', fullNameValidation)} 
-            error={errors.fullName?.message} 
-          />
-        </div>
+        <Button 
+          disabled={!isFormReady || loading} 
+          className="w-full h-11 font-medium shadow-lg shadow-blue-500/25" 
+          variant="gradient"
+        >
+          {loading ? 'Creating Account...' : 'Create Account'}
+        </Button>
+
+        {/* Social Login */}
+        <SocialLogin
+          onGoogleClick={handleGoogleLogin}
+          onAppleClick={handleAppleLogin}
+          onFacebookClick={handleFacebookLogin}
+          onTwitterClick={handleTwitterLogin}
+        />
         
-        <div>
-          <FloatingLabelInput 
-            dense 
-            autoComplete="email" 
-            label="Email" 
-            type="email" 
-            placeholder="you@company.com" 
-            {...register('email', emailValidation)} 
-            error={errors.email?.message} 
-          />
-        </div>
-        
-        <div>
-          <FloatingLabelInput 
-            dense 
-            autoComplete="tel" 
-            label="Phone" 
-            placeholder="Optional" 
-            {...register('phone', phoneValidation)} 
-            error={errors.phone?.message} 
-          />
-        </div>
-        
-        <div>
-          <PasswordField 
-            dense 
-            autoComplete="new-password" 
-            label="Password" 
-            placeholder="Create a secure password" 
-            showStrength 
-            strength={strengthScore} 
-            {...register('password', passwordValidation)} 
-            error={errors.password?.message} 
-          />
-        </div>
-        
-        <div>
-          <PasswordField 
-            dense 
-            autoComplete="new-password" 
-            label="Confirm Password" 
-            placeholder="Repeat password" 
-            {...register('confirmPassword', confirmPasswordValidation)} 
-            error={errors.confirmPassword?.message} 
-          />
-        </div>
-        
-        <div>
-          <FloatingLabelSelect
-            dense
-            label="Role"
-            placeholder="Select role"
-            options={roles}
-            {...register('role', selectValidation)}
-            error={errors.role?.message}
-          />
-        </div>
-        
-        <div>
-          <FloatingLabelSelect
-            dense
-            label="Company Size"
-            placeholder="Select company size"
-            options={companySizes}
-            {...register('companySize', selectValidation)}
-            error={errors.companySize?.message}
-          />
-        </div>
-        
-        <div>
-          <FloatingLabelSelect
-            dense
-            label="Industry"
-            placeholder="Select industry"
-            options={industries}
-            {...register('industry', selectValidation)}
-            error={errors.industry?.message}
-          />
-        </div>
-        
-        <div className="md:col-span-2 space-y-1 pt-0">
-          <Button 
-            disabled={!isFormReady || loading} 
-            className="w-full h-9 font-medium shadow-lg shadow-blue-500/25" 
-            variant="gradient"
-          >
-            {loading ? 'Creating Account...' : 'Create Account'}
-          </Button>
-          <p className="text-[10px] text-center text-slate-500 leading-snug">
-            By creating an account you agree to our{' '}
-            <a href="/terms" className="underline decoration-dotted underline-offset-2">Terms</a> &{' '}
-            <a href="/privacy" className="underline decoration-dotted underline-offset-2">Privacy Policy</a>.
-          </p>
-        </div>
+        <p className="text-[10px] text-center text-slate-500 leading-snug">
+          By creating an account you agree to our{' '}
+          <a href="/terms" className="underline decoration-dotted underline-offset-2">Terms</a> &{' '}
+          <a href="/privacy" className="underline decoration-dotted underline-offset-2">Privacy Policy</a>.
+        </p>
       </form>
       
       <p className="text-center text-sm text-slate-600 dark:text-slate-400 mt-4">
