@@ -58,13 +58,14 @@ const slides: Slide[] = [
 export const AuthCarousel: React.FC = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % slides.length);
-    }, 4000); // Change slide every 4 seconds
+  // Auto-advance disabled - only manual navigation
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     setCurrentSlide((prev) => (prev + 1) % slides.length);
+  //   }, 4000); // Change slide every 4 seconds
 
-    return () => clearInterval(interval);
-  }, []);
+  //   return () => clearInterval(interval);
+  // }, []);
 
   const goToSlide = (index: number) => {
     setCurrentSlide(index);
