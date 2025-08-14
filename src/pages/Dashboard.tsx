@@ -2,15 +2,16 @@ import { useAuth } from '@/context/AuthContext';
 import Brand from '@/components/Brand';
 import ResumeScreener from '@/components/ResumeScreener';
 import { useState } from 'react';
+import Footer from '@/components/Footer';
 
 export default function Dashboard() {
   const { user } = useAuth();
   const [showInsights, setShowInsights] = useState(true);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-blue-50 to-cyan-100 flex flex-col">
+  <div className="min-h-screen bg-blue-50 flex flex-col text-sm">
       {/* Header */}
-      <header className="flex items-center justify-between px-0 py-4 bg-white/80 shadow-sm w-full z-10">
+  <header className="flex items-center justify-between px-0 py-2 bg-indigo-50/80 shadow-sm w-full z-10 text-sm">
         <div className="flex items-center gap-3 pl-8">
           <Brand logoClassName="h-8 w-8" wordClassName="text-xl font-extrabold tracking-tight text-indigo-700" />
         </div>
@@ -30,27 +31,37 @@ export default function Dashboard() {
       {/* Content below header */}
       <div className="flex flex-1">
         {/* Sidebar */}
-        <aside className="w-48 bg-white/90 border-r border-gray-200 flex flex-col shadow-sm pt-0">
+  <aside className="w-44 bg-blue-100 border-r border-gray-200 flex flex-col shadow-sm pt-0 text-sm">
           <nav className="flex flex-col gap-2 mt-8 px-6">
             <a href="#" className="flex items-center gap-3 px-4 py-2 rounded-lg bg-indigo-100 text-indigo-700 font-semibold">
               <span>Resume Screening</span>
             </a>
             <a href="#" className="flex items-center gap-3 px-4 py-2 rounded-lg text-gray-700 hover:bg-blue-50">
+              <span>Job Descriptions</span>
+            </a>
+            <a href="#" className="flex items-center gap-3 px-4 py-2 rounded-lg text-gray-700 hover:bg-blue-50">
+              <span>Candidates</span>
+            </a>
+            <a href="#" className="flex items-center gap-3 px-4 py-2 rounded-lg text-gray-700 hover:bg-blue-50">
               <span>Results</span>
             </a>
             <a href="#" className="flex items-center gap-3 px-4 py-2 rounded-lg text-gray-700 hover:bg-blue-50">
-              <span>Profile</span>
+              <span>Insights & Analytics</span>
             </a>
             <a href="#" className="flex items-center gap-3 px-4 py-2 rounded-lg text-gray-700 hover:bg-blue-50">
-              <span>Help</span>
+              <span>Activity Log</span>
             </a>
+            <a href="#" className="flex items-center gap-3 px-4 py-2 rounded-lg text-gray-700 hover:bg-blue-50">
+              <span>Settings</span>
+            </a>
+              
           </nav>
-          <div className="mt-auto pt-8 pb-4 text-xs text-gray-400 text-center">© {new Date().getFullYear()} HireSmart</div>
+      
         </aside>
 
         {/* Main Content */}
-        <div className="flex-1 flex flex-col">
-          <main className="flex-1 flex flex-col px-4 py-8 gap-8 relative">
+        <div className="flex-1 flex flex-col text-sm">
+          <main className="flex-1 flex flex-col px-2 py-4 gap-4 relative text-sm">
             {/* Insights pop-up */}
             {showInsights && (
               <div className="fixed top-8 right-8 z-50 w-96 min-w-[320px] bg-white/90 rounded-xl shadow-lg border border-blue-100 p-6 flex flex-col items-center gap-4 animate-fade-in">
@@ -75,21 +86,20 @@ export default function Dashboard() {
             {/* Intro section - stays narrow */}
             <div className="mx-auto max-w-2xl text-center">
               <h1 className="text-3xl md:text-4xl font-extrabold text-indigo-700 mb-2 tracking-tight">HireSmart Dashboard</h1>
-              <p className="text-lg text-blue-900/80 mb-4">AI-powered resume screening & hiring workflow</p>
+              <p className="text-lg text-blue-900/80 mb-2">AI-powered resume screening & hiring workflow</p>
               <div className="flex justify-center gap-2 mb-2">
                 <span className="inline-block px-4 py-1 rounded-full bg-cyan-200 text-cyan-900 font-semibold text-sm">Fast</span>
                 <span className="inline-block px-4 py-1 rounded-full bg-indigo-200 text-indigo-900 font-semibold text-sm">Accurate</span>
                 <span className="inline-block px-4 py-1 rounded-full bg-blue-200 text-blue-900 font-semibold text-sm">Secure</span>
               </div>
-            </div>
-
-            {/* Resume screener section - full width */}
-            <div className="w-full">
+            </div> {/* Resume screener section - full width */}
+            <div className="w-full" >
               <ResumeScreener />
             </div>
           </main>
         </div>
       </div>
+      <Footer />
     </div>
   );
 }
