@@ -23,7 +23,7 @@ export const AuthLayout: React.FC<{ children: React.ReactNode; title?: string; s
       </div>
 
       {/* Right: visual */}
-      <div className="relative hidden lg:block rounded-l-3xl overflow-hidden">
+      <div className="relative hidden lg:block rounded-l-[2rem] overflow-hidden">
         <AuthCarousel />
       </div>
     </div>

@@ -17,7 +17,7 @@ export const Button: React.FC<ButtonProps> = ({
 	className = '',
 	...props
 }) => {
-	const baseStyles = 'px-4 py-2 rounded-md font-medium focus:outline-none transition disabled:opacity-50 disabled:cursor-not-allowed focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500';
+	const baseStyles = 'px-4 py-2 rounded-lg font-medium focus:outline-none transition disabled:opacity-50 disabled:cursor-not-allowed focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500';
 	const sizeStyles = {
 		sm: 'text-sm',
 		md: 'text-base',

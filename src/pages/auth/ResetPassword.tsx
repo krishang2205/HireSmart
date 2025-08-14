@@ -97,7 +97,7 @@ export default function ResetPassword() {
   if (!token) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background px-4 py-10">
-        <div className="w-full max-w-md bg-card border rounded-xl shadow-sm p-8 space-y-6">
+        <div className="w-full max-w-md bg-card border rounded-2xl shadow-sm p-8 space-y-6">
           <div className="text-center space-y-4">
             <div className="w-16 h-16 mx-auto bg-red-100 rounded-full flex items-center justify-center">
               <svg className="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -119,7 +119,7 @@ export default function ResetPassword() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background px-4 py-10">
-      <div className="w-full max-w-md bg-card border rounded-xl shadow-sm p-8 space-y-6">
+      <div className="w-full max-w-md bg-card border rounded-2xl shadow-sm p-8 space-y-6">
         <div className="text-center space-y-2">
           <h1 className="text-xl font-semibold">Set a new password</h1>
           <p className="text-sm text-slate-600">Create a strong password for your account</p>

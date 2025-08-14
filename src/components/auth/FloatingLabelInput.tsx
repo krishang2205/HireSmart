@@ -20,7 +20,7 @@ export const FloatingLabelInput = forwardRef<HTMLInputElement, FloatingLabelInpu
           ref={ref}
           type={type}
           aria-invalid={!!error}
-          className={`peer w-full rounded-lg border bg-white/60 backdrop-blur placeholder-transparent ${pad} shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500/60 focus:border-blue-500 transition ${error ? 'border-red-400 focus:ring-red-500/50' : 'border-slate-300/70 hover:border-slate-400'} ${className}`}
+          className={`peer w-full rounded-xl border bg-white/60 backdrop-blur placeholder-transparent ${pad} shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500/60 focus:border-blue-500 transition ${error ? 'border-red-400 focus:ring-red-500/50' : 'border-slate-300/70 hover:border-slate-400'} ${className}`}
           placeholder={label}
           {...rest}
         />
@@ -90,7 +90,7 @@ export const FloatingLabelSelect = forwardRef<HTMLSelectElement, FloatingLabelSe
           id={id}
           ref={ref}
           aria-invalid={!!error}
-          className={`peer w-full rounded-lg border bg-white/60 backdrop-blur ${pad} shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500/60 focus:border-blue-500 transition appearance-none ${error ? 'border-red-400 focus:ring-red-500/50' : 'border-slate-300/70 hover:border-slate-400'} ${className}`}
+          className={`peer w-full rounded-xl border bg-white/60 backdrop-blur ${pad} shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500/60 focus:border-blue-500 transition appearance-none ${error ? 'border-red-400 focus:ring-red-500/50' : 'border-slate-300/70 hover:border-slate-400'} ${className}`}
           {...rest}
         >
           <option value="" disabled>
