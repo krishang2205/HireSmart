@@ -53,13 +53,14 @@ const ResumeScreener = () => {
   };
 
   return (
-    <div className="bg-gray-100 min-h-screen flex flex-col items-center py-10">
-      <h1 className="text-3xl font-bold text-gray-800 mb-10">AI-powered Resume Screening</h1>
-      <div className="bg-white shadow-md rounded-lg p-10 w-11/12 max-w-5xl flex flex-col lg:flex-row space-y-10 lg:space-y-0 lg:space-x-10 relative">
-        <div className="flex-1">
-          <h2 className="text-xl font-semibold text-gray-800 mb-2">Upload Resume</h2>
-          <p className="text-gray-600 mb-4">Upload a candidate's resume in PDF or DOCX format</p>
-          <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+    <div className="w-full flex flex-col items-center py-10">
+      <h1 className="text-3xl font-extrabold text-indigo-700 mb-2 text-center">AI-powered Resume Screening</h1>
+      <p className="text-lg text-blue-900/80 mb-8 text-center">Upload resumes and job descriptions to check the match!</p>
+      <div className="bg-white rounded-2xl shadow-xl p-10 w-full max-w-3xl flex flex-col md:flex-row gap-8 md:gap-0 md:space-x-10">
+        <div className="flex-1 flex flex-col gap-2">
+          <h2 className="text-lg font-bold text-gray-800 mb-1">Upload Resume</h2>
+          <p className="text-sm text-gray-600 mb-2">Upload a candidate's resume in PDF or DOCX format</p>
+          <div className="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center bg-gray-50">
             <label htmlFor="resume-upload" className="cursor-pointer text-gray-600 hover:text-blue-600 flex flex-col items-center">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-gray-400 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1M7 10l5-5m0 0l5 5m-5-5v12" />
@@ -68,27 +69,27 @@ const ResumeScreener = () => {
               <input type="file" id="resume-upload" className="hidden" accept=".pdf, .docx" onChange={handleFileChange} multiple />
             </label>
             {resumeFile && <p className="text-sm text-gray-600 mt-2">{Array.from(resumeFile).map(file => file.name).join(', ')}</p>}
-            <p className="text-sm text-gray-500 mt-2">Supports PDF, DOCX (max 5MB)</p>
+            <p className="text-xs text-gray-500 mt-2">Supports PDF, DOCX (max 5MB)</p>
           </div>
         </div>
-        <div className="flex-1">
-          <h2 className="text-xl font-semibold text-gray-800 mb-2">Job Description</h2>
-          <p className="text-gray-600 mb-4">Enter the job description to match against the resume</p>
+        <div className="flex-1 flex flex-col gap-2">
+          <h2 className="text-lg font-bold text-gray-800 mb-1">Job Description</h2>
+          <p className="text-sm text-gray-600 mb-2">Enter the job description to match against the resume</p>
           <textarea
-            className="w-full h-40 p-4 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            className="w-full h-32 p-4 border border-gray-300 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none bg-gray-50"
             placeholder="Paste job description here..."
             value={jobDescription}
             onChange={handleJobDescriptionChange}
           />
-          <div className="absolute inset-x-0 bottom-[-3rem] flex justify-center">
-            <button
-              className="bg-gray-500 text-white py-2 px-6 rounded-lg shadow-md hover:bg-gray-600"
-              onClick={handleAnalyzeMatch}
-            >
-              Analyze Match
-            </button>
-          </div>
         </div>
+      </div>
+      <div className="w-full flex justify-center mt-6">
+        <button
+          className="bg-indigo-600 text-white py-3 px-8 rounded-xl font-bold shadow-lg hover:bg-indigo-700 transition text-lg"
+          onClick={handleAnalyzeMatch}
+        >
+          Analyze Match
+        </button>
       </div>
       {error && <p className="text-red-500 mt-4">{error}</p>}
       <div className="mt-6 w-full flex justify-center">
