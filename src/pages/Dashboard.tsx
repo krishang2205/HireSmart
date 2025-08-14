@@ -27,9 +27,18 @@ export default function Dashboard() {
       <div className="flex-1 flex flex-col">
         <header className="flex items-center justify-between px-8 py-6 bg-white/80 shadow-sm">
           <div />
-          <div className="flex items-center gap-4">
-            <span className="text-base font-medium text-gray-700">Welcome, {user?.fullName || 'User'}!</span>
-            <span className="px-3 py-1 rounded-full bg-indigo-100 text-indigo-700 text-xs font-semibold">Dashboard</span>
+          <div className="flex items-center gap-6">
+            {/* Notification Icon */}
+            <button className="relative">
+              <svg className="h-6 w-6 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+              </svg>
+              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full px-1">3</span>
+            </button>
+            {/* User Info */}
+            <span className="text-base font-medium text-gray-700">Hello, {user?.fullName || 'User'}!</span>
+            {/* Profile Avatar */}
+            <img src="https://ui-avatars.com/api/?name=User&background=6D28D9&color=fff&size=32" alt="avatar" className="h-8 w-8 rounded-full border-2 border-indigo-300" />
           </div>
         </header>
         <main className="flex-1 flex flex-col items-center justify-start px-4 py-8">
