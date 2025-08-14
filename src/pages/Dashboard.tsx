@@ -1,5 +1,7 @@
+
 import React from 'react';
 import { useAuth } from '@/context/AuthContext';
+import ResumeScreener from '@/components/ResumeScreener';
 
 export default function Dashboard() {
   const { user } = useAuth();
@@ -8,8 +10,8 @@ export default function Dashboard() {
       <div className="p-6 space-y-4">
         <h1 className="text-2xl font-bold">Dashboard</h1>
         <p className="text-sm text-muted-foreground">Welcome back, {user?.fullName}.</p>
-        <div className="border rounded p-4 text-sm">This is a placeholder dashboard. Integrate resume screening UI here.</div>
       </div>
+      <ResumeScreener />
     </div>
   );
 }
