@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { extract_text_from_pdf, extract_text_from_docx } from '../../app/utils';
+import { extract_text_from_pdf, extract_text_from_docx } from './utils';
 
 const ResumeUploader = () => {
   const [isLoading, setIsLoading] = useState(false);

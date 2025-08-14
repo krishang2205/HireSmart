@@ -19,7 +19,7 @@ const JobDescription = ({ onSubmit }) => {
       <h2 className="text-2xl font-bold text-gray-800 mb-4 text-center">Job Description</h2>
       <textarea
         className="w-full border border-gray-300 rounded-lg p-4 mb-6 focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg"
-        rows="6"
+        rows={6}
         placeholder="Describe the role, responsibilities, and required skills for the job..."
         value={description}
         onChange={(e) => setDescription(e.target.value)}

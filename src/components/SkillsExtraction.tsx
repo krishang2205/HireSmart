@@ -76,7 +76,7 @@ const SkillsExtraction = ({ resumeSkills, jobSkills }) => {
         <div className="mt-2">
           <p className="text-sm text-gray-600">Match Percentage: {matchPercentage}%</p>
           <p className="text-sm text-gray-600">
-            {matchPercentage >= 75 ? 'You have a strong match!' : 'You may want to acquire more skills to improve your match.'}
+            {parseFloat(matchPercentage) >= 75 ? 'You have a strong match!' : 'You may want to acquire more skills to improve your match.'}
           </p>
         </div>
       </div>

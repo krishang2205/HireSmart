@@ -17,7 +17,7 @@ const ResumeEvaluator = () => {
           <textarea
             placeholder="Enter the job description here..."
             className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            rows="5"
+            rows={5}
           ></textarea>
         </div>
 

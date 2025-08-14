@@ -7,7 +7,8 @@
     "build": "vite build",
     "dev": "vite",
     "server": "node server/server.js",
-    "server:dev": "nodemon server/server.js"
+    "server:dev": "nodemon server/server.js",
+    "dev:all": "concurrently \"npm run dev\" \"npm run server:dev\" \"python main.py\""
   },
   "keywords": [],
   "author": "",
@@ -92,6 +93,7 @@
     "@vitejs/plugin-react": "^4.7.0",
     "autoprefixer": "^10.4.21",
     "class-variance-authority": "^0.7.0",
+    "concurrently": "^9.2.0",
     "nodemon": "^3.1.10",
     "postcss": "^8.5.3",
     "tailwind-merge": "^2.2.2",
