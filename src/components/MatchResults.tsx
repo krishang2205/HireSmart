@@ -1,72 +1,81 @@
 import React from 'react';
+import Accordion from './ui/accordion';
 
-const MatchResults = ({ overallMatch, skillsMatch, experienceMatch, educationMatch }) => {
-  const getColor = (percentage) => {
-    if (percentage >= 75) return 'bg-green-500';
-    if (percentage >= 50) return 'bg-yellow-500';
-    return 'bg-red-500';
-  };
+const getBarColor = (highlight) => {
+  if (highlight === 'green') return 'bg-green-500';
+  if (highlight === 'yellow') return 'bg-yellow-500';
+  return 'bg-red-500';
+};
+
+const MatchResults = ({ results }) => {
+  if (!results || !Array.isArray(results) || results.length === 0) {
+    return <p className="text-gray-500 mt-4">No results to display.</p>;
+  }
 
   return (
-    <div className="bg-white p-8 rounded-xl shadow-lg max-w-2xl mx-auto transition-all transform hover:scale-105">
-      <h2 className="text-2xl font-semibold text-gray-800 mb-6">Match Results</h2>
-
-      {/* Overall Match */}
-      <div className="mb-6">
-        <p className="text-sm font-medium text-gray-700 mb-2">Overall Match</p>
-        <div className="w-full bg-gray-200 rounded-full h-4 overflow-hidden">
-          <div
-            className={`h-4 rounded-full ${getColor(overallMatch)} transition-all duration-300`}
-            style={{ width: `${overallMatch}%` }}
-          ></div>
-        </div>
-        <p className="text-sm text-gray-600 mt-2">{overallMatch}%</p>
-      </div>
-
-      {/* Skills Match */}
-      <div className="mb-6">
-        <p className="text-sm font-medium text-gray-700 mb-2">Skills Match</p>
-        <div className="w-full bg-gray-200 rounded-full h-4 overflow-hidden">
-          <div
-            className={`h-4 rounded-full ${getColor(skillsMatch)} transition-all duration-300`}
-            style={{ width: `${skillsMatch}%` }}
-          ></div>
-        </div>
-        <p className="text-sm text-gray-600 mt-2">{skillsMatch}%</p>
-      </div>
-
-      {/* Experience Match */}
-      <div className="mb-6">
-        <p className="text-sm font-medium text-gray-700 mb-2">Experience Match</p>
-        <div className="w-full bg-gray-200 rounded-full h-4 overflow-hidden">
-          <div
-            className={`h-4 rounded-full ${getColor(experienceMatch)} transition-all duration-300`}
-            style={{ width: `${experienceMatch}%` }}
-          ></div>
-        </div>
-        <p className="text-sm text-gray-600 mt-2">{experienceMatch}%</p>
-      </div>
-
-      {/* Education Match */}
-      <div className="mb-6">
-        <p className="text-sm font-medium text-gray-700 mb-2">Education Match</p>
-        <div className="w-full bg-gray-200 rounded-full h-4 overflow-hidden">
-          <div
-            className={`h-4 rounded-full ${getColor(educationMatch)} transition-all duration-300`}
-            style={{ width: `${educationMatch}%` }}
-          ></div>
-        </div>
-        <p className="text-sm text-gray-600 mt-2">{educationMatch}%</p>
-      </div>
-
-      {/* AI Recommendations */}
-      <div className="mt-8">
-        <h3 className="text-lg font-semibold text-gray-800 mb-3">AI Recommendations</h3>
-        <p className="text-sm text-gray-600">
-          Based on the match results, consider improving skills or experience in areas with lower match percentages. 
-          Focus on areas like <strong className="text-gray-800">{educationMatch < 50 && "Education"}</strong> or 
-          <strong className="text-gray-800">{skillsMatch < 50 && "Skills"}</strong> to improve overall fit.
-        </p>
+    <div className="bg-white p-4 rounded-xl shadow-lg max-w-5xl mx-auto">
+      <h2 className="text-2xl font-semibold text-indigo-700 mb-6">Screening Results</h2>
+      <div>
+        <table className="w-full border border-gray-200 rounded-xl overflow-hidden shadow-sm text-sm table-auto">
+          <thead className="bg-gray-50">
+            <tr>
+              <th className="px-4 py-2 text-left font-semibold text-gray-700">Name</th>
+              <th className="px-4 py-2 text-left font-semibold text-gray-700">Type</th>
+              <th className="px-4 py-2 text-left font-semibold text-gray-700">Score</th>
+              <th className="px-4 py-2 text-left font-semibold text-gray-700">Status</th>
+              <th className="px-4 py-2 text-left font-semibold text-gray-700">Skills</th>
+              <th className="px-4 py-2 text-left font-semibold text-gray-700">Prediction</th>
+            </tr>
+          </thead>
+          <tbody>
+            {results.map((res, idx) => (
+              <tr key={idx} className="border-t transition-all hover:bg-blue-50">
+                <td className="px-4 py-2 align-middle break-words">{res.filename}</td>
+                <td className="px-4 py-2 align-middle whitespace-nowrap">
+                  {res.filename?.toLowerCase().endsWith('.pdf') ? 'PDF' : 'DOCX'}
+                </td>
+                <td className="px-4 py-2 align-middle whitespace-nowrap">
+                  {(res.cosine_similarity_score * 100).toFixed(1)}%
+                </td>
+                <td className="px-4 py-2 align-middle">
+                  <div className="w-20 h-2 bg-gray-200 rounded-full mx-auto">
+                    <div
+                      className={`h-2 ${getBarColor(res.highlight)} rounded-full transition-all`}
+                      style={{ width: `${res.cosine_similarity_score * 100}%` }}
+                    ></div>
+                  </div>
+                </td>
+                <td className="px-4 py-2 align-middle break-words">
+                  {Array.isArray(res.matched_skills) && res.matched_skills.length > 0 ? (
+                    <Accordion
+                      title={
+                        <span className="text-indigo-700 underline cursor-pointer text-xs">
+                          Show Skills ({res.matched_skills.length})
+                        </span>
+                      }
+                      className="inline-block"
+                    >
+                      <ul className="list-disc pl-6 text-xs text-gray-700">
+                        {res.matched_skills.map((skill, i) => (
+                          <li key={i}>{skill}</li>
+                        ))}
+                      </ul>
+                    </Accordion>
+                  ) : (
+                    <span className="text-gray-400 italic text-xs">No skills matched</span>
+                  )}
+                </td>
+                <td className="px-4 py-2 align-middle whitespace-nowrap">
+                  <span
+                    className={`inline-block font-semibold ${getBarColor(res.highlight)} text-white px-3 py-1 rounded-full text-xs text-center`}
+                  >
+                    {res.prediction}
+                  </span>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   );

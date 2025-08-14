@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import MatchResults from './MatchResults';
 
 const ResumeScreener = () => {
   const [resumeFile, setResumeFile] = useState<FileList | null>(null);
@@ -94,40 +95,7 @@ const ResumeScreener = () => {
       {error && <p className="text-red-500 mt-4">{error}</p>}
       <div className="mt-6 w-full flex justify-center">
         {result && Array.isArray(result) && result.length > 0 ? (
-          <div className="bg-white shadow-md rounded-xl p-6 w-full max-w-3xl border border-gray-200">
-            <h2 className="text-xl font-bold text-indigo-700 mb-4">Screening Results</h2>
-            <table className="w-full border border-gray-200 rounded-xl overflow-hidden shadow-sm">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-5 py-3 text-left text-sm font-semibold text-gray-700">Name</th>
-                  <th className="px-5 py-3 text-left text-sm font-semibold text-gray-700">Type</th>
-                  <th className="px-5 py-3 text-left text-sm font-semibold text-gray-700">Score</th>
-                  <th className="px-5 py-3 text-left text-sm font-semibold text-gray-700">Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {result.map((res, index) => {
-                  // Determine color for progress/status bar
-                  let barColor = 'bg-red-500';
-                  if (res.cosine_similarity_score >= 80) barColor = 'bg-green-500';
-                  else if (res.cosine_similarity_score >= 60) barColor = 'bg-yellow-500';
-                  else if (res.cosine_similarity_score >= 40) barColor = 'bg-orange-400';
-                  return (
-                    <tr key={index} className="border-t hover:bg-blue-50 transition-all">
-                      <td className="px-5 py-3">{res.filename}</td>
-                      <td className="px-5 py-3">{res.filename?.toLowerCase().endsWith('.pdf') ? 'PDF' : 'DOCX'}</td>
-                      <td className="px-5 py-3">{res.cosine_similarity_score}%</td>
-                      <td className="px-5 py-3">
-                        <div className="w-24 h-2 bg-gray-200 rounded-full">
-                          <div className={`h-2 ${barColor} rounded-full transition-all`} style={{ width: `${res.cosine_similarity_score}%` }}></div>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
+          <MatchResults results={result} />
         ) : (
           <p className="text-gray-500 mt-4">No results to display.</p>
         )}
