@@ -41,8 +41,9 @@ export default function Dashboard() {
             <img src="https://ui-avatars.com/api/?name=User&background=6D28D9&color=fff&size=32" alt="avatar" className="h-8 w-8 rounded-full border-2 border-indigo-300" />
           </div>
         </header>
-        <main className="flex-1 flex flex-col items-center justify-start px-4 py-8">
-          <div className="w-full max-w-5xl">
+        <main className="flex-1 flex flex-row items-start justify-center px-4 py-8 gap-8">
+          {/* Main Content */}
+          <div className="w-full max-w-4xl">
             <div className="mb-8 text-center">
               <h1 className="text-3xl md:text-4xl font-extrabold text-indigo-700 mb-2 tracking-tight">HireSmart Dashboard</h1>
               <p className="text-lg text-blue-900/80 mb-4">AI-powered resume screening & hiring workflow</p>
@@ -54,6 +55,17 @@ export default function Dashboard() {
             </div>
             <ResumeScreener />
           </div>
+          {/* Right-side Info Card */}
+          <aside className="w-96 min-w-[320px] bg-white/90 rounded-xl shadow-lg border border-blue-100 p-6 flex flex-col items-center gap-4">
+            <div className="flex items-center justify-center w-16 h-16 rounded-full bg-cyan-100 mb-2">
+              <svg className="h-8 w-8 text-cyan-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0zm6 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <h3 className="text-lg font-bold text-indigo-700 text-center">Get More Insights!</h3>
+            <p className="text-sm text-gray-600 text-center">Upgrade to HireSmart Pro for advanced analytics, skill gap insights, and priority support.</p>
+            <a href="#" className="w-full bg-indigo-600 text-white py-2 rounded-lg font-semibold text-center hover:bg-indigo-700 transition">Upgrade Plan</a>
+          </aside>
         </main>
       </div>
     </div>
