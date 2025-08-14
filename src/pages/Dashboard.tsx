@@ -67,43 +67,43 @@ export default function Dashboard() {
             {/* Example Results Table */}
             <div className="mb-8">
               <h2 className="text-xl font-bold text-indigo-700 mb-2">Screening Results</h2>
-              <table className="w-full border border-gray-200 rounded-lg overflow-hidden">
+              <table className="w-full border border-gray-200 rounded-xl overflow-hidden shadow-sm">
                 <thead className="bg-gray-50">
                   <tr>
-                    <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">Name</th>
-                    <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">Type</th>
-                    <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">Score</th>
-                    <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">Status</th>
+                    <th className="px-5 py-3 text-left text-sm font-semibold text-gray-700">Name</th>
+                    <th className="px-5 py-3 text-left text-sm font-semibold text-gray-700">Type</th>
+                    <th className="px-5 py-3 text-left text-sm font-semibold text-gray-700">Score</th>
+                    <th className="px-5 py-3 text-left text-sm font-semibold text-gray-700">Status</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr className="border-t">
-                    <td className="px-4 py-2">John Doe</td>
-                    <td className="px-4 py-2">PDF</td>
-                    <td className="px-4 py-2">92%</td>
-                    <td className="px-4 py-2">
+                  <tr className="border-t hover:bg-blue-50 transition-all">
+                    <td className="px-5 py-3">John Doe</td>
+                    <td className="px-5 py-3">PDF</td>
+                    <td className="px-5 py-3">92%</td>
+                    <td className="px-5 py-3">
                       <div className="w-24 h-2 bg-gray-200 rounded-full">
-                        <div className="h-2 bg-green-500 rounded-full" style={{ width: '92%' }}></div>
+                        <div className="h-2 bg-green-500 rounded-full transition-all" style={{ width: '92%' }}></div>
                       </div>
                     </td>
                   </tr>
-                  <tr className="border-t">
-                    <td className="px-4 py-2">Jane Smith</td>
-                    <td className="px-4 py-2">DOCX</td>
-                    <td className="px-4 py-2">75%</td>
-                    <td className="px-4 py-2">
+                  <tr className="border-t hover:bg-blue-50 transition-all">
+                    <td className="px-5 py-3">Jane Smith</td>
+                    <td className="px-5 py-3">DOCX</td>
+                    <td className="px-5 py-3">75%</td>
+                    <td className="px-5 py-3">
                       <div className="w-24 h-2 bg-gray-200 rounded-full">
-                        <div className="h-2 bg-yellow-500 rounded-full" style={{ width: '75%' }}></div>
+                        <div className="h-2 bg-yellow-500 rounded-full transition-all" style={{ width: '75%' }}></div>
                       </div>
                     </td>
                   </tr>
-                  <tr className="border-t">
-                    <td className="px-4 py-2">Sam Lee</td>
-                    <td className="px-4 py-2">PDF</td>
-                    <td className="px-4 py-2">40%</td>
-                    <td className="px-4 py-2">
+                  <tr className="border-t hover:bg-blue-50 transition-all">
+                    <td className="px-5 py-3">Sam Lee</td>
+                    <td className="px-5 py-3">PDF</td>
+                    <td className="px-5 py-3">40%</td>
+                    <td className="px-5 py-3">
                       <div className="w-24 h-2 bg-gray-200 rounded-full">
-                        <div className="h-2 bg-red-500 rounded-full" style={{ width: '40%' }}></div>
+                        <div className="h-2 bg-red-500 rounded-full transition-all" style={{ width: '40%' }}></div>
                       </div>
                     </td>
                   </tr>
