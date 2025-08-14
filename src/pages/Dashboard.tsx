@@ -1,4 +1,6 @@
-
+import { useAuth } from '@/context/AuthContext';
+import Brand from '@/components/Brand';
+import ResumeScreener from '@/components/ResumeScreener';
 
 export default function Dashboard() {
   const { user } = useAuth();
@@ -53,64 +55,6 @@ export default function Dashboard() {
                 <span className="inline-block px-4 py-1 rounded-full bg-blue-200 text-blue-900 font-semibold text-sm">Secure</span>
               </div>
             </div>
-            {/* Example Progress Bar */}
-            <div className="mb-8">
-              <div className="flex items-center gap-2 mb-2">
-                <span className="text-sm text-gray-700 font-medium">4 out of 5 Resumes Uploading</span>
-                <span className="text-xs text-yellow-600">⚠️</span>
-              </div>
-              <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
-                <div className="h-2 bg-indigo-500 rounded-full transition-all" style={{ width: '80%' }}></div>
-              </div>
-            </div>
-
-            {/* Example Results Table */}
-            <div className="mb-8">
-              <h2 className="text-xl font-bold text-indigo-700 mb-2">Screening Results</h2>
-              <table className="w-full border border-gray-200 rounded-xl overflow-hidden shadow-sm">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="px-5 py-3 text-left text-sm font-semibold text-gray-700">Name</th>
-                    <th className="px-5 py-3 text-left text-sm font-semibold text-gray-700">Type</th>
-                    <th className="px-5 py-3 text-left text-sm font-semibold text-gray-700">Score</th>
-                    <th className="px-5 py-3 text-left text-sm font-semibold text-gray-700">Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr className="border-t hover:bg-blue-50 transition-all">
-                    <td className="px-5 py-3">John Doe</td>
-                    <td className="px-5 py-3">PDF</td>
-                    <td className="px-5 py-3">92%</td>
-                    <td className="px-5 py-3">
-                      <div className="w-24 h-2 bg-gray-200 rounded-full">
-                        <div className="h-2 bg-green-500 rounded-full transition-all" style={{ width: '92%' }}></div>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr className="border-t hover:bg-blue-50 transition-all">
-                    <td className="px-5 py-3">Jane Smith</td>
-                    <td className="px-5 py-3">DOCX</td>
-                    <td className="px-5 py-3">75%</td>
-                    <td className="px-5 py-3">
-                      <div className="w-24 h-2 bg-gray-200 rounded-full">
-                        <div className="h-2 bg-yellow-500 rounded-full transition-all" style={{ width: '75%' }}></div>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr className="border-t hover:bg-blue-50 transition-all">
-                    <td className="px-5 py-3">Sam Lee</td>
-                    <td className="px-5 py-3">PDF</td>
-                    <td className="px-5 py-3">40%</td>
-                    <td className="px-5 py-3">
-                      <div className="w-24 h-2 bg-gray-200 rounded-full">
-                        <div className="h-2 bg-red-500 rounded-full transition-all" style={{ width: '40%' }}></div>
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-
             <ResumeScreener />
           </div>
           {/* Right-side Info Card */}
