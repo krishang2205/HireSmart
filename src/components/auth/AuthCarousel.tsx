@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { 
-  ResumeScreeningIcon, 
-  AIBrainIcon, 
-  TeamIcon, 
-  AnalyticsIcon, 
+import {
+  ResumeScreeningIcon,
+  AIBrainIcon,
+  TeamIcon,
+  AnalyticsIcon,
   SuccessIcon,
-  DecorativeShapes 
+  DecorativeShapes
 } from './AuthIllustrations';
 
 interface Slide {
@@ -57,55 +57,61 @@ const slides: Slide[] = [
 
 export const AuthCarousel: React.FC = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [direction, setDirection] = useState<'left' | 'right'>('right');
 
-  // Auto-advance disabled - only manual navigation
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     setCurrentSlide((prev) => (prev + 1) % slides.length);
-  //   }, 4000); // Change slide every 4 seconds
-
-  //   return () => clearInterval(interval);
-  // }, []);
-
-  const goToSlide = (index: number) => {
+  const goToSlide = (index: number, dir: 'left' | 'right') => {
+    setDirection(dir);
     setCurrentSlide(index);
   };
 
   const goToPrevious = () => {
-    setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
+    goToSlide((currentSlide - 1 + slides.length) % slides.length, 'left');
   };
 
   const goToNext = () => {
-    setCurrentSlide((prev) => (prev + 1) % slides.length);
+    goToSlide((currentSlide + 1) % slides.length, 'right');
   };
 
   const CurrentIcon = slides[currentSlide].icon;
 
   return (
-    <div className="relative h-full w-full">
+    <div className="relative h-full w-full overflow-hidden">
       {/* Background gradients */}
       <div className="absolute inset-0 bg-[radial-gradient(1200px_800px_at_80%_-10%,rgba(99,102,241,0.25),transparent_60%),radial-gradient(900px_600px_at_0%_110%,rgba(56,189,248,0.25),transparent_60%)]" />
       <div className="absolute inset-0 bg-gradient-to-br from-indigo-700 via-indigo-600 to-sky-500" />
-      
+
       {/* Decorative shapes */}
       <DecorativeShapes />
-      
-      {/* Content */}
-      <div className="relative z-10 h-full flex items-center justify-center p-12">
-        <div className="max-w-lg bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-8 text-white shadow-2xl">
-          {/* Icon */}
+
+      {/* Content with sliding animation */}
+      <div
+        className={`relative z-10 h-full flex items-center justify-center p-12 transition-transform duration-500 ease-in-out`}
+        style={{
+          transform:
+            direction === 'right'
+              ? `translateX(0)` // main slide stays until changed
+              : `translateX(0)`
+        }}
+      >
+        <div
+          key={slides[currentSlide].id}
+          className={`max-w-lg bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-8 text-white shadow-2xl transform transition-transform duration-500 ease-in-out ${
+            direction === 'right'
+              ? 'animate-slideFromRight'
+              : 'animate-slideFromLeft'
+          }`}
+        >
           <div className="flex justify-center mb-6">
             <CurrentIcon className="w-16 h-16" />
           </div>
-          
-          <h2 className="text-3xl font-extrabold leading-tight transition-all duration-500 text-center">
+          <h2 className="text-3xl font-extrabold leading-tight text-center">
             {slides[currentSlide].title}
           </h2>
-          <p className="mt-3 text-sm/6 text-white/85 transition-all duration-500 text-center">
+          <p className="mt-3 text-sm/6 text-white/85 text-center">
             {slides[currentSlide].description}
           </p>
           <div className="mt-6 h-px w-full bg-white/20" />
-          <p className="mt-4 text-xs text-white/80 transition-all duration-500 text-center">
+          <p className="mt-4 text-xs text-white/80 text-center">
             {slides[currentSlide].bottomText}
           </p>
         </div>
@@ -119,7 +125,7 @@ export const AuthCarousel: React.FC = () => {
       >
         <ChevronLeft className="h-5 w-5" />
       </button>
-      
+
       <button
         onClick={goToNext}
         className="absolute right-4 top-1/2 -translate-y-1/2 z-20 p-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-white hover:bg-white/20 transition-all duration-200"
@@ -133,16 +139,39 @@ export const AuthCarousel: React.FC = () => {
         {slides.map((_, index) => (
           <button
             key={index}
-            onClick={() => goToSlide(index)}
+            onClick={() =>
+              goToSlide(
+                index,
+                index > currentSlide ? 'right' : 'left'
+              )
+            }
             className={`w-2 h-2 rounded-full transition-all duration-300 ${
-              index === currentSlide 
-                ? 'bg-white scale-125' 
+              index === currentSlide
+                ? 'bg-white scale-125'
                 : 'bg-white/40 hover:bg-white/60'
             }`}
             aria-label={`Go to slide ${index + 1}`}
           />
         ))}
       </div>
+
+      {/* Tailwind keyframes */}
+      <style>{`
+        @keyframes slideFromRight {
+          from { transform: translateX(100%); opacity: 0; }
+          to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes slideFromLeft {
+          from { transform: translateX(-100%); opacity: 0; }
+          to { transform: translateX(0); opacity: 1; }
+        }
+        .animate-slideFromRight {
+          animation: slideFromRight 0.5s ease forwards;
+        }
+        .animate-slideFromLeft {
+          animation: slideFromLeft 0.5s ease forwards;
+        }
+      `}</style>
     </div>
   );
 };

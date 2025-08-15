@@ -9,25 +9,25 @@ interface FloatingLabelInputProps extends InputHTMLAttributes<HTMLInputElement> 
 export const FloatingLabelInput = forwardRef<HTMLInputElement, FloatingLabelInputProps>(
   ({ label, className = '', error, type = 'text', dense = false, ...rest }, ref) => {
     const id = useId();
-    const pad = dense ? 'px-3 pt-4 pb-1.5 text-[13px]' : 'px-4 pt-5 pb-2 text-sm';
+  const pad = dense ? 'px-3 py-2 text-[13px]' : 'px-4 py-2 text-sm';
     const labelPos = dense
       ? 'left-3 top-2 text-[11px] peer-placeholder-shown:top-3 peer-placeholder-shown:text-[13px] peer-focus:top-2 peer-focus:text-[11px]'
       : 'left-4 top-2.5 text-xs peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-[13px] peer-focus:top-2.5 peer-focus:text-xs';
     return (
       <div className="relative group">
-        <input
-          id={id}
-          ref={ref}
-          type={type}
-          aria-invalid={!!error}
-          className={`peer w-full rounded-xl border bg-white/60 backdrop-blur placeholder-transparent ${pad} shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500/60 focus:border-blue-500 transition ${error ? 'border-red-400 focus:ring-red-500/50' : 'border-slate-300/70 hover:border-slate-400'} ${className}`}
-          placeholder={label}
-          {...rest}
-        />
+            <input
+              id={id}
+              ref={ref}
+              type={type}
+              aria-invalid={!!error}
+              placeholder={label}
+              className={`peer w-full rounded-xl border bg-white/60 backdrop-blur placeholder:text-[#94a3b8] placeholder:pl-1 placeholder:align-middle ${pad} shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500/60 focus:border-blue-500 transition ${error ? 'border-red-400 focus:ring-red-500/50' : 'border-slate-300/70 hover:border-slate-400'} ${className} focus:placeholder-transparent`}
+              {...rest}
+            />
         <label
           htmlFor={id}
-          className={`pointer-events-none absolute ${labelPos} tracking-wide font-medium transition-all select-none 
-            text-slate-500 peer-placeholder-shown:text-slate-500/70 peer-focus:text-blue-600 ${error ? 'text-red-500 peer-focus:text-red-500' : ''}`}
+          className={`pointer-events-none absolute ${labelPos} tracking-wide font-medium transition-all select-none
+            text-slate-500 peer-placeholder-shown:opacity-0 peer-focus:opacity-100 peer-focus:text-blue-600 ${error ? 'text-red-500 peer-focus:text-red-500' : ''}`}
         >
           {label}
         </label>
@@ -79,7 +79,7 @@ interface FloatingLabelSelectProps extends React.SelectHTMLAttributes<HTMLSelect
 export const FloatingLabelSelect = forwardRef<HTMLSelectElement, FloatingLabelSelectProps>(
   ({ label, className = '', error, dense = false, options, placeholder = 'Select an option', ...rest }, ref) => {
     const id = useId();
-    const pad = dense ? 'px-3 pt-4 pb-1.5 text-[13px]' : 'px-4 pt-5 pb-2 text-sm';
+  const pad = dense ? 'px-3 py-2 text-[13px]' : 'px-4 py-2 text-sm';
     const labelPos = dense
       ? 'left-3 top-2 text-[11px] peer-placeholder-shown:top-3 peer-placeholder-shown:text-[13px] peer-focus:top-2 peer-focus:text-[11px]'
       : 'left-4 top-2.5 text-xs peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-[13px] peer-focus:top-2.5 peer-focus:text-xs';
@@ -93,9 +93,7 @@ export const FloatingLabelSelect = forwardRef<HTMLSelectElement, FloatingLabelSe
           className={`peer w-full rounded-xl border bg-white/60 backdrop-blur ${pad} shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500/60 focus:border-blue-500 transition appearance-none ${error ? 'border-red-400 focus:ring-red-500/50' : 'border-slate-300/70 hover:border-slate-400'} ${className}`}
           {...rest}
         >
-          <option value="" disabled>
-            {placeholder}
-          </option>
+          <option value="" disabled style={{color: '#94a3b8'}}>{placeholder}</option>
           {options.map((option) => (
             <option key={option.value} value={option.value}>
               {option.label}
@@ -112,8 +110,8 @@ export const FloatingLabelSelect = forwardRef<HTMLSelectElement, FloatingLabelSe
         
         <label
           htmlFor={id}
-          className={`pointer-events-none absolute ${labelPos} tracking-wide font-medium transition-all select-none 
-            text-slate-500 peer-focus:text-blue-600 ${error ? 'text-red-500 peer-focus:text-red-500' : ''}`}
+          className={`pointer-events-none absolute ${labelPos} tracking-wide font-medium transition-all select-none
+            text-slate-500 peer-placeholder-shown:opacity-0 peer-focus:opacity-100 peer-focus:text-blue-600 ${error ? 'text-red-500 peer-focus:text-red-500' : ''}`}
         >
           {label}
         </label>

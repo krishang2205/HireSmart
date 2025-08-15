@@ -252,7 +252,8 @@ export default function Signup() {
               dense 
               autoComplete="organization" 
               label="Company Name" 
-              placeholder="Acme Inc" 
+                // placeholder removed
+              className="text-slate-700 placeholder:text-slate-700"
               {...register('companyName', companyNameValidation)} 
               error={errors.companyName?.message} 
             />
@@ -263,7 +264,8 @@ export default function Signup() {
               dense 
               autoComplete="name" 
               label="Full Name" 
-              placeholder="Jane Doe" 
+                // placeholder removed
+              className="text-slate-700 placeholder:text-slate-700"
               {...register('fullName', fullNameValidation)} 
               error={errors.fullName?.message} 
             />
@@ -274,8 +276,8 @@ export default function Signup() {
               dense 
               autoComplete="email" 
               label="Email" 
-              type="email" 
-              placeholder="you@company.com" 
+              type="email"  
+                className="text-slate-700 placeholder:text-slate-700"
               {...register('email', emailValidation)} 
               error={errors.email?.message} 
             />
@@ -286,7 +288,8 @@ export default function Signup() {
               dense 
               autoComplete="tel" 
               label="Phone" 
-              placeholder="Optional" 
+               // placeholder removed
+              className="text-slate-700 placeholder:text-slate-700"
               {...register('phone', phoneValidation)} 
               error={errors.phone?.message} 
             />
@@ -297,9 +300,10 @@ export default function Signup() {
               dense 
               autoComplete="new-password" 
               label="Password" 
-              placeholder="Create a secure password" 
+                // placeholder removed
               showStrength 
               strength={strengthScore} 
+              className="text-slate-700 placeholder:text-slate-700"
               {...register('password', passwordValidation)} 
               error={errors.password?.message} 
             />
@@ -310,7 +314,8 @@ export default function Signup() {
               dense 
               autoComplete="new-password" 
               label="Confirm Password" 
-              placeholder="Repeat password" 
+                // placeholder removed
+              className="text-slate-700 placeholder:text-slate-700"
               {...register('confirmPassword', confirmPasswordValidation)} 
               error={errors.confirmPassword?.message} 
             />
@@ -320,9 +325,9 @@ export default function Signup() {
             <FloatingLabelSelect
               dense
               label=""
-              placeholder="Select role"
+                placeholder="Select role"
               options={roles}
-              className="text-slate-500 placeholder:text-slate-500"
+              className="w-full h-10 leading-tight py-2 text-slate-700 placeholder:text-slate-700"
               {...register('role', selectValidation)}
               error={errors.role?.message}
             />
@@ -332,9 +337,9 @@ export default function Signup() {
             <FloatingLabelSelect
               dense
               label=""
-              placeholder="Select company size"
+                placeholder="Select company size"
               options={companySizes}
-              className="text-slate-500 placeholder:text-slate-500"
+              className="w-full h-10 leading-tight py-2 text-slate-700 placeholder:text-slate-700"
               {...register('companySize', selectValidation)}
               error={errors.companySize?.message}
             />
@@ -344,9 +349,9 @@ export default function Signup() {
             <FloatingLabelSelect
               dense
               label=""
-              placeholder="Select industry"
+                placeholder="Select industry"
               options={industries}
-              className="text-slate-500 placeholder:text-slate-500"
+              className="w-full h-10 leading-tight py-2 text-slate-700 placeholder:text-slate-700"
               {...register('industry', selectValidation)}
               error={errors.industry?.message}
             />
