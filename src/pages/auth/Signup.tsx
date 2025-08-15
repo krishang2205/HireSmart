@@ -245,8 +245,8 @@ export default function Signup() {
 
   return (
     <AuthLayout title="Create your HireSmart account" subtitle="Hire smarter. Save time.">
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
           <div className="md:col-span-2">
             <FloatingLabelInput 
               dense 
@@ -319,9 +319,10 @@ export default function Signup() {
           <div>
             <FloatingLabelSelect
               dense
-              label="Role"
+              label=""
               placeholder="Select role"
               options={roles}
+              className="text-slate-500 placeholder:text-slate-500"
               {...register('role', selectValidation)}
               error={errors.role?.message}
             />
@@ -330,9 +331,10 @@ export default function Signup() {
           <div>
             <FloatingLabelSelect
               dense
-              label="Company Size"
+              label=""
               placeholder="Select company size"
               options={companySizes}
+              className="text-slate-500 placeholder:text-slate-500"
               {...register('companySize', selectValidation)}
               error={errors.companySize?.message}
             />
@@ -341,9 +343,10 @@ export default function Signup() {
           <div className="md:col-span-2">
             <FloatingLabelSelect
               dense
-              label="Industry"
+              label=""
               placeholder="Select industry"
               options={industries}
+              className="text-slate-500 placeholder:text-slate-500"
               {...register('industry', selectValidation)}
               error={errors.industry?.message}
             />
@@ -352,7 +355,7 @@ export default function Signup() {
         
         <Button 
           disabled={!isFormReady || loading} 
-          className="w-full h-11 font-medium shadow-lg shadow-blue-500/25" 
+          className="w-full h-8 text-xs font-medium shadow-md shadow-blue-500/15" 
           variant="gradient"
         >
           {loading ? 'Creating Account...' : 'Create Account'}

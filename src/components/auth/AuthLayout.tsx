@@ -11,7 +11,7 @@ export const AuthLayout: React.FC<{ children: React.ReactNode; title?: string; s
           <BrandLogo className="h-8 w-8" />
           <BrandWordmark className="text-lg font-semibold" />
         </div>
-        <div className="w-full max-w-md space-y-6">
+  <div className="w-full max-w-md space-y-6 mt-10">
           {(title || subtitle) && (
             <div className="space-y-1">
               {title && <h1 className="text-2xl font-bold tracking-tight">{title}</h1>}
