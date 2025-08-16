@@ -1,4 +1,29 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+
+// Mock API functions
+const fetchSettings = async () => {
+  // Simulate API call
+  return {
+    profile: { name: 'John Doe', email: 'john@example.com', password: '' },
+    minScore: 0.7,
+    thresholds: { best: 0.85, consider: 0.7 },
+    resumeFormat: ['PDF', 'DOCX'],
+    maxFileSize: 5,
+    duplicateDetection: true,
+    emailNotif: true,
+    tableColumns: ['Name', 'Score', 'Category'],
+    colorCoding: true,
+    exportFormat: 'CSV',
+    dataRetention: 12,
+    theme: 'light',
+    language: 'en',
+  };
+};
+
+const saveSettings = async (settings: any) => {
+  // Simulate API save
+  return { success: true };
+};
 
 const inputClass =
   'input w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-150';
@@ -27,6 +52,8 @@ const Settings = () => {
   const [dataRetention, setDataRetention] = useState(12);
   const [theme, setTheme] = useState('light');
   const [language, setLanguage] = useState('en');
+  const [loading, setLoading] = useState(true);
+  const [saveStatus, setSaveStatus] = useState('');
 
   // Validation helpers
   const validateProfile = () => {
@@ -37,6 +64,51 @@ const Settings = () => {
     setProfileErrors(errors);
     return !errors.name && !errors.email && !errors.password;
   };
+
+  // Load settings on mount
+  useEffect(() => {
+    fetchSettings().then(data => {
+      setProfile(data.profile);
+      setMinScore(data.minScore);
+      setThresholds(data.thresholds);
+      setResumeFormat(data.resumeFormat);
+      setMaxFileSize(data.maxFileSize);
+      setDuplicateDetection(data.duplicateDetection);
+      setEmailNotif(data.emailNotif);
+      setTableColumns(data.tableColumns);
+      setColorCoding(data.colorCoding);
+      setExportFormat(data.exportFormat);
+      setDataRetention(data.dataRetention);
+      setTheme(data.theme);
+      setLanguage(data.language);
+      setLoading(false);
+    });
+  }, []);
+
+  // Save settings handler
+  const handleSave = async () => {
+    setSaveStatus('');
+    const settings = {
+      profile,
+      minScore,
+      thresholds,
+      resumeFormat,
+      maxFileSize,
+      duplicateDetection,
+      emailNotif,
+      tableColumns,
+      colorCoding,
+      exportFormat,
+      dataRetention,
+      theme,
+      language,
+    };
+    const res = await saveSettings(settings);
+    if (res.success) setSaveStatus('Settings saved!');
+    else setSaveStatus('Failed to save settings.');
+  };
+
+  if (loading) return <div className="p-8 text-center text-blue-700">Loading settings...</div>;
 
   return (
     <div className="min-h-screen bg-blue-50 p-4 md:p-8 text-gray-800">
@@ -182,6 +254,8 @@ const Settings = () => {
             </div>
           </div>
         </section>
+        <button className={buttonClass + ' mt-6'} onClick={handleSave}>Save All Settings</button>
+        {saveStatus && <p className="text-green-600 mt-2">{saveStatus}</p>}
       </div>
     </div>
   );

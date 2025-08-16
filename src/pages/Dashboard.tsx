@@ -1,13 +1,19 @@
 import { useAuth } from '@/context/AuthContext';
 import Brand from '@/components/Brand';
 import ResumeScreener from '@/components/ResumeScreener';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Footer from '@/components/Footer';
+import { useNavigate } from 'react-router-dom';
 
 export default function Dashboard() {
   const { user, logout } = useAuth();
   const [showInsights, setShowInsights] = useState(true);
   const [showUserModal, setShowUserModal] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // Any side effects or data fetching can be done here
+  }, []);
 
   return (
   <div className="min-h-screen bg-blue-50 flex flex-col text-sm">
@@ -86,7 +92,7 @@ export default function Dashboard() {
             <a href="#" className="flex items-center gap-3 px-4 py-2 rounded-lg text-gray-700 hover:bg-blue-50">
               <span>Activity Log</span>
             </a>
-            <a href="#" className="flex items-center gap-3 px-4 py-2 rounded-lg text-gray-700 hover:bg-blue-50">
+            <a href="/settings" className="flex items-center gap-3 px-4 py-2 rounded-lg text-gray-700 hover:bg-blue-50">
               <span>Settings</span>
             </a>
               
