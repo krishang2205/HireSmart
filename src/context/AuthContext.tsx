@@ -4,7 +4,11 @@ import { authApi } from '../lib/api';
 interface User {
 	id: string;
 	fullName: string;
+	email: string;
 	role: string;
+	companyName?: string;
+	industry?: string;
+	companySize?: string;
 }
 
 interface AuthContextValue {
@@ -14,11 +18,22 @@ interface AuthContextValue {
 	login: (email: string, password: string) => Promise<void>;
 	signup: (data: any) => Promise<void>;
 	logout: () => void;
+	updateProfile: (data: { name?: string; email?: string; companyName?: string; industry?: string; companySize?: string }) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+	const updateProfile = async (data: { name?: string; email?: string; companyName?: string; industry?: string; companySize?: string }) => {
+		if (!token) return;
+		setLoading(true);
+		try {
+			const res = await authApi.updateProfile(token, data);
+			if (res.user) setUser(res.user);
+		} finally {
+			setLoading(false);
+		}
+	};
 	const [user, setUser] = useState<User | null>(null);
 	const [token, setToken] = useState<string | null>(() => localStorage.getItem('hs_token'));
 	const [loading, setLoading] = useState(false);
@@ -59,7 +74,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 	};
 
 	return (
-		<AuthContext.Provider value={{ user, token, loading, login, signup, logout }}>
+	<AuthContext.Provider value={{ user, token, loading, login, signup, logout, updateProfile }}>
 			{children}
 		</AuthContext.Provider>
 	);
