@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import Brand from '@/components/Brand';
 import Footer from '@/components/Footer';
+import { motion, AnimatePresence } from 'framer-motion';
 
 // Styles
 const inputClass =
@@ -245,328 +246,339 @@ const Settings = () => {
         </aside>
         {/* Main Content */}
         <main className="flex-1 flex flex-col px-8 py-8 gap-8 relative text-sm bg-transparent">
-          <h1 className="text-3xl font-extrabold mb-4 text-blue-900 tracking-tight">Settings</h1>
-          {/* Tabs */}
-          <div className="flex gap-4 border-b mb-8 sticky top-14 bg-white/80 z-10 backdrop-blur-lg">
-            {tabSections.map(tab => (
-              <button
-                key={tab.label}
-                className={`py-2 px-4 font-semibold border-b-2 transition-all duration-150 rounded-t-lg ${activeTab === tab.label ? 'border-indigo-600 text-indigo-700 bg-white shadow' : 'border-transparent text-gray-500 hover:text-indigo-600 hover:bg-indigo-50'}`}
-                onClick={() => setActiveTab(tab.label)}
-              >
-                {tab.label}
-              </button>
-            ))}
-          </div>
-          {/* Tab Content - open, not in a single container */}
-          {activeTab === 'Profile' && (
-            <section className="mb-8 animate-fade-in">
-              <div className="bg-white/80 rounded-2xl shadow-xl p-8 border border-gray-100 backdrop-blur-lg relative">
-                {/* Profile Picture settings at top right */}
-                <div className="absolute top-6 right-8 z-10">
-                  <div className="relative group">
-                    {/* Default avatar image */}
-                    <div className="h-16 w-16 rounded-full bg-gray-200 flex items-center justify-center">
-                      <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <circle cx="24" cy="24" r="24" fill="#E5E7EB"/>
-                        <circle cx="24" cy="20" r="8" fill="#BDBDBD"/>
-                        <path d="M12 38c0-5.333 7.333-8 12-8s12 2.667 12 8v2H12v-2z" fill="#BDBDBD"/>
-                      </svg>
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeTab}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.35, ease: 'easeInOut' }}
+              className="flex-1 flex flex-col gap-8"
+            >
+              <h1 className="text-3xl font-extrabold mb-4 text-blue-900 tracking-tight">Settings</h1>
+              {/* Tabs */}
+              <div className="flex gap-4 border-b mb-8 sticky top-14 bg-white/80 z-10 backdrop-blur-lg">
+                {tabSections.map(tab => (
+                  <button
+                    key={tab.label}
+                    className={`py-2 px-4 font-semibold border-b-2 transition-all duration-150 rounded-t-lg ${activeTab === tab.label ? 'border-indigo-600 text-indigo-700 bg-white shadow' : 'border-transparent text-gray-500 hover:text-indigo-600 hover:bg-indigo-50'}`}
+                    onClick={() => setActiveTab(tab.label)}
+                  >
+                    {tab.label}
+                  </button>
+                ))}
+              </div>
+              {/* Tab Content - open, not in a single container */}
+              {activeTab === 'Profile' && (
+                <section className="mb-8 animate-fade-in">
+                  <div className="bg-white/80 rounded-2xl shadow-xl p-8 border border-gray-100 backdrop-blur-lg relative">
+                    {/* Profile Picture settings at top right */}
+                    <div className="absolute top-6 right-8 z-10">
+                      <div className="relative group">
+                        {/* Default avatar image */}
+                        <div className="h-16 w-16 rounded-full bg-gray-200 flex items-center justify-center">
+                          <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="24" cy="24" r="24" fill="#E5E7EB"/>
+                            <circle cx="24" cy="20" r="8" fill="#BDBDBD"/>
+                            <path d="M12 38c0-5.333 7.333-8 12-8s12 2.667 12 8v2H12v-2z" fill="#BDBDBD"/>
+                          </svg>
+                        </div>
+                        {/* Smaller pencil icon overlay */}
+                        <div className="absolute bottom-0 right-0 bg-blue-600 rounded-full p-1 border-2 border-white flex items-center justify-center">
+                          <svg width="16" height="16" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="10" cy="10" r="8" fill="#1976D2"/>
+                            <path d="M6 13.5V15h1.5l5.06-5.06-1.5-1.5L6 13.5zm7.04-6.04a.75.75 0 0 0-1.06 0l-1.02 1.02 1.5 1.5 1.02-1.02a.75.75 0 0 0 0-1.06l-.44-.44z" fill="#fff"/>
+                          </svg>
+                        </div>
+                      </div>
                     </div>
-                    {/* Smaller pencil icon overlay */}
-                    <div className="absolute bottom-0 right-0 bg-blue-600 rounded-full p-1 border-2 border-white flex items-center justify-center">
-                      <svg width="16" height="16" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <circle cx="10" cy="10" r="8" fill="#1976D2"/>
-                        <path d="M6 13.5V15h1.5l5.06-5.06-1.5-1.5L6 13.5zm7.04-6.04a.75.75 0 0 0-1.06 0l-1.02 1.02 1.5 1.5 1.02-1.02a.75.75 0 0 0 0-1.06l-.44-.44z" fill="#fff"/>
-                      </svg>
-                    </div>
-                  </div>
-                </div>
-                <h2 className="text-xl font-bold mb-2 text-blue-800 flex items-center gap-2">Your Profile <span className="bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-full text-xs font-semibold">Recruiter</span></h2>
-                <p className="mb-6 text-gray-500">Update your profile and company details here</p>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                  <div>
-                    <label className="block font-medium text-gray-700 mb-1">Name</label>
-                    <div className="relative">
-                      <input type="text" className="peer w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-300 transition-all" placeholder=" " value={editableProfile.name} onChange={e => setEditableProfile({ ...editableProfile, name: e.target.value })} />
-                      {editableProfile.name && (
-                        <span className="absolute left-4 top-1 text-xs text-gray-400 peer-focus:text-indigo-600 transition-all"></span>
-                      )}
-                    </div>
-                  </div>
-                  <div>
-                    <label className="block font-medium text-gray-700 mb-1">Email</label>
-                    <div className="relative">
-                      <input type="email" className="peer w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-300 transition-all" placeholder=" " value={editableProfile.email} onChange={e => setEditableProfile({ ...editableProfile, email: e.target.value })} />
-                      {editableProfile.email && (
-                        <span className="absolute left-4 top-1 text-xs text-gray-400 peer-focus:text-indigo-600 transition-all"></span>
-                      )}
+                    <h2 className="text-xl font-bold mb-2 text-blue-800 flex items-center gap-2">Your Profile <span className="bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-full text-xs font-semibold">Recruiter</span></h2>
+                    <p className="mb-6 text-gray-500">Update your profile and company details here</p>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                      <div>
+                        <label className="block font-medium text-gray-700 mb-1">Name</label>
+                        <div className="relative">
+                          <input type="text" className="peer w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-300 transition-all" placeholder=" " value={editableProfile.name} onChange={e => setEditableProfile({ ...editableProfile, name: e.target.value })} />
+                          {editableProfile.name && (
+                            <span className="absolute left-4 top-1 text-xs text-gray-400 peer-focus:text-indigo-600 transition-all"></span>
+                          )}
+                        </div>
+                      </div>
+                      <div>
+                        <label className="block font-medium text-gray-700 mb-1">Email</label>
+                        <div className="relative">
+                          <input type="email" className="peer w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-300 transition-all" placeholder=" " value={editableProfile.email} onChange={e => setEditableProfile({ ...editableProfile, email: e.target.value })} />
+                          {editableProfile.email && (
+                            <span className="absolute left-4 top-1 text-xs text-gray-400 peer-focus:text-indigo-600 transition-all"></span>
+                          )}
                 {/* Save Profile button removed. Changes will be saved with main Save Changes button. */}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                      
+                      <div>
+                        <label className="block font-medium text-gray-700 mb-1">Company Name</label>
+                        <input type="text" className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-300 transition-all" placeholder="Enter company name" value={companyDetails.name} onChange={e => setCompanyDetails({ ...companyDetails, name: e.target.value })} />
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                      <div>
+                        <label className="block font-medium text-gray-700 mb-1">Company Website</label>
+                        <input type="url" className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-300 transition-all" placeholder="https://yourcompany.com" value={companyDetails.website} onChange={e => setCompanyDetails({ ...companyDetails, website: e.target.value })} />
+                      </div>
+                      <div>
+                        <label className="block font-medium text-gray-700 mb-1">Industry</label>
+                        <input type="text" className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-300 transition-all" placeholder="e.g. Software, Healthcare" value={companyDetails.industry} onChange={e => setCompanyDetails({ ...companyDetails, industry: e.target.value })} />
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                      <div>
+                        <label className="block font-medium text-gray-700 mb-1">Company Size</label>
+                        <select className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-300 transition-all" value={companyDetails.size} onChange={e => setCompanyDetails({ ...companyDetails, size: e.target.value })}>
+                          <option value="">Select size</option>
+                          <option value="1-10">1-10</option>
+                          <option value="11-50">11-50</option>
+                          <option value="51-200">51-200</option>
+                          <option value="201-1000">201-1000</option>
+                          <option value=">1000">1000+</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block font-medium text-gray-700 mb-1">Company Address</label>
+                        <input type="text" className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-300 transition-all" placeholder="Enter address" value={companyDetails.address} onChange={e => setCompanyDetails({ ...companyDetails, address: e.target.value })} />
+                      </div>
+                    </div>
+                    <div className="mb-6">
+                      <label className="block font-medium text-gray-700 mb-1">Company Description</label>
+                      <textarea className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-300 transition-all" rows={2} placeholder="Describe your company" value={companyDetails.description} onChange={e => setCompanyDetails({ ...companyDetails, description: e.target.value })} />
+                    </div>
+                    <div className="border-t pt-6 mt-6">
+                      <h3 className="text-lg font-semibold mb-2 text-blue-800">Notifications</h3>
+                      <div className="flex gap-8">
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input type="checkbox" checked={settings.emailNotif} onChange={e => updateSetting('emailNotif', e.target.checked)} className="accent-indigo-600 w-6 h-6 transition-all" />
+                          <span className="font-medium text-gray-700">Email Notification</span>
+                          <span className="text-xs text-gray-400">You will be notified when a new email arrives.</span>
+                        </label>
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input type="checkbox" className="accent-indigo-600 w-6 h-6 transition-all" />
+                          <span className="font-medium text-gray-700">Sound Notification</span>
+                          <span className="text-xs text-gray-400">You will be notified with sound when someone messages you.</span>
+                        </label>
+                      </div>
                     </div>
                   </div>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                  
-                  <div>
-                    <label className="block font-medium text-gray-700 mb-1">Company Name</label>
-                    <input type="text" className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-300 transition-all" placeholder="Enter company name" value={companyDetails.name} onChange={e => setCompanyDetails({ ...companyDetails, name: e.target.value })} />
-                  </div>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                  <div>
-                    <label className="block font-medium text-gray-700 mb-1">Company Website</label>
-                    <input type="url" className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-300 transition-all" placeholder="https://yourcompany.com" value={companyDetails.website} onChange={e => setCompanyDetails({ ...companyDetails, website: e.target.value })} />
-                  </div>
-                  <div>
-                    <label className="block font-medium text-gray-700 mb-1">Industry</label>
-                    <input type="text" className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-300 transition-all" placeholder="e.g. Software, Healthcare" value={companyDetails.industry} onChange={e => setCompanyDetails({ ...companyDetails, industry: e.target.value })} />
-                  </div>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                  <div>
-                    <label className="block font-medium text-gray-700 mb-1">Company Size</label>
-                    <select className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-300 transition-all" value={companyDetails.size} onChange={e => setCompanyDetails({ ...companyDetails, size: e.target.value })}>
-                      <option value="">Select size</option>
-                      <option value="1-10">1-10</option>
-                      <option value="11-50">11-50</option>
-                      <option value="51-200">51-200</option>
-                      <option value="201-1000">201-1000</option>
-                      <option value=">1000">1000+</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block font-medium text-gray-700 mb-1">Company Address</label>
-                    <input type="text" className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-300 transition-all" placeholder="Enter address" value={companyDetails.address} onChange={e => setCompanyDetails({ ...companyDetails, address: e.target.value })} />
-                  </div>
-                </div>
-                <div className="mb-6">
-                  <label className="block font-medium text-gray-700 mb-1">Company Description</label>
-                  <textarea className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-300 transition-all" rows={2} placeholder="Describe your company" value={companyDetails.description} onChange={e => setCompanyDetails({ ...companyDetails, description: e.target.value })} />
-                </div>
-                <div className="border-t pt-6 mt-6">
-                  <h3 className="text-lg font-semibold mb-2 text-blue-800">Notifications</h3>
-                  <div className="flex gap-8">
-                    <label className="flex items-center gap-2 cursor-pointer">
-                      <input type="checkbox" checked={settings.emailNotif} onChange={e => updateSetting('emailNotif', e.target.checked)} className="accent-indigo-600 w-6 h-6 transition-all" />
-                      <span className="font-medium text-gray-700">Email Notification</span>
-                      <span className="text-xs text-gray-400">You will be notified when a new email arrives.</span>
-                    </label>
-                    <label className="flex items-center gap-2 cursor-pointer">
-                      <input type="checkbox" className="accent-indigo-600 w-6 h-6 transition-all" />
-                      <span className="font-medium text-gray-700">Sound Notification</span>
-                      <span className="text-xs text-gray-400">You will be notified with sound when someone messages you.</span>
-                    </label>
-                  </div>
-                </div>
-              </div>
-            </section>
-          )}
-          {activeTab === 'Screening' && (
-            <section className="mb-8 animate-fade-in">
-              <div className="bg-white/80 rounded-2xl shadow-xl p-8 border border-gray-100 backdrop-blur-lg">
-                <h2 className="text-xl font-bold mb-2 text-blue-800 flex items-center gap-2">Screening Preferences <span className="bg-cyan-100 text-cyan-700 px-2 py-0.5 rounded-full text-xs font-semibold">AI Powered</span></h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                  <div>
-                    <label className="block font-medium text-gray-700 mb-1">Minimum Similarity Score</label>
-                    <input type="range" min="0" max="1" step="0.01" value={settings.minScore} onChange={e => updateSetting('minScore', Number(e.target.value))} className="w-full accent-indigo-600" />
-                    <div className="flex justify-between text-xs text-gray-400 mt-1">
-                      <span>0</span>
-                      <span>{settings.minScore}</span>
-                      <span>1</span>
+                </section>
+              )}
+              {activeTab === 'Screening' && (
+                <section className="mb-8 animate-fade-in">
+                  <div className="bg-white/80 rounded-2xl shadow-xl p-8 border border-gray-100 backdrop-blur-lg">
+                    <h2 className="text-xl font-bold mb-2 text-blue-800 flex items-center gap-2">Screening Preferences <span className="bg-cyan-100 text-cyan-700 px-2 py-0.5 rounded-full text-xs font-semibold">AI Powered</span></h2>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                      <div>
+                        <label className="block font-medium text-gray-700 mb-1">Minimum Similarity Score</label>
+                        <input type="range" min="0" max="1" step="0.01" value={settings.minScore} onChange={e => updateSetting('minScore', Number(e.target.value))} className="w-full accent-indigo-600" />
+                        <div className="flex justify-between text-xs text-gray-400 mt-1">
+                          <span>0</span>
+                          <span>{settings.minScore}</span>
+                          <span>1</span>
+                        </div>
+                      </div>
+                      <div>
+                        <label className="block font-medium text-gray-700 mb-1">Best for Hire Threshold</label>
+                        <input type="range" min="0" max="1" step="0.01" value={settings.thresholds.best} onChange={e => updateThresholds('best', Number(e.target.value))} className="w-full accent-cyan-600" />
+                        <div className="flex justify-between text-xs text-gray-400 mt-1">
+                          <span>0</span>
+                          <span>{settings.thresholds.best}</span>
+                          <span>1</span>
+                        </div>
+                      </div>
+                      <div>
+                        <label className="block font-medium text-gray-700 mb-1">Consider for Interview Threshold</label>
+                        <input type="range" min="0" max="1" step="0.01" value={settings.thresholds.consider} onChange={e => updateThresholds('consider', Number(e.target.value))} className="w-full accent-blue-600" />
+                        <div className="flex justify-between text-xs text-gray-400 mt-1">
+                          <span>0</span>
+                          <span>{settings.thresholds.consider}</span>
+                          <span>1</span>
+                        </div>
+                      </div>
+                      <div>
+                        <label className="block font-medium text-gray-700 mb-1">Skill Extraction Method <span className="ml-1 text-xs text-gray-400" title="Choose NLP model">?</span></label>
+                        <select className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-300 transition-all">
+                          <option value="default">Default NLP Model</option>
+                          <option value="advanced">Advanced Model</option>
+                        </select>
+                      </div>
+                      <div className="flex items-center gap-2 mt-2">
+                        <input type="checkbox" className="accent-indigo-600 w-6 h-6 transition-all" />
+                        <span className="font-medium text-gray-700">Enable Automatic Skill Matching</span>
+                      </div>
                     </div>
                   </div>
-                  <div>
-                    <label className="block font-medium text-gray-700 mb-1">Best for Hire Threshold</label>
-                    <input type="range" min="0" max="1" step="0.01" value={settings.thresholds.best} onChange={e => updateThresholds('best', Number(e.target.value))} className="w-full accent-cyan-600" />
-                    <div className="flex justify-between text-xs text-gray-400 mt-1">
-                      <span>0</span>
-                      <span>{settings.thresholds.best}</span>
-                      <span>1</span>
+                </section>
+              )}
+              {activeTab === 'Resume' && (
+                <section className="mb-8 animate-fade-in">
+                  <div className="bg-white/80 rounded-2xl shadow-xl p-8 border border-gray-100 backdrop-blur-lg">
+                    <h2 className="text-xl font-bold mb-2 text-blue-800 flex items-center gap-2">Resume & Job Description Handling <span className="bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full text-xs font-semibold">Upload</span></h2>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                      <div>
+                        <label className="block font-medium text-gray-700 mb-1">Allowed Resume Formats</label>
+                        <div className="flex gap-2">
+                          <button className={`px-4 py-2 rounded-lg border ${settings.resumeFormat.includes('PDF') ? 'bg-indigo-600 text-white' : 'bg-gray-50 text-gray-700'} transition-all`}>PDF</button>
+                          <button className={`px-4 py-2 rounded-lg border ${settings.resumeFormat.includes('DOCX') ? 'bg-indigo-600 text-white' : 'bg-gray-50 text-gray-700'} transition-all`}>DOCX</button>
+                        </div>
+                        <div className="text-xs text-gray-400 mt-1">Select one or more formats. Only PDF and DOCX supported.</div>
+                      </div>
+                      <div>
+                        <label className="block font-medium text-gray-700 mb-1">Max File Size (MB)</label>
+                        <input type="range" min="1" max="20" value={settings.maxFileSize} onChange={e => updateSetting('maxFileSize', Number(e.target.value))} className="w-full accent-indigo-600" />
+                        <div className="flex justify-between text-xs text-gray-400 mt-1">
+                          <span>1MB</span>
+                          <span>{settings.maxFileSize}MB</span>
+                          <span>20MB</span>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2 mt-2">
+                        <input type="checkbox" checked={settings.duplicateDetection} onChange={e => updateSetting('duplicateDetection', e.target.checked)} className="accent-indigo-600 w-6 h-6 transition-all" />
+                        <span className="font-medium text-gray-700">Enable Duplicate Resume Detection</span>
+                      </div>
+                      <div className="flex items-center gap-2 mt-2">
+                        <input type="checkbox" className="accent-indigo-600 w-6 h-6 transition-all" />
+                        <span className="font-medium text-gray-700">Anonymize Resumes for Unbiased Screening</span>
+                      </div>
                     </div>
                   </div>
-                  <div>
-                    <label className="block font-medium text-gray-700 mb-1">Consider for Interview Threshold</label>
-                    <input type="range" min="0" max="1" step="0.01" value={settings.thresholds.consider} onChange={e => updateThresholds('consider', Number(e.target.value))} className="w-full accent-blue-600" />
-                    <div className="flex justify-between text-xs text-gray-400 mt-1">
-                      <span>0</span>
-                      <span>{settings.thresholds.consider}</span>
-                      <span>1</span>
+                </section>
+              )}
+              {activeTab === 'Notifications' && (
+                <section className="mb-8 animate-fade-in">
+                  <div className="bg-white/80 rounded-2xl shadow-xl p-8 border border-gray-100 backdrop-blur-lg">
+                    <h2 className="text-xl font-bold mb-2 text-blue-800 flex items-center gap-2">Notifications & Alerts <span className="bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-full text-xs font-semibold">Integrations</span></h2>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                      <div className="flex flex-col gap-4">
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input type="checkbox" checked={settings.emailNotif} onChange={e => updateSetting('emailNotif', e.target.checked)} className="accent-indigo-600 w-6 h-6 transition-all" />
+                          <span className="font-medium text-gray-700">Email Notification</span>
+                        </label>
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input type="checkbox" className="accent-indigo-600 w-6 h-6 transition-all" />
+                          <span className="font-medium text-gray-700">Sound Notification</span>
+                        </label>
+                        <label className="block font-medium text-gray-700 mb-1">Notification Frequency</label>
+                        <div className="flex gap-2">
+                          <button className="px-4 py-2 rounded-lg border bg-indigo-600 text-white">Immediate</button>
+                          <button className="px-4 py-2 rounded-lg border bg-gray-50 text-gray-700">Daily</button>
+                          <button className="px-4 py-2 rounded-lg border bg-gray-50 text-gray-700">Weekly</button>
+                        </div>
+                      </div>
+                      <div>
+                        <label className="block font-medium text-gray-700 mb-1">Integrations</label>
+                        <input type="text" className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-300 transition-all" placeholder="Slack/Teams Webhook URL" />
+                        <div className="flex gap-2 mt-2">
+                          <span className="bg-green-100 text-green-700 px-2 py-0.5 rounded-full text-xs font-semibold">Connected</span>
+                          <span className="bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full text-xs font-semibold">Disconnected</span>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                  <div>
-                    <label className="block font-medium text-gray-700 mb-1">Skill Extraction Method <span className="ml-1 text-xs text-gray-400" title="Choose NLP model">?</span></label>
-                    <select className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-300 transition-all">
-                      <option value="default">Default NLP Model</option>
-                      <option value="advanced">Advanced Model</option>
-                    </select>
-                  </div>
-                  <div className="flex items-center gap-2 mt-2">
-                    <input type="checkbox" className="accent-indigo-600 w-6 h-6 transition-all" />
-                    <span className="font-medium text-gray-700">Enable Automatic Skill Matching</span>
-                  </div>
-                </div>
-              </div>
-            </section>
-          )}
-          {activeTab === 'Resume' && (
-            <section className="mb-8 animate-fade-in">
-              <div className="bg-white/80 rounded-2xl shadow-xl p-8 border border-gray-100 backdrop-blur-lg">
-                <h2 className="text-xl font-bold mb-2 text-blue-800 flex items-center gap-2">Resume & Job Description Handling <span className="bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full text-xs font-semibold">Upload</span></h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                  <div>
-                    <label className="block font-medium text-gray-700 mb-1">Allowed Resume Formats</label>
-                    <div className="flex gap-2">
-                      <button className={`px-4 py-2 rounded-lg border ${settings.resumeFormat.includes('PDF') ? 'bg-indigo-600 text-white' : 'bg-gray-50 text-gray-700'} transition-all`}>PDF</button>
-                      <button className={`px-4 py-2 rounded-lg border ${settings.resumeFormat.includes('DOCX') ? 'bg-indigo-600 text-white' : 'bg-gray-50 text-gray-700'} transition-all`}>DOCX</button>
-                    </div>
-                    <div className="text-xs text-gray-400 mt-1">Select one or more formats. Only PDF and DOCX supported.</div>
-                  </div>
-                  <div>
-                    <label className="block font-medium text-gray-700 mb-1">Max File Size (MB)</label>
-                    <input type="range" min="1" max="20" value={settings.maxFileSize} onChange={e => updateSetting('maxFileSize', Number(e.target.value))} className="w-full accent-indigo-600" />
-                    <div className="flex justify-between text-xs text-gray-400 mt-1">
-                      <span>1MB</span>
-                      <span>{settings.maxFileSize}MB</span>
-                      <span>20MB</span>
+                </section>
+              )}
+              {activeTab === 'Security' && (
+                <section className="mb-8 animate-fade-in">
+                  <div className="bg-white/80 rounded-2xl shadow-xl p-8 border border-gray-100 backdrop-blur-lg">
+                    <h2 className="text-xl font-bold mb-2 text-blue-800 flex items-center gap-2">Security & Privacy <span className="bg-red-100 text-red-700 px-2 py-0.5 rounded-full text-xs font-semibold">Secure</span></h2>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                      <div>
+                        <label className="block font-medium text-gray-700 mb-1">Data Retention (months)</label>
+                        <input type="range" min="1" max="60" value={settings.dataRetention} onChange={e => updateSetting('dataRetention', Number(e.target.value))} className="w-full accent-indigo-600" />
+                        <div className="flex justify-between text-xs text-gray-400 mt-1">
+                          <span>1</span>
+                          <span>{settings.dataRetention}</span>
+                          <span>60</span>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2 mt-2">
+                        <button className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700 transition-all flex items-center gap-2"><svg className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" /></svg> Download Activity Log</button>
+                      </div>
+                      <div>
+                        <label className="block font-medium text-gray-700 mb-1">Team Member Permissions</label>
+                        <div className="flex gap-2">
+                          <button className="px-4 py-2 rounded-lg border bg-indigo-600 text-white">Admin</button>
+                          <button className="px-4 py-2 rounded-lg border bg-gray-50 text-gray-700">Recruiter</button>
+                          <button className="px-4 py-2 rounded-lg border bg-gray-50 text-gray-700">Viewer</button>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2 mt-2">
+                        <input type="checkbox" className="accent-indigo-600 w-6 h-6 transition-all" />
+                        <span className="font-medium text-gray-700">Enable Two-Factor Authentication</span>
+                      </div>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2 mt-2">
-                    <input type="checkbox" checked={settings.duplicateDetection} onChange={e => updateSetting('duplicateDetection', e.target.checked)} className="accent-indigo-600 w-6 h-6 transition-all" />
-                    <span className="font-medium text-gray-700">Enable Duplicate Resume Detection</span>
-                  </div>
-                  <div className="flex items-center gap-2 mt-2">
-                    <input type="checkbox" className="accent-indigo-600 w-6 h-6 transition-all" />
-                    <span className="font-medium text-gray-700">Anonymize Resumes for Unbiased Screening</span>
-                  </div>
-                </div>
-              </div>
-            </section>
-          )}
-          {activeTab === 'Notifications' && (
-            <section className="mb-8 animate-fade-in">
-              <div className="bg-white/80 rounded-2xl shadow-xl p-8 border border-gray-100 backdrop-blur-lg">
-                <h2 className="text-xl font-bold mb-2 text-blue-800 flex items-center gap-2">Notifications & Alerts <span className="bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-full text-xs font-semibold">Integrations</span></h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                  <div className="flex flex-col gap-4">
-                    <label className="flex items-center gap-2 cursor-pointer">
-                      <input type="checkbox" checked={settings.emailNotif} onChange={e => updateSetting('emailNotif', e.target.checked)} className="accent-indigo-600 w-6 h-6 transition-all" />
-                      <span className="font-medium text-gray-700">Email Notification</span>
-                    </label>
-                    <label className="flex items-center gap-2 cursor-pointer">
-                      <input type="checkbox" className="accent-indigo-600 w-6 h-6 transition-all" />
-                      <span className="font-medium text-gray-700">Sound Notification</span>
-                    </label>
-                    <label className="block font-medium text-gray-700 mb-1">Notification Frequency</label>
-                    <div className="flex gap-2">
-                      <button className="px-4 py-2 rounded-lg border bg-indigo-600 text-white">Immediate</button>
-                      <button className="px-4 py-2 rounded-lg border bg-gray-50 text-gray-700">Daily</button>
-                      <button className="px-4 py-2 rounded-lg border bg-gray-50 text-gray-700">Weekly</button>
+                </section>
+              )}
+              {activeTab === 'General' && (
+                <section className="mb-8 animate-fade-in">
+                  <div className="bg-white/80 rounded-2xl shadow-xl p-8 border border-gray-100 backdrop-blur-lg">
+                    <h2 className="text-xl font-bold mb-2 text-blue-800 flex items-center gap-2">General Application Settings <span className="bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-full text-xs font-semibold">App</span></h2>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                      <div>
+                        <label className="block font-medium text-gray-700 mb-1">Language</label>
+                        <div className="flex gap-2">
+                          <button className="px-4 py-2 rounded-lg border bg-indigo-600 text-white">English</button>
+                          <button className="px-4 py-2 rounded-lg border bg-gray-50 text-gray-700">Spanish</button>
+                          <button className="px-4 py-2 rounded-lg border bg-gray-50 text-gray-700">French</button>
+                        </div>
+                      </div>
+                      <div>
+                        <label className="block font-medium text-gray-700 mb-1">Theme</label>
+                        <div className="flex gap-2">
+                          <button className="px-4 py-2 rounded-lg border bg-indigo-600 text-white">Light</button>
+                          <button className="px-4 py-2 rounded-lg border bg-gray-50 text-gray-700">Dark</button>
+                        </div>
+                      </div>
+                      <div>
+                        <label className="block font-medium text-gray-700 mb-1">Export Format</label>
+                        <div className="flex gap-2">
+                          <button className="px-4 py-2 rounded-lg border bg-indigo-600 text-white">CSV</button>
+                          <button className="px-4 py-2 rounded-lg border bg-gray-50 text-gray-700">Excel</button>
+                          <button className="px-4 py-2 rounded-lg border bg-gray-50 text-gray-700">PDF</button>
+                        </div>
+                      </div>
+                      <div>
+                        <label className="block font-medium text-gray-700 mb-1">Table Display Options</label>
+                        <div className="flex gap-2">
+                          <label className="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" checked={settings.tableColumns.includes('Name')} onChange={() => {}} className="accent-indigo-600 w-6 h-6 transition-all" />
+                            <span className="font-medium text-gray-700">Name</span>
+                          </label>
+                          <label className="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" checked={settings.tableColumns.includes('Score')} onChange={() => {}} className="accent-indigo-600 w-6 h-6 transition-all" />
+                            <span className="font-medium text-gray-700">Score</span>
+                          </label>
+                          <label className="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" checked={settings.tableColumns.includes('Category')} onChange={() => {}} className="accent-indigo-600 w-6 h-6 transition-all" />
+                            <span className="font-medium text-gray-700">Category</span>
+                          </label>
+                          <label className="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" checked={settings.tableColumns.includes('Email')} onChange={() => {}} className="accent-indigo-600 w-6 h-6 transition-all" />
+                            <span className="font-medium text-gray-700">Email</span>
+                          </label>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2 mt-2">
+                        <input type="checkbox" checked={settings.colorCoding} onChange={e => updateSetting('colorCoding', e.target.checked)} className="accent-indigo-600 w-6 h-6 transition-all" />
+                        <span className="font-medium text-gray-700">Enable Color Coding in Results Table</span>
+                      </div>
                     </div>
                   </div>
-                  <div>
-                    <label className="block font-medium text-gray-700 mb-1">Integrations</label>
-                    <input type="text" className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-300 transition-all" placeholder="Slack/Teams Webhook URL" />
-                    <div className="flex gap-2 mt-2">
-                      <span className="bg-green-100 text-green-700 px-2 py-0.5 rounded-full text-xs font-semibold">Connected</span>
-                      <span className="bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full text-xs font-semibold">Disconnected</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </section>
-          )}
-          {activeTab === 'Security' && (
-            <section className="mb-8 animate-fade-in">
-              <div className="bg-white/80 rounded-2xl shadow-xl p-8 border border-gray-100 backdrop-blur-lg">
-                <h2 className="text-xl font-bold mb-2 text-blue-800 flex items-center gap-2">Security & Privacy <span className="bg-red-100 text-red-700 px-2 py-0.5 rounded-full text-xs font-semibold">Secure</span></h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                  <div>
-                    <label className="block font-medium text-gray-700 mb-1">Data Retention (months)</label>
-                    <input type="range" min="1" max="60" value={settings.dataRetention} onChange={e => updateSetting('dataRetention', Number(e.target.value))} className="w-full accent-indigo-600" />
-                    <div className="flex justify-between text-xs text-gray-400 mt-1">
-                      <span>1</span>
-                      <span>{settings.dataRetention}</span>
-                      <span>60</span>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2 mt-2">
-                    <button className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700 transition-all flex items-center gap-2"><svg className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" /></svg> Download Activity Log</button>
-                  </div>
-                  <div>
-                    <label className="block font-medium text-gray-700 mb-1">Team Member Permissions</label>
-                    <div className="flex gap-2">
-                      <button className="px-4 py-2 rounded-lg border bg-indigo-600 text-white">Admin</button>
-                      <button className="px-4 py-2 rounded-lg border bg-gray-50 text-gray-700">Recruiter</button>
-                      <button className="px-4 py-2 rounded-lg border bg-gray-50 text-gray-700">Viewer</button>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2 mt-2">
-                    <input type="checkbox" className="accent-indigo-600 w-6 h-6 transition-all" />
-                    <span className="font-medium text-gray-700">Enable Two-Factor Authentication</span>
-                  </div>
-                </div>
-              </div>
-            </section>
-          )}
-          {activeTab === 'General' && (
-            <section className="mb-8 animate-fade-in">
-              <div className="bg-white/80 rounded-2xl shadow-xl p-8 border border-gray-100 backdrop-blur-lg">
-                <h2 className="text-xl font-bold mb-2 text-blue-800 flex items-center gap-2">General Application Settings <span className="bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-full text-xs font-semibold">App</span></h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                  <div>
-                    <label className="block font-medium text-gray-700 mb-1">Language</label>
-                    <div className="flex gap-2">
-                      <button className="px-4 py-2 rounded-lg border bg-indigo-600 text-white">English</button>
-                      <button className="px-4 py-2 rounded-lg border bg-gray-50 text-gray-700">Spanish</button>
-                      <button className="px-4 py-2 rounded-lg border bg-gray-50 text-gray-700">French</button>
-                    </div>
-                  </div>
-                  <div>
-                    <label className="block font-medium text-gray-700 mb-1">Theme</label>
-                    <div className="flex gap-2">
-                      <button className="px-4 py-2 rounded-lg border bg-indigo-600 text-white">Light</button>
-                      <button className="px-4 py-2 rounded-lg border bg-gray-50 text-gray-700">Dark</button>
-                    </div>
-                  </div>
-                  <div>
-                    <label className="block font-medium text-gray-700 mb-1">Export Format</label>
-                    <div className="flex gap-2">
-                      <button className="px-4 py-2 rounded-lg border bg-indigo-600 text-white">CSV</button>
-                      <button className="px-4 py-2 rounded-lg border bg-gray-50 text-gray-700">Excel</button>
-                      <button className="px-4 py-2 rounded-lg border bg-gray-50 text-gray-700">PDF</button>
-                    </div>
-                  </div>
-                  <div>
-                    <label className="block font-medium text-gray-700 mb-1">Table Display Options</label>
-                    <div className="flex gap-2">
-                      <label className="flex items-center gap-2 cursor-pointer">
-                        <input type="checkbox" checked={settings.tableColumns.includes('Name')} onChange={() => {}} className="accent-indigo-600 w-6 h-6 transition-all" />
-                        <span className="font-medium text-gray-700">Name</span>
-                      </label>
-                      <label className="flex items-center gap-2 cursor-pointer">
-                        <input type="checkbox" checked={settings.tableColumns.includes('Score')} onChange={() => {}} className="accent-indigo-600 w-6 h-6 transition-all" />
-                        <span className="font-medium text-gray-700">Score</span>
-                      </label>
-                      <label className="flex items-center gap-2 cursor-pointer">
-                        <input type="checkbox" checked={settings.tableColumns.includes('Category')} onChange={() => {}} className="accent-indigo-600 w-6 h-6 transition-all" />
-                        <span className="font-medium text-gray-700">Category</span>
-                      </label>
-                      <label className="flex items-center gap-2 cursor-pointer">
-                        <input type="checkbox" checked={settings.tableColumns.includes('Email')} onChange={() => {}} className="accent-indigo-600 w-6 h-6 transition-all" />
-                        <span className="font-medium text-gray-700">Email</span>
-                      </label>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2 mt-2">
-                    <input type="checkbox" checked={settings.colorCoding} onChange={e => updateSetting('colorCoding', e.target.checked)} className="accent-indigo-600 w-6 h-6 transition-all" />
-                    <span className="font-medium text-gray-700">Enable Color Coding in Results Table</span>
-                  </div>
-                </div>
-              </div>
-            </section>
-          )}
-          <button className="bg-gradient-to-r from-indigo-600 to-blue-600 text-white px-8 py-3 rounded-xl shadow-lg mt-4 font-bold text-lg hover:scale-105 transition-all" onClick={handleSave}>Save Changes</button>
-          {saveStatus && <p className="text-green-600 mt-2">{saveStatus}</p>}
+                </section>
+              )}
+              <button className="bg-gradient-to-r from-indigo-600 to-blue-600 text-white px-8 py-3 rounded-xl shadow-lg mt-4 font-bold text-lg hover:scale-105 transition-all" onClick={handleSave}>Save Changes</button>
+              {saveStatus && <p className="text-green-600 mt-2">{saveStatus}</p>}
+            </motion.div>
+          </AnimatePresence>
         </main>
       </div>
       <Footer />

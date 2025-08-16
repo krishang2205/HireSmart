@@ -3,13 +3,15 @@ import Brand from '@/components/Brand';
 import ResumeScreener from '@/components/ResumeScreener';
 import { useState, useEffect } from 'react';
 import Footer from '@/components/Footer';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function Dashboard() {
   const { user, logout } = useAuth();
   const [showInsights, setShowInsights] = useState(false);
   const [showUserModal, setShowUserModal] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     // Show insights popup only on first login/register
@@ -108,42 +110,51 @@ export default function Dashboard() {
 
         {/* Main Content */}
         <div className="flex-1 flex flex-col text-sm">
-          <main className="flex-1 flex flex-col px-2 py-4 gap-4 relative text-sm">
-            {/* Insights pop-up */}
-            {showInsights && (
-              <div className="fixed top-8 right-8 z-50 w-96 min-w-[320px] bg-white/90 rounded-xl shadow-lg border border-blue-100 p-6 flex flex-col items-center gap-4 animate-fade-in">
-                <button
-                  className="absolute top-3 right-3 text-gray-400 hover:text-gray-700 text-xl font-bold"
-                  aria-label="Close"
-                  onClick={() => setShowInsights(false)}
-                >
-                  &times;
-                </button>
-                <div className="flex items-center justify-center w-16 h-16 rounded-full bg-cyan-100 mb-2">
-                  <svg className="h-8 w-8 text-cyan-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0zm6 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
+          <AnimatePresence mode="wait">
+            <motion.main
+              key={location.pathname}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.35, ease: 'easeInOut' }}
+              className="flex-1 flex flex-col px-2 py-4 gap-4 relative text-sm"
+            >
+              {/* Insights pop-up */}
+              {showInsights && (
+                <div className="fixed top-8 right-8 z-50 w-96 min-w-[320px] bg-white/90 rounded-xl shadow-lg border border-blue-100 p-6 flex flex-col items-center gap-4 animate-fade-in">
+                  <button
+                    className="absolute top-3 right-3 text-gray-400 hover:text-gray-700 text-xl font-bold"
+                    aria-label="Close"
+                    onClick={() => setShowInsights(false)}
+                  >
+                    &times;
+                  </button>
+                  <div className="flex items-center justify-center w-16 h-16 rounded-full bg-cyan-100 mb-2">
+                    <svg className="h-8 w-8 text-cyan-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0zm6 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </div>
+                  <h3 className="text-lg font-bold text-indigo-700 text-center">Get More Insights!</h3>
+                  <p className="text-sm text-gray-600 text-center">Upgrade to HireSmart Pro for advanced analytics, skill gap insights, and priority support.</p>
+                  <a href="#" className="w-full bg-indigo-600 text-white py-2 rounded-lg font-semibold text-center hover:bg-indigo-700 transition">Upgrade Plan</a>
                 </div>
-                <h3 className="text-lg font-bold text-indigo-700 text-center">Get More Insights!</h3>
-                <p className="text-sm text-gray-600 text-center">Upgrade to HireSmart Pro for advanced analytics, skill gap insights, and priority support.</p>
-                <a href="#" className="w-full bg-indigo-600 text-white py-2 rounded-lg font-semibold text-center hover:bg-indigo-700 transition">Upgrade Plan</a>
-              </div>
-            )}
+              )}
 
-            {/* Intro section - stays narrow */}
-            <div className="mx-auto max-w-2xl text-center">
-              <h1 className="text-3xl md:text-4xl font-extrabold text-indigo-700 mb-2 tracking-tight">HireSmart Dashboard</h1>
-              <p className="text-lg text-blue-900/80 mb-2">AI-powered resume screening & hiring workflow</p>
-              <div className="flex justify-center gap-2 mb-2">
-                <span className="inline-block px-4 py-1 rounded-full bg-cyan-200 text-cyan-900 font-semibold text-sm">Fast</span>
-                <span className="inline-block px-4 py-1 rounded-full bg-indigo-200 text-indigo-900 font-semibold text-sm">Accurate</span>
-                <span className="inline-block px-4 py-1 rounded-full bg-blue-200 text-blue-900 font-semibold text-sm">Secure</span>
+              {/* Intro section - stays narrow */}
+              <div className="mx-auto max-w-2xl text-center">
+                <h1 className="text-3xl md:text-4xl font-extrabold text-indigo-700 mb-2 tracking-tight">HireSmart Dashboard</h1>
+                <p className="text-lg text-blue-900/80 mb-2">AI-powered resume screening & hiring workflow</p>
+                <div className="flex justify-center gap-2 mb-2">
+                  <span className="inline-block px-4 py-1 rounded-full bg-cyan-200 text-cyan-900 font-semibold text-sm">Fast</span>
+                  <span className="inline-block px-4 py-1 rounded-full bg-indigo-200 text-indigo-900 font-semibold text-sm">Accurate</span>
+                  <span className="inline-block px-4 py-1 rounded-full bg-blue-200 text-blue-900 font-semibold text-sm">Secure</span>
+                </div>
+              </div> {/* Resume screener section - full width */}
+              <div className="w-full" >
+                <ResumeScreener />
               </div>
-            </div> {/* Resume screener section - full width */}
-            <div className="w-full" >
-              <ResumeScreener />
-            </div>
-          </main>
+            </motion.main>
+          </AnimatePresence>
         </div>
       </div>
       <Footer />
