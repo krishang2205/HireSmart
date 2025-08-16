@@ -40,7 +40,8 @@ export default function Dashboard() {
                 <div className="px-5 pt-5 pb-2 flex flex-col gap-2">
                   <div className="flex flex-col gap-0.5 mb-2">
                     <span className="font-bold text-base text-gray-800">{user?.fullName || 'User'}</span>
-                    <span className="text-xs text-gray-500">{user?.email || 'user@email.com'}</span>
+                    {/* Fix: handle missing email property safely */}
+                    <span className="text-xs text-gray-500">{'email' in user ? (user as any).email : 'user@email.com'}</span>
                     {user?.role && <span className="text-xs text-indigo-600 font-semibold">{user.role}</span>}
                   </div>
                   <hr className="my-2" />
