@@ -7,13 +7,20 @@ import { useNavigate } from 'react-router-dom';
 
 export default function Dashboard() {
   const { user, logout } = useAuth();
-  const [showInsights, setShowInsights] = useState(true);
+  const [showInsights, setShowInsights] = useState(false);
   const [showUserModal, setShowUserModal] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Any side effects or data fetching can be done here
-  }, []);
+    // Show insights popup only on first login/register
+    if (user) {
+      const key = 'hs_insights_shown_' + user.id;
+      if (!localStorage.getItem(key)) {
+        setShowInsights(true);
+        localStorage.setItem(key, 'true');
+      }
+    }
+  }, [user]);
 
   return (
   <div className="min-h-screen bg-blue-50 flex flex-col text-sm">
@@ -73,9 +80,9 @@ export default function Dashboard() {
       {/* Content below header */}
       <div className="flex flex-1">
         {/* Sidebar */}
-  <aside className="w-44 bg-blue-100 border-r border-gray-200 flex flex-col shadow-sm pt-0 text-sm">
+  <aside className="w-56 bg-blue-100 border-r border-gray-200 flex flex-col shadow-sm pt-0 text-sm min-h-full relative">
           <nav className="flex flex-col gap-2 mt-8 px-6">
-            <a href="#" className="flex items-center gap-3 px-4 py-2 rounded-lg bg-indigo-100 text-indigo-700 font-semibold">
+            <a href="/dashboard" className="flex items-center gap-3 px-4 py-2 rounded-lg bg-indigo-100 text-indigo-700 font-semibold">
               <span>Resume Screening</span>
             </a>
             <a href="#" className="flex items-center gap-3 px-4 py-2 rounded-lg text-gray-700 hover:bg-blue-50">
@@ -96,9 +103,7 @@ export default function Dashboard() {
             <a href="/settings" className="flex items-center gap-3 px-4 py-2 rounded-lg text-gray-700 hover:bg-blue-50">
               <span>Settings</span>
             </a>
-              
           </nav>
-      
         </aside>
 
         {/* Main Content */}
