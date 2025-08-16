@@ -67,12 +67,12 @@ const sidebarLinks = [
 ];
 
 const tabSections = [
-  { label: 'General' },
+  { label: 'Profile' },
   { label: 'Screening' },
   { label: 'Resume' },
   { label: 'Notifications' },
   { label: 'Security' },
-  { label: 'Application' },
+  { label: 'General' },
 ];
 
 const Settings = () => {
@@ -81,7 +81,7 @@ const Settings = () => {
   const [profileErrors, setProfileErrors] = useState({ name: '', email: '', password: '' });
   const [loading, setLoading] = useState(true);
   const [saveStatus, setSaveStatus] = useState('');
-  const [activeTab, setActiveTab] = useState('General');
+  const [activeTab, setActiveTab] = useState('Profile');
 
   // Validation helpers
   const validateProfile = () => {
@@ -129,9 +129,8 @@ const Settings = () => {
         <div className="flex items-center gap-3 pl-8">
           <Brand logoClassName="h-8 w-8" wordClassName="text-xl font-extrabold tracking-tight text-indigo-700" />
         </div>
-        <div />
-        <div className="flex items-center gap-6 pr-8">
-          <span className="text-base font-medium text-gray-700">Settings</span>
+        <div className="flex-1 flex justify-end pr-8">
+          <input type="text" placeholder="Search settings..." className="w-72 px-4 py-2 rounded-full border border-gray-200 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-300 text-gray-700" />
         </div>
       </header>
       {/* Main Layout with Sidebar */}
@@ -151,148 +150,226 @@ const Settings = () => {
           </nav>
         </aside>
         {/* Main Content */}
-        <main className="flex-1 flex flex-col px-2 py-4 gap-4 relative text-sm bg-white">
-          <div className="max-w-3xl mx-auto w-full">
-            <h1 className="text-3xl font-bold mb-4 text-blue-900">Settings</h1>
-            {/* Tabs */}
-            <div className="flex gap-4 border-b mb-8">
-              {tabSections.map(tab => (
-                <button
-                  key={tab.label}
-                  className={`py-2 px-4 font-medium border-b-2 transition-all duration-150 ${activeTab === tab.label ? 'border-indigo-600 text-indigo-700' : 'border-transparent text-gray-500 hover:text-indigo-600'}`}
-                  onClick={() => setActiveTab(tab.label)}
-                >
-                  {tab.label}
-                </button>
-              ))}
-            </div>
-            {/* Tab Content */}
-            <div className="rounded-xl shadow p-8 bg-white">
-              {activeTab === 'General' && (
-                <>
-                  <h2 className="text-xl font-semibold mb-2 text-blue-800">Your Profile</h2>
-                  <p className="mb-6 text-gray-500">Update your profile settings here</p>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                    <div>
-                      <label className="block font-medium text-gray-700 mb-1">Name</label>
-                      <input type="text" className="input w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="Name" value={settings.profile.name} onChange={e => updateProfile('name', e.target.value)} />
-                    </div>
-                    <div>
-                      <label className="block font-medium text-gray-700 mb-1">Email</label>
-                      <input type="email" className="input w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="Email" value={settings.profile.email} onChange={e => updateProfile('email', e.target.value)} />
-                    </div>
-                  </div>
-                  <div className="mb-6">
-                    <label className="block font-medium text-gray-700 mb-1">Biography</label>
-                    <textarea className="input w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400" rows={3} placeholder="Tell us about yourself..." />
-                  </div>
-                  <div className="flex gap-4 items-center mb-6">
-                    <div className="flex items-center gap-2">
-                      <img src="https://ui-avatars.com/api/?name=User&background=6D28D9&color=fff&size=48" alt="avatar" className="h-12 w-12 rounded-full border-2 border-indigo-300" />
-                      <button className="bg-blue-600 text-white px-3 py-1 rounded">Edit</button>
-                      <button className="bg-red-100 text-red-600 px-3 py-1 rounded">Delete</button>
-                    </div>
-                  </div>
-                </>
-              )}
-              {activeTab === 'Screening' && (
-                <>
-                  <h2 className="text-xl font-semibold mb-2 text-blue-800">Screening Preferences</h2>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                    <div>
-                      <label className={labelClass}>Minimum Similarity Score</label>
-                      <input type="number" min="0" max="1" step="0.01" className={inputClass} value={settings.minScore} onChange={e => updateSetting('minScore', Number(e.target.value))} />
-                      <p className={helperClass}>Set between 0 and 1. Higher means stricter matching.</p>
-                    </div>
-                    <div>
-                      <label className={labelClass}>Best for Hire Threshold</label>
-                      <input type="number" min="0" max="1" step="0.01" className={inputClass} value={settings.thresholds.best} onChange={e => updateThresholds('best', Number(e.target.value))} />
-                    </div>
-                    <div>
-                      <label className={labelClass}>Consider for Interview Threshold</label>
-                      <input type="number" min="0" max="1" step="0.01" className={inputClass} value={settings.thresholds.consider} onChange={e => updateThresholds('consider', Number(e.target.value))} />
-                      <p className={helperClass}>Thresholds must be between 0 and 1.</p>
-                    </div>
-                  </div>
-                </>
-              )}
-              {activeTab === 'Resume' && (
-                <>
-                  <h2 className="text-xl font-semibold mb-2 text-blue-800">Resume & Job Description Handling</h2>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                    <div>
-                      <label className={labelClass}>Allowed Resume Formats</label>
-                      <select multiple className={inputClass} value={settings.resumeFormat} onChange={e => updateSetting('resumeFormat', Array.from(e.target.selectedOptions, option => option.value))}>
-                        <option value="PDF">PDF</option>
-                        <option value="DOCX">DOCX</option>
-                      </select>
-                      <p className={helperClass}>Select one or more formats. Only PDF and DOCX supported.</p>
-                    </div>
-                    <div>
-                      <label className={labelClass}>Max File Size (MB)</label>
-                      <input type="number" min="1" max="20" className={inputClass} value={settings.maxFileSize} onChange={e => updateSetting('maxFileSize', Number(e.target.value))} />
-                      <p className={helperClass}>Maximum allowed file size is 20MB.</p>
-                    </div>
-                    <div className="flex items-center mt-2">
-                      <input type="checkbox" checked={settings.duplicateDetection} onChange={e => updateSetting('duplicateDetection', e.target.checked)} className="mr-2" />
-                      <span className="text-gray-700">Enable Duplicate Resume Detection</span>
-                    </div>
-                  </div>
-                </>
-              )}
-              {activeTab === 'Notifications' && (
-                <>
-                  <h2 className="text-xl font-semibold mb-2 text-blue-800">Notifications & Alerts</h2>
-                  <div className="flex items-center">
-                    <input type="checkbox" checked={settings.emailNotif} onChange={e => updateSetting('emailNotif', e.target.checked)} className="mr-2" />
-                    <span className="text-gray-700">Email notifications for new results</span>
-                  </div>
-                  <p className={helperClass}>Receive updates when new screening results are available.</p>
-                </>
-              )}
-              {activeTab === 'Security' && (
-                <>
-                  <h2 className="text-xl font-semibold mb-2 text-blue-800">Security & Privacy</h2>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                    <div>
-                      <label className={labelClass}>Data Retention (months)</label>
-                      <input type="number" min="1" max="60" className={inputClass} value={settings.dataRetention} onChange={e => updateSetting('dataRetention', Number(e.target.value))} />
-                      <p className={helperClass}>How long your data is stored. Max 60 months.</p>
-                    </div>
-                    <div className="flex items-center mt-2">
-                      <button className={buttonClass}>Download Activity Log</button>
-                    </div>
-                  </div>
-                </>
-              )}
-              {activeTab === 'Application' && (
-                <>
-                  <h2 className="text-xl font-semibold mb-2 text-blue-800">General Application Settings</h2>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                    <div>
-                      <label className={labelClass}>Language</label>
-                      <select className={inputClass} value={settings.language} onChange={e => updateSetting('language', e.target.value)}>
-                        <option value="en">English</option>
-                        <option value="es">Spanish</option>
-                        <option value="fr">French</option>
-                      </select>
-                      <p className={helperClass}>Select your preferred language.</p>
-                    </div>
-                    <div>
-                      <label className={labelClass}>Theme</label>
-                      <select className={inputClass} value={settings.theme} onChange={e => updateSetting('theme', e.target.value)}>
-                        <option value="light">Light</option>
-                        <option value="dark">Dark</option>
-                      </select>
-                      <p className={helperClass}>Choose between light and dark mode.</p>
-                    </div>
-                  </div>
-                </>
-              )}
-              <button className="bg-indigo-600 text-white px-6 py-2 rounded mt-8" onClick={handleSave}>Save Changes</button>
-              {saveStatus && <p className="text-green-600 mt-2">{saveStatus}</p>}
-            </div>
+        <main className="flex-1 flex flex-col px-8 py-8 gap-8 relative text-sm bg-white">
+          <h1 className="text-3xl font-bold mb-4 text-blue-900">Settings</h1>
+          {/* Tabs */}
+          <div className="flex gap-4 border-b mb-8">
+            {tabSections.map(tab => (
+              <button
+                key={tab.label}
+                className={`py-2 px-4 font-medium border-b-2 transition-all duration-150 ${activeTab === tab.label ? 'border-indigo-600 text-indigo-700' : 'border-transparent text-gray-500 hover:text-indigo-600'}`}
+                onClick={() => setActiveTab(tab.label)}
+              >
+                {tab.label}
+              </button>
+            ))}
           </div>
+          {/* Tab Content - open, not in a single container */}
+          {activeTab === 'Profile' && (
+            <section className="mb-8">
+              <h2 className="text-xl font-semibold mb-2 text-blue-800">Your Profile</h2>
+              <p className="mb-6 text-gray-500">Update your profile settings here</p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div>
+                  <label className="block font-medium text-gray-700 mb-1">Name</label>
+                  <input type="text" className="w-full px-4 py-2 rounded-lg border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-300" placeholder="Name" value={settings.profile.name} onChange={e => updateProfile('name', e.target.value)} />
+                </div>
+                <div>
+                  <label className="block font-medium text-gray-700 mb-1">Email</label>
+                  <input type="email" className="w-full px-4 py-2 rounded-lg border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-300" placeholder="Email" value={settings.profile.email} onChange={e => updateProfile('email', e.target.value)} />
+                </div>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div>
+                  <label className="block font-medium text-gray-700 mb-1">Profile Picture</label>
+                  <div className="flex items-center gap-3">
+                    <img src="https://ui-avatars.com/api/?name=User&background=6D28D9&color=fff&size=48" alt="avatar" className="h-12 w-12 rounded-full border-2 border-indigo-300" />
+                    <button className="bg-blue-600 text-white px-3 py-1 rounded">Edit</button>
+                    <button className="bg-red-100 text-red-600 px-3 py-1 rounded">Delete</button>
+                  </div>
+                </div>
+                <div>
+                  <label className="block font-medium text-gray-700 mb-1">Biography</label>
+                  <textarea className="w-full px-4 py-2 rounded-lg border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-300" rows={3} placeholder="Tell us about yourself..." />
+                  <div className="text-xs text-gray-400 mt-1">325 characters remaining</div>
+                </div>
+              </div>
+              <div className="border-t pt-6 mt-6">
+                <h3 className="text-lg font-semibold mb-2 text-blue-800">Notifications</h3>
+                <div className="flex gap-8">
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input type="checkbox" checked={settings.emailNotif} onChange={e => updateSetting('emailNotif', e.target.checked)} className="accent-indigo-600 w-5 h-5" />
+                    <span className="font-medium text-gray-700">Email Notification</span>
+                    <span className="text-xs text-gray-400">You will be notified when a new email arrives.</span>
+                  </label>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input type="checkbox" className="accent-indigo-600 w-5 h-5" />
+                    <span className="font-medium text-gray-700">Sound Notification</span>
+                    <span className="text-xs text-gray-400">You will be notified with sound when someone messages you.</span>
+                  </label>
+                </div>
+              </div>
+            </section>
+          )}
+          {activeTab === 'Screening' && (
+            <section className="mb-8">
+              <h2 className="text-xl font-semibold mb-2 text-blue-800">Screening Preferences</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div>
+                  <label className="block font-medium text-gray-700 mb-1">Minimum Similarity Score</label>
+                  <input type="number" min="0" max="1" step="0.01" className="w-full px-4 py-2 rounded-lg border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-300" value={settings.minScore} onChange={e => updateSetting('minScore', Number(e.target.value))} />
+                  <div className="text-xs text-gray-400 mt-1">Set between 0 and 1. Higher means stricter matching.</div>
+                </div>
+                <div>
+                  <label className="block font-medium text-gray-700 mb-1">Best for Hire Threshold</label>
+                  <input type="number" min="0" max="1" step="0.01" className="w-full px-4 py-2 rounded-lg border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-300" value={settings.thresholds.best} onChange={e => updateThresholds('best', Number(e.target.value))} />
+                </div>
+                <div>
+                  <label className="block font-medium text-gray-700 mb-1">Consider for Interview Threshold</label>
+                  <input type="number" min="0" max="1" step="0.01" className="w-full px-4 py-2 rounded-lg border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-300" value={settings.thresholds.consider} onChange={e => updateThresholds('consider', Number(e.target.value))} />
+                  <div className="text-xs text-gray-400 mt-1">Thresholds must be between 0 and 1.</div>
+                </div>
+                <div>
+                  <label className="block font-medium text-gray-700 mb-1">Skill Extraction Method</label>
+                  <select className="w-full px-4 py-2 rounded-lg border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-300">
+                    <option value="default">Default NLP Model</option>
+                    <option value="advanced">Advanced Model</option>
+                  </select>
+                </div>
+                <div className="flex items-center gap-2 mt-2">
+                  <input type="checkbox" className="accent-indigo-600 w-5 h-5" />
+                  <span className="font-medium text-gray-700">Enable Automatic Skill Matching</span>
+                </div>
+              </div>
+            </section>
+          )}
+          {activeTab === 'Resume' && (
+            <section className="mb-8">
+              <h2 className="text-xl font-semibold mb-2 text-blue-800">Resume & Job Description Handling</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div>
+                  <label className="block font-medium text-gray-700 mb-1">Allowed Resume Formats</label>
+                  <select multiple className="w-full px-4 py-2 rounded-lg border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-300" value={settings.resumeFormat} onChange={e => updateSetting('resumeFormat', Array.from(e.target.selectedOptions, option => option.value))}>
+                    <option value="PDF">PDF</option>
+                    <option value="DOCX">DOCX</option>
+                  </select>
+                  <div className="text-xs text-gray-400 mt-1">Select one or more formats. Only PDF and DOCX supported.</div>
+                </div>
+                <div>
+                  <label className="block font-medium text-gray-700 mb-1">Max File Size (MB)</label>
+                  <input type="number" min="1" max="20" className="w-full px-4 py-2 rounded-lg border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-300" value={settings.maxFileSize} onChange={e => updateSetting('maxFileSize', Number(e.target.value))} />
+                  <div className="text-xs text-gray-400 mt-1">Maximum allowed file size is 20MB.</div>
+                </div>
+                <div className="flex items-center gap-2 mt-2">
+                  <input type="checkbox" checked={settings.duplicateDetection} onChange={e => updateSetting('duplicateDetection', e.target.checked)} className="accent-indigo-600 w-5 h-5" />
+                  <span className="font-medium text-gray-700">Enable Duplicate Resume Detection</span>
+                </div>
+                <div className="flex items-center gap-2 mt-2">
+                  <input type="checkbox" className="accent-indigo-600 w-5 h-5" />
+                  <span className="font-medium text-gray-700">Anonymize Resumes for Unbiased Screening</span>
+                </div>
+              </div>
+            </section>
+          )}
+          {activeTab === 'Notifications' && (
+            <section className="mb-8">
+              <h2 className="text-xl font-semibold mb-2 text-blue-800">Notifications & Alerts</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div className="flex flex-col gap-4">
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input type="checkbox" checked={settings.emailNotif} onChange={e => updateSetting('emailNotif', e.target.checked)} className="accent-indigo-600 w-5 h-5" />
+                    <span className="font-medium text-gray-700">Email Notification</span>
+                  </label>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input type="checkbox" className="accent-indigo-600 w-5 h-5" />
+                    <span className="font-medium text-gray-700">Sound Notification</span>
+                  </label>
+                  <label className="block font-medium text-gray-700 mb-1">Notification Frequency</label>
+                  <select className="w-full px-4 py-2 rounded-lg border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-300">
+                    <option value="immediate">Immediate</option>
+                    <option value="daily">Daily Summary</option>
+                    <option value="weekly">Weekly Summary</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block font-medium text-gray-700 mb-1">Integrations</label>
+                  <input type="text" className="w-full px-4 py-2 rounded-lg border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-300" placeholder="Slack/Teams Webhook URL" />
+                </div>
+              </div>
+            </section>
+          )}
+          {activeTab === 'Security' && (
+            <section className="mb-8">
+              <h2 className="text-xl font-semibold mb-2 text-blue-800">Security & Privacy</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div>
+                  <label className="block font-medium text-gray-700 mb-1">Data Retention (months)</label>
+                  <input type="number" min="1" max="60" className="w-full px-4 py-2 rounded-lg border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-300" value={settings.dataRetention} onChange={e => updateSetting('dataRetention', Number(e.target.value))} />
+                  <div className="text-xs text-gray-400 mt-1">How long your data is stored. Max 60 months.</div>
+                </div>
+                <div className="flex items-center gap-2 mt-2">
+                  <button className="bg-blue-600 text-white px-4 py-2 rounded">Download Activity Log</button>
+                </div>
+                <div>
+                  <label className="block font-medium text-gray-700 mb-1">Team Member Permissions</label>
+                  <select className="w-full px-4 py-2 rounded-lg border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-300">
+                    <option value="admin">Admin</option>
+                    <option value="recruiter">Recruiter</option>
+                    <option value="viewer">Viewer</option>
+                  </select>
+                </div>
+                <div className="flex items-center gap-2 mt-2">
+                  <input type="checkbox" className="accent-indigo-600 w-5 h-5" />
+                  <span className="font-medium text-gray-700">Enable Two-Factor Authentication</span>
+                </div>
+              </div>
+            </section>
+          )}
+          {activeTab === 'General' && (
+            <section className="mb-8">
+              <h2 className="text-xl font-semibold mb-2 text-blue-800">General Application Settings</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div>
+                  <label className="block font-medium text-gray-700 mb-1">Language</label>
+                  <select className="w-full px-4 py-2 rounded-lg border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-300" value={settings.language} onChange={e => updateSetting('language', e.target.value)}>
+                    <option value="en">English</option>
+                    <option value="es">Spanish</option>
+                    <option value="fr">French</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block font-medium text-gray-700 mb-1">Theme</label>
+                  <select className="w-full px-4 py-2 rounded-lg border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-300" value={settings.theme} onChange={e => updateSetting('theme', e.target.value)}>
+                    <option value="light">Light</option>
+                    <option value="dark">Dark</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block font-medium text-gray-700 mb-1">Export Format</label>
+                  <select className="w-full px-4 py-2 rounded-lg border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-300" value={settings.exportFormat} onChange={e => updateSetting('exportFormat', e.target.value)}>
+                    <option value="CSV">CSV</option>
+                    <option value="Excel">Excel</option>
+                    <option value="PDF">PDF</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block font-medium text-gray-700 mb-1">Table Display Options</label>
+                  <select multiple className="w-full px-4 py-2 rounded-lg border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-300" value={settings.tableColumns} onChange={e => updateSetting('tableColumns', Array.from(e.target.selectedOptions, option => option.value))}>
+                    <option value="Name">Name</option>
+                    <option value="Score">Score</option>
+                    <option value="Category">Category</option>
+                    <option value="Email">Email</option>
+                  </select>
+                </div>
+                <div className="flex items-center gap-2 mt-2">
+                  <input type="checkbox" checked={settings.colorCoding} onChange={e => updateSetting('colorCoding', e.target.checked)} className="accent-indigo-600 w-5 h-5" />
+                  <span className="font-medium text-gray-700">Enable Color Coding in Results Table</span>
+                </div>
+              </div>
+            </section>
+          )}
+          <button className="bg-indigo-600 text-white px-6 py-2 rounded mt-4">Save Changes</button>
+          {saveStatus && <p className="text-green-600 mt-2">{saveStatus}</p>}
         </main>
       </div>
       <Footer />
