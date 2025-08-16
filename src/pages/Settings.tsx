@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react';
+import Brand from '@/components/Brand';
+import Footer from '@/components/Footer';
 
 // Styles
 const inputClass =
@@ -54,6 +56,16 @@ const initialState = {
   language: 'en',
 };
 
+const sidebarLinks = [
+  { label: 'Resume Screening', href: '#' },
+  { label: 'Job Descriptions', href: '#' },
+  { label: 'Candidates', href: '#' },
+  { label: 'Results', href: '#' },
+  { label: 'Insights & Analytics', href: '#' },
+  { label: 'Activity Log', href: '#' },
+  { label: 'Settings', href: '/settings' },
+];
+
 const Settings = () => {
   // State
   const [settings, setSettings] = useState(initialState);
@@ -101,153 +113,186 @@ const Settings = () => {
   if (loading) return <div className="p-8 text-center text-blue-700">Loading settings...</div>;
 
   return (
-    <div className="min-h-screen bg-blue-50 p-4 md:p-8 text-gray-800">
-      <h1 className="text-2xl md:text-3xl font-bold mb-6 md:mb-8 text-blue-900">Settings</h1>
-      <div className="space-y-6 md:space-y-8 max-w-3xl mx-auto">
-        {/* User Account & Profile */}
-        <section className={sectionClass}>
-          <h2 className="text-lg md:text-xl font-semibold mb-4 text-blue-800">User Account & Profile</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className={labelClass}>Name</label>
-              <input type="text" className={inputClass} placeholder="Name" value={settings.profile.name} onChange={e => updateProfile('name', e.target.value)} />
-              {profileErrors.name && <p className="text-red-500 text-xs mt-1">{profileErrors.name}</p>}
-            </div>
-            <div>
-              <label className={labelClass}>Email</label>
-              <input type="email" className={inputClass} placeholder="Email" value={settings.profile.email} onChange={e => updateProfile('email', e.target.value)} />
-              {profileErrors.email && <p className="text-red-500 text-xs mt-1">{profileErrors.email}</p>}
-            </div>
-            <div>
-              <label className={labelClass}>Password</label>
-              <input type="password" className={inputClass} placeholder="Password (min 6 chars)" value={settings.profile.password} onChange={e => updateProfile('password', e.target.value)} />
-              {profileErrors.password && <p className="text-red-500 text-xs mt-1">{profileErrors.password}</p>}
+    <div className="min-h-screen bg-blue-50 flex flex-col text-sm">
+      {/* Header */}
+      <header className="flex items-center justify-between px-0 py-2 bg-indigo-50/80 shadow-sm w-full z-10 text-sm">
+        <div className="flex items-center gap-3 pl-8">
+          <Brand logoClassName="h-8 w-8" wordClassName="text-xl font-extrabold tracking-tight text-indigo-700" />
+        </div>
+        <div />
+        <div className="flex items-center gap-6 pr-8">
+          <span className="text-base font-medium text-gray-700">Settings</span>
+        </div>
+      </header>
+      {/* Main Layout with Sidebar */}
+      <div className="flex flex-1">
+        {/* Sidebar */}
+        <aside className="w-44 bg-blue-100 border-r border-gray-200 flex flex-col shadow-sm pt-0 text-sm">
+          <nav className="flex flex-col gap-2 mt-8 px-6">
+            {sidebarLinks.map(link => (
+              <a
+                key={link.label}
+                href={link.href}
+                className={`flex items-center gap-3 px-4 py-2 rounded-lg ${link.label === 'Settings' ? 'bg-indigo-100 text-indigo-700 font-semibold' : 'text-gray-700 hover:bg-blue-50'}`}
+              >
+                <span>{link.label}</span>
+              </a>
+            ))}
+          </nav>
+        </aside>
+        {/* Main Content */}
+        <main className="flex-1 flex flex-col px-2 py-4 gap-4 relative text-sm">
+          <div className="max-w-3xl mx-auto w-full">
+            <h1 className="text-2xl md:text-3xl font-bold mb-6 md:mb-8 text-blue-900">Settings</h1>
+            <div className="space-y-6 md:space-y-8">
+              {/* User Account & Profile */}
+              <section className={sectionClass}>
+                <h2 className="text-lg md:text-xl font-semibold mb-4 text-blue-800">User Account & Profile</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className={labelClass}>Name</label>
+                    <input type="text" className={inputClass} placeholder="Name" value={settings.profile.name} onChange={e => updateProfile('name', e.target.value)} />
+                    {profileErrors.name && <p className="text-red-500 text-xs mt-1">{profileErrors.name}</p>}
+                  </div>
+                  <div>
+                    <label className={labelClass}>Email</label>
+                    <input type="email" className={inputClass} placeholder="Email" value={settings.profile.email} onChange={e => updateProfile('email', e.target.value)} />
+                    {profileErrors.email && <p className="text-red-500 text-xs mt-1">{profileErrors.email}</p>}
+                  </div>
+                  <div>
+                    <label className={labelClass}>Password</label>
+                    <input type="password" className={inputClass} placeholder="Password (min 6 chars)" value={settings.profile.password} onChange={e => updateProfile('password', e.target.value)} />
+                    {profileErrors.password && <p className="text-red-500 text-xs mt-1">{profileErrors.password}</p>}
+                  </div>
+                </div>
+                <button className={buttonClass + ' mt-4'} onClick={validateProfile}>Update Profile</button>
+              </section>
+              {/* Screening Preferences */}
+              <section className={sectionClass}>
+                <h2 className="text-lg md:text-xl font-semibold mb-4 text-blue-800">Screening Preferences</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className={labelClass}>Minimum Similarity Score</label>
+                    <input type="number" min="0" max="1" step="0.01" className={inputClass} value={settings.minScore} onChange={e => updateSetting('minScore', Number(e.target.value))} />
+                    <p className={helperClass}>Set between 0 and 1. Higher means stricter matching.</p>
+                  </div>
+                  <div>
+                    <label className={labelClass}>Best for Hire Threshold</label>
+                    <input type="number" min="0" max="1" step="0.01" className={inputClass} value={settings.thresholds.best} onChange={e => updateThresholds('best', Number(e.target.value))} />
+                  </div>
+                  <div>
+                    <label className={labelClass}>Consider for Interview Threshold</label>
+                    <input type="number" min="0" max="1" step="0.01" className={inputClass} value={settings.thresholds.consider} onChange={e => updateThresholds('consider', Number(e.target.value))} />
+                    <p className={helperClass}>Thresholds must be between 0 and 1.</p>
+                  </div>
+                </div>
+              </section>
+              {/* Resume & Job Description Handling */}
+              <section className={sectionClass}>
+                <h2 className="text-lg md:text-xl font-semibold mb-4 text-blue-800">Resume & Job Description Handling</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className={labelClass}>Allowed Resume Formats</label>
+                    <select multiple className={inputClass} value={settings.resumeFormat} onChange={e => updateSetting('resumeFormat', Array.from(e.target.selectedOptions, option => option.value))}>
+                      <option value="PDF">PDF</option>
+                      <option value="DOCX">DOCX</option>
+                    </select>
+                    <p className={helperClass}>Select one or more formats. Only PDF and DOCX supported.</p>
+                  </div>
+                  <div>
+                    <label className={labelClass}>Max File Size (MB)</label>
+                    <input type="number" min="1" max="20" className={inputClass} value={settings.maxFileSize} onChange={e => updateSetting('maxFileSize', Number(e.target.value))} />
+                    <p className={helperClass}>Maximum allowed file size is 20MB.</p>
+                  </div>
+                  <div className="flex items-center mt-2">
+                    <input type="checkbox" checked={settings.duplicateDetection} onChange={e => updateSetting('duplicateDetection', e.target.checked)} className="mr-2" />
+                    <span className="text-gray-700">Enable Duplicate Resume Detection</span>
+                  </div>
+                </div>
+              </section>
+              {/* Notifications & Alerts */}
+              <section className={sectionClass}>
+                <h2 className="text-lg md:text-xl font-semibold mb-4 text-blue-800">Notifications & Alerts</h2>
+                <div className="flex items-center">
+                  <input type="checkbox" checked={settings.emailNotif} onChange={e => updateSetting('emailNotif', e.target.checked)} className="mr-2" />
+                  <span className="text-gray-700">Email notifications for new results</span>
+                </div>
+                <p className={helperClass}>Receive updates when new screening results are available.</p>
+              </section>
+              {/* Visualization & Results */}
+              <section className={sectionClass}>
+                <h2 className="text-lg md:text-xl font-semibold mb-4 text-blue-800">Visualization & Results</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className={labelClass}>Table Columns</label>
+                    <select multiple className={inputClass} value={settings.tableColumns} onChange={e => updateSetting('tableColumns', Array.from(e.target.selectedOptions, option => option.value))}>
+                      <option value="Name">Name</option>
+                      <option value="Score">Score</option>
+                      <option value="Category">Category</option>
+                      <option value="Email">Email</option>
+                    </select>
+                    <p className={helperClass}>Choose which columns to display in results table.</p>
+                  </div>
+                  <div className="flex items-center mt-2">
+                    <input type="checkbox" checked={settings.colorCoding} onChange={e => updateSetting('colorCoding', e.target.checked)} className="mr-2" />
+                    <span className="text-gray-700">Enable color coding in results table</span>
+                  </div>
+                  <div>
+                    <label className={labelClass}>Export Format</label>
+                    <select className={inputClass} value={settings.exportFormat} onChange={e => updateSetting('exportFormat', e.target.value)}>
+                      <option value="CSV">CSV</option>
+                      <option value="Excel">Excel</option>
+                      <option value="PDF">PDF</option>
+                    </select>
+                    <p className={helperClass}>Select format for exporting results.</p>
+                  </div>
+                </div>
+              </section>
+              {/* Security & Privacy */}
+              <section className={sectionClass}>
+                <h2 className="text-lg md:text-xl font-semibold mb-4 text-blue-800">Security & Privacy</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className={labelClass}>Data Retention (months)</label>
+                    <input type="number" min="1" max="60" className={inputClass} value={settings.dataRetention} onChange={e => updateSetting('dataRetention', Number(e.target.value))} />
+                    <p className={helperClass}>How long your data is stored. Max 60 months.</p>
+                  </div>
+                  <div className="flex items-center mt-2">
+                    <button className={buttonClass}>Download Activity Log</button>
+                  </div>
+                </div>
+              </section>
+              {/* General Application Settings */}
+              <section className={sectionClass}>
+                <h2 className="text-lg md:text-xl font-semibold mb-4 text-blue-800">General Application Settings</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className={labelClass}>Language</label>
+                    <select className={inputClass} value={settings.language} onChange={e => updateSetting('language', e.target.value)}>
+                      <option value="en">English</option>
+                      <option value="es">Spanish</option>
+                      <option value="fr">French</option>
+                    </select>
+                    <p className={helperClass}>Select your preferred language.</p>
+                  </div>
+                  <div>
+                    <label className={labelClass}>Theme</label>
+                    <select className={inputClass} value={settings.theme} onChange={e => updateSetting('theme', e.target.value)}>
+                      <option value="light">Light</option>
+                      <option value="dark">Dark</option>
+                    </select>
+                    <p className={helperClass}>Choose between light and dark mode.</p>
+                  </div>
+                </div>
+              </section>
+              {/* Save Button */}
+              <button className={buttonClass + ' mt-6'} onClick={handleSave}>Save All Settings</button>
+              {saveStatus && <p className="text-green-600 mt-2">{saveStatus}</p>}
             </div>
           </div>
-          <button className={buttonClass + ' mt-4'} onClick={validateProfile}>Update Profile</button>
-        </section>
-        {/* Screening Preferences */}
-        <section className={sectionClass}>
-          <h2 className="text-lg md:text-xl font-semibold mb-4 text-blue-800">Screening Preferences</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className={labelClass}>Minimum Similarity Score</label>
-              <input type="number" min="0" max="1" step="0.01" className={inputClass} value={settings.minScore} onChange={e => updateSetting('minScore', Number(e.target.value))} />
-              <p className={helperClass}>Set between 0 and 1. Higher means stricter matching.</p>
-            </div>
-            <div>
-              <label className={labelClass}>Best for Hire Threshold</label>
-              <input type="number" min="0" max="1" step="0.01" className={inputClass} value={settings.thresholds.best} onChange={e => updateThresholds('best', Number(e.target.value))} />
-            </div>
-            <div>
-              <label className={labelClass}>Consider for Interview Threshold</label>
-              <input type="number" min="0" max="1" step="0.01" className={inputClass} value={settings.thresholds.consider} onChange={e => updateThresholds('consider', Number(e.target.value))} />
-              <p className={helperClass}>Thresholds must be between 0 and 1.</p>
-            </div>
-          </div>
-        </section>
-        {/* Resume & Job Description Handling */}
-        <section className={sectionClass}>
-          <h2 className="text-lg md:text-xl font-semibold mb-4 text-blue-800">Resume & Job Description Handling</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className={labelClass}>Allowed Resume Formats</label>
-              <select multiple className={inputClass} value={settings.resumeFormat} onChange={e => updateSetting('resumeFormat', Array.from(e.target.selectedOptions, option => option.value))}>
-                <option value="PDF">PDF</option>
-                <option value="DOCX">DOCX</option>
-              </select>
-              <p className={helperClass}>Select one or more formats. Only PDF and DOCX supported.</p>
-            </div>
-            <div>
-              <label className={labelClass}>Max File Size (MB)</label>
-              <input type="number" min="1" max="20" className={inputClass} value={settings.maxFileSize} onChange={e => updateSetting('maxFileSize', Number(e.target.value))} />
-              <p className={helperClass}>Maximum allowed file size is 20MB.</p>
-            </div>
-            <div className="flex items-center mt-2">
-              <input type="checkbox" checked={settings.duplicateDetection} onChange={e => updateSetting('duplicateDetection', e.target.checked)} className="mr-2" />
-              <span className="text-gray-700">Enable Duplicate Resume Detection</span>
-            </div>
-          </div>
-        </section>
-        {/* Notifications & Alerts */}
-        <section className={sectionClass}>
-          <h2 className="text-lg md:text-xl font-semibold mb-4 text-blue-800">Notifications & Alerts</h2>
-          <div className="flex items-center">
-            <input type="checkbox" checked={settings.emailNotif} onChange={e => updateSetting('emailNotif', e.target.checked)} className="mr-2" />
-            <span className="text-gray-700">Email notifications for new results</span>
-          </div>
-          <p className={helperClass}>Receive updates when new screening results are available.</p>
-        </section>
-        {/* Visualization & Results */}
-        <section className={sectionClass}>
-          <h2 className="text-lg md:text-xl font-semibold mb-4 text-blue-800">Visualization & Results</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className={labelClass}>Table Columns</label>
-              <select multiple className={inputClass} value={settings.tableColumns} onChange={e => updateSetting('tableColumns', Array.from(e.target.selectedOptions, option => option.value))}>
-                <option value="Name">Name</option>
-                <option value="Score">Score</option>
-                <option value="Category">Category</option>
-                <option value="Email">Email</option>
-              </select>
-              <p className={helperClass}>Choose which columns to display in results table.</p>
-            </div>
-            <div className="flex items-center mt-2">
-              <input type="checkbox" checked={settings.colorCoding} onChange={e => updateSetting('colorCoding', e.target.checked)} className="mr-2" />
-              <span className="text-gray-700">Enable color coding in results table</span>
-            </div>
-            <div>
-              <label className={labelClass}>Export Format</label>
-              <select className={inputClass} value={settings.exportFormat} onChange={e => updateSetting('exportFormat', e.target.value)}>
-                <option value="CSV">CSV</option>
-                <option value="Excel">Excel</option>
-                <option value="PDF">PDF</option>
-              </select>
-              <p className={helperClass}>Select format for exporting results.</p>
-            </div>
-          </div>
-        </section>
-        {/* Security & Privacy */}
-        <section className={sectionClass}>
-          <h2 className="text-lg md:text-xl font-semibold mb-4 text-blue-800">Security & Privacy</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className={labelClass}>Data Retention (months)</label>
-              <input type="number" min="1" max="60" className={inputClass} value={settings.dataRetention} onChange={e => updateSetting('dataRetention', Number(e.target.value))} />
-              <p className={helperClass}>How long your data is stored. Max 60 months.</p>
-            </div>
-            <div className="flex items-center mt-2">
-              <button className={buttonClass}>Download Activity Log</button>
-            </div>
-          </div>
-        </section>
-        {/* General Application Settings */}
-        <section className={sectionClass}>
-          <h2 className="text-lg md:text-xl font-semibold mb-4 text-blue-800">General Application Settings</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className={labelClass}>Language</label>
-              <select className={inputClass} value={settings.language} onChange={e => updateSetting('language', e.target.value)}>
-                <option value="en">English</option>
-                <option value="es">Spanish</option>
-                <option value="fr">French</option>
-              </select>
-              <p className={helperClass}>Select your preferred language.</p>
-            </div>
-            <div>
-              <label className={labelClass}>Theme</label>
-              <select className={inputClass} value={settings.theme} onChange={e => updateSetting('theme', e.target.value)}>
-                <option value="light">Light</option>
-                <option value="dark">Dark</option>
-              </select>
-              <p className={helperClass}>Choose between light and dark mode.</p>
-            </div>
-          </div>
-        </section>
-        {/* Save Button */}
-        <button className={buttonClass + ' mt-6'} onClick={handleSave}>Save All Settings</button>
-        {saveStatus && <p className="text-green-600 mt-2">{saveStatus}</p>}
+        </main>
       </div>
+      <Footer />
     </div>
   );
 };
