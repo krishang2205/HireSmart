@@ -24,11 +24,11 @@ export const BrandWordmark: React.FC<{ className?: string }> = ({ className = 't
 );
 
 export const Brand: React.FC<{ href?: string; className?: string; logoClassName?: string; wordClassName?: string; }>
-  = ({ href = '/', className = 'flex items-center gap-2', logoClassName, wordClassName }) => (
-  <a href={href} aria-label="HireSmart home" className={className}>
+  = ({ className = 'flex items-center gap-2', logoClassName, wordClassName }) => (
+  <div className={className} aria-label="HireSmart home">
     <BrandLogo className={logoClassName} />
     <BrandWordmark className={wordClassName} />
-  </a>
+  </div>
 );
 
 export default Brand;
