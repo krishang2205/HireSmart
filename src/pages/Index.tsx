@@ -26,10 +26,10 @@ const Index = () => {
 	};
 
 	return (
-		<>
+		<div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex flex-col text-xs">
 			<SeoHead title={title} description={description} jsonLd={jsonLd} />
 			<Header />
-			<main>
+			<main className="flex-1 flex flex-col px-4 py-4 gap-4 relative text-xs">
 				<Hero />
 				<Features />
 				<HowItWorks />
@@ -38,7 +38,7 @@ const Index = () => {
 				<CTA />
 			</main>
 			<Footer />
-		</>
+		</div>
 	);
 };
 

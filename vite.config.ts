@@ -12,6 +12,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/evaluate': 'http://localhost:5000',
+      '/api': 'http://localhost:4000',
     },
   },
 });
