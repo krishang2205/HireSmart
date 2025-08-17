@@ -205,9 +205,9 @@ const Settings = () => {
   if (loading) return <div className="p-8 text-center text-blue-700">Loading settings...</div>;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex flex-col text-sm">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex flex-col text-xs">
       {/* Header */}
-      <header className="flex items-center justify-between px-0 py-2 bg-indigo-50/80 shadow-sm w-full z-10 text-sm sticky top-0 backdrop-blur-lg">
+      <header className="flex items-center justify-between px-0 py-1 bg-indigo-50/80 shadow-sm w-full z-10 text-xs sticky top-0 backdrop-blur-lg">
         <div className="flex items-center gap-3 pl-8">
           <Brand logoClassName="h-8 w-8" wordClassName="text-xl font-extrabold tracking-tight text-indigo-700" />
         </div>
@@ -245,7 +245,7 @@ const Settings = () => {
           </div>
         </aside>
         {/* Main Content */}
-        <main className="flex-1 flex flex-col px-8 py-8 gap-8 relative text-sm bg-transparent">
+        <main className="flex-1 flex flex-col px-4 py-4 gap-4 relative text-xs bg-transparent">
           <AnimatePresence mode="wait">
             <motion.div
               key={activeTab}
@@ -255,7 +255,7 @@ const Settings = () => {
               transition={{ duration: 0.35, ease: 'easeInOut' }}
               className="flex-1 flex flex-col gap-8"
             >
-              <h1 className="text-3xl font-extrabold mb-4 text-blue-900 tracking-tight">Settings</h1>
+              <h1 className="text-2xl font-extrabold mb-2 text-blue-900 tracking-tight">Settings</h1>
               {/* Tabs */}
               <div className="flex gap-4 border-b mb-8 sticky top-14 bg-white/80 z-10 backdrop-blur-lg">
                 {tabSections.map(tab => (
@@ -292,13 +292,13 @@ const Settings = () => {
                         </div>
                       </div>
                     </div>
-                    <h2 className="text-xl font-bold mb-2 text-blue-800 flex items-center gap-2">Your Profile <span className="bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-full text-xs font-semibold">Recruiter</span></h2>
-                    <p className="mb-6 text-gray-500">Update your profile and company details here</p>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <h2 className="text-lg font-bold mb-2 text-blue-800 flex items-center gap-2">Your Profile <span className="bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-full text-xs font-semibold">Recruiter</span></h2>
+                    <p className="mb-4 text-gray-500 text-xs">Update your profile and company details here</p>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                       <div>
                         <label className="block font-medium text-gray-700 mb-1">Name</label>
                         <div className="relative">
-                          <input type="text" className="peer w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-300 transition-all" placeholder=" " value={editableProfile.name} onChange={e => setEditableProfile({ ...editableProfile, name: e.target.value })} />
+                          <input type="text" className="peer w-full px-3 py-2 rounded-xl border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-300 transition-all text-xs" placeholder=" " value={editableProfile.name} onChange={e => setEditableProfile({ ...editableProfile, name: e.target.value })} />
                           {editableProfile.name && (
                             <span className="absolute left-4 top-1 text-xs text-gray-400 peer-focus:text-indigo-600 transition-all"></span>
                           )}
@@ -307,7 +307,7 @@ const Settings = () => {
                       <div>
                         <label className="block font-medium text-gray-700 mb-1">Email</label>
                         <div className="relative">
-                          <input type="email" className="peer w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-300 transition-all" placeholder=" " value={editableProfile.email} onChange={e => setEditableProfile({ ...editableProfile, email: e.target.value })} />
+                          <input type="email" className="peer w-full px-3 py-2 rounded-xl border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-300 transition-all text-xs" placeholder=" " value={editableProfile.email} onChange={e => setEditableProfile({ ...editableProfile, email: e.target.value })} />
                           {editableProfile.email && (
                             <span className="absolute left-4 top-1 text-xs text-gray-400 peer-focus:text-indigo-600 transition-all"></span>
                           )}
@@ -315,14 +315,14 @@ const Settings = () => {
                         </div>
                       </div>
                     </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                       
                       <div>
                         <label className="block font-medium text-gray-700 mb-1">Company Name</label>
                         <input type="text" className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-300 transition-all" placeholder="Enter company name" value={companyDetails.name} onChange={e => setCompanyDetails({ ...companyDetails, name: e.target.value })} />
                       </div>
                     </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                       <div>
                         <label className="block font-medium text-gray-700 mb-1">Company Website</label>
                         <input type="url" className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-300 transition-all" placeholder="https://yourcompany.com" value={companyDetails.website} onChange={e => setCompanyDetails({ ...companyDetails, website: e.target.value })} />
@@ -332,7 +332,7 @@ const Settings = () => {
                         <input type="text" className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-300 transition-all" placeholder="e.g. Software, Healthcare" value={companyDetails.industry} onChange={e => setCompanyDetails({ ...companyDetails, industry: e.target.value })} />
                       </div>
                     </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                       <div>
                         <label className="block font-medium text-gray-700 mb-1">Company Size</label>
                         <select className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-300 transition-all" value={companyDetails.size} onChange={e => setCompanyDetails({ ...companyDetails, size: e.target.value })}>
@@ -349,7 +349,7 @@ const Settings = () => {
                         <input type="text" className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-300 transition-all" placeholder="Enter address" value={companyDetails.address} onChange={e => setCompanyDetails({ ...companyDetails, address: e.target.value })} />
                       </div>
                     </div>
-                    <div className="mb-6">
+                    <div className="mb-4">
                       <label className="block font-medium text-gray-700 mb-1">Company Description</label>
                       <textarea className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-300 transition-all" rows={2} placeholder="Describe your company" value={companyDetails.description} onChange={e => setCompanyDetails({ ...companyDetails, description: e.target.value })} />
                     </div>
@@ -374,7 +374,7 @@ const Settings = () => {
               {activeTab === 'Screening' && (
                 <section className="mb-8 animate-fade-in">
                   <div className="bg-white/80 rounded-2xl shadow-xl p-8 border border-gray-100 backdrop-blur-lg">
-                    <h2 className="text-xl font-bold mb-2 text-blue-800 flex items-center gap-2">Screening Preferences <span className="bg-cyan-100 text-cyan-700 px-2 py-0.5 rounded-full text-xs font-semibold">AI Powered</span></h2>
+                    <h2 className="text-lg font-bold mb-2 text-blue-800 flex items-center gap-2">Screening Preferences <span className="bg-cyan-100 text-cyan-700 px-2 py-0.5 rounded-full text-xs font-semibold">AI Powered</span></h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                       <div>
                         <label className="block font-medium text-gray-700 mb-1">Minimum Similarity Score</label>
@@ -421,7 +421,7 @@ const Settings = () => {
               {activeTab === 'Resume' && (
                 <section className="mb-8 animate-fade-in">
                   <div className="bg-white/80 rounded-2xl shadow-xl p-8 border border-gray-100 backdrop-blur-lg">
-                    <h2 className="text-xl font-bold mb-2 text-blue-800 flex items-center gap-2">Resume & Job Description Handling <span className="bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full text-xs font-semibold">Upload</span></h2>
+                    <h2 className="text-lg font-bold mb-2 text-blue-800 flex items-center gap-2">Resume & Job Description Handling <span className="bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full text-xs font-semibold">Upload</span></h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                       <div>
                         <label className="block font-medium text-gray-700 mb-1">Allowed Resume Formats</label>
@@ -455,7 +455,7 @@ const Settings = () => {
               {activeTab === 'Notifications' && (
                 <section className="mb-8 animate-fade-in">
                   <div className="bg-white/80 rounded-2xl shadow-xl p-8 border border-gray-100 backdrop-blur-lg">
-                    <h2 className="text-xl font-bold mb-2 text-blue-800 flex items-center gap-2">Notifications & Alerts <span className="bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-full text-xs font-semibold">Integrations</span></h2>
+                    <h2 className="text-lg font-bold mb-2 text-blue-800 flex items-center gap-2">Notifications & Alerts <span className="bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-full text-xs font-semibold">Integrations</span></h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                       <div className="flex flex-col gap-4">
                         <label className="flex items-center gap-2 cursor-pointer">
@@ -488,7 +488,7 @@ const Settings = () => {
               {activeTab === 'Security' && (
                 <section className="mb-8 animate-fade-in">
                   <div className="bg-white/80 rounded-2xl shadow-xl p-8 border border-gray-100 backdrop-blur-lg">
-                    <h2 className="text-xl font-bold mb-2 text-blue-800 flex items-center gap-2">Security & Privacy <span className="bg-red-100 text-red-700 px-2 py-0.5 rounded-full text-xs font-semibold">Secure</span></h2>
+                    <h2 className="text-lg font-bold mb-2 text-blue-800 flex items-center gap-2">Security & Privacy <span className="bg-red-100 text-red-700 px-2 py-0.5 rounded-full text-xs font-semibold">Secure</span></h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                       <div>
                         <label className="block font-medium text-gray-700 mb-1">Data Retention (months)</label>
@@ -521,7 +521,7 @@ const Settings = () => {
               {activeTab === 'General' && (
                 <section className="mb-8 animate-fade-in">
                   <div className="bg-white/80 rounded-2xl shadow-xl p-8 border border-gray-100 backdrop-blur-lg">
-                    <h2 className="text-xl font-bold mb-2 text-blue-800 flex items-center gap-2">General Application Settings <span className="bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-full text-xs font-semibold">App</span></h2>
+                    <h2 className="text-lg font-bold mb-2 text-blue-800 flex items-center gap-2">General Application Settings <span className="bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-full text-xs font-semibold">App</span></h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                       <div>
                         <label className="block font-medium text-gray-700 mb-1">Language</label>
