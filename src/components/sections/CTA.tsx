@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
 import Reveal from '../../components/Reveal';
@@ -6,15 +6,26 @@ import Reveal from '../../components/Reveal';
 const CTA = () => {
 	const [email, setEmail] = useState('');
 	const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle');
+	const [loading, setLoading] = useState(false);
+
+	useEffect(() => {
+		if (status !== 'idle') {
+			const timer = setTimeout(() => setStatus('idle'), 5000);
+			return () => clearTimeout(timer);
+		}
+	}, [status]);
+
 	const onSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 		setStatus('idle');
+		setLoading(true);
 		try {
 			const res = await fetch('/api/request-demo', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({ email }),
 			});
+			setLoading(false);
 			if (res.ok) {
 				setStatus('success');
 				setEmail('');
@@ -22,6 +33,7 @@ const CTA = () => {
 				setStatus('error');
 			}
 		} catch {
+			setLoading(false);
 			setStatus('error');
 		}
 	};
@@ -60,7 +72,11 @@ const CTA = () => {
 								size="lg"
 								variant="gradient"
 								className="h-11 px-7 shadow-[0_8px_28px_-8px_rgba(37,99,235,0.55)]"
+								disabled={loading}
 							>
+								{loading ? (
+									<span className="animate-spin mr-2 inline-block w-5 h-5 border-2 border-blue-400 border-t-transparent rounded-full align-middle" />
+								) : null}
 								Request Demo
 							</Button>
 						</form>

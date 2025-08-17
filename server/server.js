@@ -54,16 +54,37 @@ app.post('/api/request-demo', async (req, res) => {
 		// Send email to admin
 		await transporter.sendMail({
 			from: process.env.GMAIL_USER,
-			to: process.env.ADMIN_EMAIL, // your admin email
-			subject: 'New Demo Request',
-			text: `Demo requested by: ${email}`,
+			to: process.env.ADMIN_EMAIL,
+			subject: 'New Demo Request Received',
+			html: `
+				<div style="font-family: Arial, sans-serif; color: #222;">
+				  <h2>New Demo Request</h2>
+				  <p>A user has requested a demo via the HireSmart landing page.</p>
+				  <table style="margin-top:10px;">
+					<tr><td><strong>Email:</strong></td><td>${email}</td></tr>
+				  </table>
+				  <p style="margin-top:20px;">Please follow up with the user to schedule a demo.</p>
+				  <hr style="margin:20px 0;" />
+				  <small>This is an automated notification from HireSmart.</small>
+				</div>
+			`,
 		});
 		// Send confirmation to user
 		await transporter.sendMail({
 			from: process.env.GMAIL_USER,
 			to: email,
-			subject: 'HireSmart Demo Request Received',
-			text: 'Thank you for requesting a demo! Our team will contact you soon.',
+			subject: 'Your HireSmart Demo Request is Received',
+			html: `
+				<div style="font-family: Arial, sans-serif; color: #222;">
+				  <h2>Thank You for Requesting a Demo!</h2>
+				  <p>Hi,</p>
+				  <p>We have received your request for a HireSmart demo. Our team will reach out to you soon to schedule a session and answer any questions you may have.</p>
+				  <p>If you have any urgent queries, feel free to reply to this email.</p>
+				  <p style="margin-top:20px;">Best regards,<br />The HireSmart Team</p>
+				  <hr style="margin:20px 0;" />
+				  <small>This is an automated confirmation. No action is required.</small>
+				</div>
+			`,
 		});
 		res.json({ success: true });
 	} catch (err) {
