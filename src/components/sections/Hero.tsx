@@ -2,9 +2,11 @@ import { Button } from "@/components/ui/button";
 import heroImg from "@/assets/hiresmart-hero.png";
 import Reveal from "@/components/Reveal";
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '@/context/AuthContext';
 
 const Hero = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   return (
     <header className="relative overflow-hidden pt-20 pb-16 md:pb-24">
@@ -28,7 +30,18 @@ const Hero = () => {
               </p>
 
               <div className="mt-8 flex flex-col sm:flex-row gap-3">
-                <Button size="lg" variant="hero" className="hover-scale" onClick={() => navigate('/get-started')}>
+                <Button
+                  size="lg"
+                  variant="hero"
+                  className="hover-scale"
+                  onClick={() => {
+                    if (user) {
+                      navigate('/dashboard');
+                    } else {
+                      navigate('/auth/signin');
+                    }
+                  }}
+                >
                   Get Started
                 </Button>
                 <Button size="lg" variant="outline" asChild>
