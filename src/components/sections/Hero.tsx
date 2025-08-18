@@ -1,8 +1,11 @@
 import { Button } from "@/components/ui/button";
 import heroImg from "@/assets/hiresmart-hero.png";
 import Reveal from "@/components/Reveal";
+import { useNavigate } from 'react-router-dom';
 
 const Hero = () => {
+  const navigate = useNavigate();
+
   return (
     <header className="relative overflow-hidden pt-20 pb-16 md:pb-24">
       <div className="absolute inset-0 -z-10">
@@ -25,7 +28,7 @@ const Hero = () => {
               </p>
 
               <div className="mt-8 flex flex-col sm:flex-row gap-3">
-                <Button size="lg" variant="hero" className="hover-scale">
+                <Button size="lg" variant="hero" className="hover-scale" onClick={() => navigate('/get-started')}>
                   Get Started
                 </Button>
                 <Button size="lg" variant="outline" asChild>
