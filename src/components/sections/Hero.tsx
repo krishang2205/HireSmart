@@ -3,10 +3,12 @@ import heroImg from "@/assets/hiresmart-hero.png";
 import Reveal from "@/components/Reveal";
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
+import { useState } from 'react';
 
 const Hero = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const [loading, setLoading] = useState(false);
 
   return (
     <header className="relative overflow-hidden pt-20 pb-16 md:pb-24">
@@ -34,15 +36,20 @@ const Hero = () => {
                   size="lg"
                   variant="hero"
                   className="hover-scale"
+                  disabled={loading}
                   onClick={() => {
-                    if (user) {
-                      navigate('/dashboard');
-                    } else {
-                      navigate('/auth/login');
-                    }
+                    setLoading(true);
+                    setTimeout(() => {
+                      if (user) {
+                        navigate('/dashboard');
+                      } else {
+                        navigate('/auth/login');
+                      }
+                      setLoading(false);
+                    }, 400);
                   }}
                 >
-                  Get Started
+                  {loading ? 'Loading...' : 'Get Started'}
                 </Button>
                 <Button size="lg" variant="outline" asChild>
                   <a href="#how-it-works" className="hover-scale">See How It Works</a>
