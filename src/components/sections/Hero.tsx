@@ -38,7 +38,7 @@ const Hero = () => {
                     if (user) {
                       navigate('/dashboard');
                     } else {
-                      navigate('/auth/signin');
+                      navigate('/auth/login');
                     }
                   }}
                 >
