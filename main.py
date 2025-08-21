@@ -141,7 +141,14 @@ def evaluate():
     print("Extracted skills from job description:", jd_skills)  # Debugging log
 
     # Process each uploaded resume
+
     results = []
+    def get_cosine_score(text1, text2):
+        docs = [text1, text2]
+        vectorizer = CountVectorizer().fit_transform(docs)
+        cosine_sim = cosine_similarity(vectorizer[0], vectorizer[1])
+        return cosine_sim[0][0]
+
     for uploaded_file in request.files.getlist('resumes'):
         # Extract text from uploaded resume
         file_ext = os.path.splitext(uploaded_file.filename)[1]
@@ -155,11 +162,11 @@ def evaluate():
             print(f"Unsupported file type: {file_ext}")  # Debugging log
             return jsonify({"error": f"Unsupported file type: {file_ext}"}), 400
 
-        if not resume_text:
+        if resume_text is None:
             print(f"Could not extract text from the file: {uploaded_file.filename}")  # Debugging log
-            return jsonify({"error": f"Could not extract text from the file: {uploaded_file.filename}"}), 400
+            resume_text = ""  # Use empty string if extraction fails
 
-        print("Extracted text from resume:", resume_text)  # Debugging log
+        print("Extracted text from resume:", resume_text.encode('utf-8', errors='replace'))  # Debugging log
 
         # Preprocess text
         resume_clean = clean_text(resume_text)
@@ -167,13 +174,6 @@ def evaluate():
         # Match skills from the resume against the dynamically extracted skills from the JD
         matched_skills = [skill for skill in jd_skills if skill in resume_clean]
         print("Matched skills:", matched_skills)  # Debugging log
-
-        # Calculate Cosine Similarity
-        def get_cosine_score(text1, text2):
-            docs = [text1, text2]
-            vectorizer = CountVectorizer().fit_transform(docs)
-            cosine_sim = cosine_similarity(vectorizer[0], vectorizer[1])
-            return cosine_sim[0][0]
 
         # Get similarity score
         score = get_cosine_score(resume_clean, jd_clean)

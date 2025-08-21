@@ -7,7 +7,6 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from PyPDF2 import PdfReader
 import docx2txt
-
 # Download required resources
 nltk.download('stopwords')
 nlp = spacy.load("en_core_web_sm")
@@ -41,8 +40,13 @@ def extract_text_from_pdf(file):
         reader = PdfReader(file)
         text = ""
         for page in reader.pages:
-            text += page.extract_text() or ""
-        return text.strip()
+            try:
+                page_text = page.extract_text()
+                if page_text:
+                    text += page_text
+            except Exception as page_err:
+                print(f"Error extracting text from page: {page_err}")
+        return text.strip() if text else ""
     except Exception as e:
         print(f"Error extracting PDF text: {e}")
         return ""
