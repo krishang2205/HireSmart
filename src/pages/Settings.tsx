@@ -551,8 +551,14 @@ const Settings = () => {
                       <div>
                         <label className="block font-medium text-gray-700 mb-1">Theme</label>
                         <div className="flex gap-2">
-                          <button className="px-4 py-2 rounded-lg border bg-indigo-600 text-white">Light</button>
-                          <button className="px-4 py-2 rounded-lg border bg-gray-50 text-gray-700">Dark</button>
+                          <button
+                            className={`px-4 py-2 rounded-lg border ${settings.theme === 'light' ? 'bg-indigo-600 text-white' : 'bg-gray-50 text-gray-700'}`}
+                            onClick={() => updateSetting('theme', 'light')}
+                          >Light</button>
+                          <button
+                            className={`px-4 py-2 rounded-lg border ${settings.theme === 'dark' ? 'bg-indigo-600 text-white' : 'bg-gray-50 text-gray-700'}`}
+                            onClick={() => updateSetting('theme', 'dark')}
+                          >Dark</button>
                         </div>
                       </div>
                       <div>
