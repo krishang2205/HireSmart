@@ -68,7 +68,7 @@ export default function Dashboard() {
                     className="flex items-center justify-between w-full py-2 px-2 rounded hover:bg-indigo-50 text-gray-700"
                     onClick={() => {
                       setShowUserModal(false);
-                      navigate('/settings', { state: { tab: 'Widget' } });
+                      navigate('/settings', { state: { tab: 'General' } });
                     }}
                   >
                     <span className="flex items-center gap-2"><svg className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3" /><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09c.83 0 1.58-.58 1.51-1.41a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06c.39.39.9.6 1.42.51.51-.09 1-.51 1-1.02V3a2 2 0 0 1 4 0v.09c0 .51.49.93 1 .93.52.09 1.03-.12 1.42-.51l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82c.07.83.68 1.41 1.51 1.41H21a2 2 0 0 1 0 4h-.09c-.83 0-1.58.58-1.51 1.41z" /></svg> Widget settings</span>
