@@ -534,9 +534,18 @@ const Settings = () => {
                       <div>
                         <label className="block font-medium text-gray-700 mb-1">Language</label>
                         <div className="flex gap-2">
-                          <button className="px-4 py-2 rounded-lg border bg-indigo-600 text-white">English</button>
-                          <button className="px-4 py-2 rounded-lg border bg-gray-50 text-gray-700">Spanish</button>
-                          <button className="px-4 py-2 rounded-lg border bg-gray-50 text-gray-700">French</button>
+                          <button
+                            className={`px-4 py-2 rounded-lg border ${settings.language === 'en' ? 'bg-indigo-600 text-white' : 'bg-gray-50 text-gray-700'}`}
+                            onClick={() => updateSetting('language', 'en')}
+                          >English</button>
+                          <button
+                            className={`px-4 py-2 rounded-lg border ${settings.language === 'es' ? 'bg-indigo-600 text-white' : 'bg-gray-50 text-gray-700'}`}
+                            onClick={() => updateSetting('language', 'es')}
+                          >Spanish</button>
+                          <button
+                            className={`px-4 py-2 rounded-lg border ${settings.language === 'fr' ? 'bg-indigo-600 text-white' : 'bg-gray-50 text-gray-700'}`}
+                            onClick={() => updateSetting('language', 'fr')}
+                          >French</button>
                         </div>
                       </div>
                       <div>
