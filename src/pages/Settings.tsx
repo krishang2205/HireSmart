@@ -581,22 +581,24 @@ const Settings = () => {
                       <div>
                         <label className="block font-medium text-gray-700 mb-1">Table Display Options</label>
                         <div className="flex gap-2">
-                          <label className="flex items-center gap-2 cursor-pointer">
-                            <input type="checkbox" checked={settings.tableColumns.includes('Name')} onChange={() => {}} className="accent-indigo-600 w-6 h-6 transition-all" />
-                            <span className="font-medium text-gray-700">Name</span>
-                          </label>
-                          <label className="flex items-center gap-2 cursor-pointer">
-                            <input type="checkbox" checked={settings.tableColumns.includes('Score')} onChange={() => {}} className="accent-indigo-600 w-6 h-6 transition-all" />
-                            <span className="font-medium text-gray-700">Score</span>
-                          </label>
-                          <label className="flex items-center gap-2 cursor-pointer">
-                            <input type="checkbox" checked={settings.tableColumns.includes('Category')} onChange={() => {}} className="accent-indigo-600 w-6 h-6 transition-all" />
-                            <span className="font-medium text-gray-700">Category</span>
-                          </label>
-                          <label className="flex items-center gap-2 cursor-pointer">
-                            <input type="checkbox" checked={settings.tableColumns.includes('Email')} onChange={() => {}} className="accent-indigo-600 w-6 h-6 transition-all" />
-                            <span className="font-medium text-gray-700">Email</span>
-                          </label>
+                          {['Name', 'Score', 'Category', 'Email'].map(col => (
+                            <label key={col} className="flex items-center gap-2 cursor-pointer">
+                              <input
+                                type="checkbox"
+                                checked={settings.tableColumns.includes(col)}
+                                onChange={e => {
+                                  setSettings(prev => {
+                                    const cols = prev.tableColumns.includes(col)
+                                      ? prev.tableColumns.filter(c => c !== col)
+                                      : [...prev.tableColumns, col];
+                                    return { ...prev, tableColumns: cols };
+                                  });
+                                }}
+                                className="accent-indigo-600 w-6 h-6 transition-all"
+                              />
+                              <span className="font-medium text-gray-700">{col}</span>
+                            </label>
+                          ))}
                         </div>
                       </div>
                       <div className="flex items-center gap-2 mt-2">
