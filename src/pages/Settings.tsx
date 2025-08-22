@@ -94,6 +94,15 @@ const Settings = () => {
       setActiveTab(nav.tab);
     }
   }, []);
+
+  // Apply theme to body
+  useEffect(() => {
+    if (settings.theme === 'dark') {
+      document.body.classList.add('dark');
+    } else {
+      document.body.classList.remove('dark');
+    }
+  }, [settings.theme]);
   // Example company details state
   const [companyDetails, setCompanyDetails] = useState({
     name: user?.companyName || '',
