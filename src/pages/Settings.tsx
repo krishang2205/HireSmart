@@ -564,9 +564,18 @@ const Settings = () => {
                       <div>
                         <label className="block font-medium text-gray-700 mb-1">Export Format</label>
                         <div className="flex gap-2">
-                          <button className="px-4 py-2 rounded-lg border bg-indigo-600 text-white">CSV</button>
-                          <button className="px-4 py-2 rounded-lg border bg-gray-50 text-gray-700">Excel</button>
-                          <button className="px-4 py-2 rounded-lg border bg-gray-50 text-gray-700">PDF</button>
+                          <button
+                            className={`px-4 py-2 rounded-lg border ${settings.exportFormat === 'CSV' ? 'bg-indigo-600 text-white' : 'bg-gray-50 text-gray-700'}`}
+                            onClick={() => updateSetting('exportFormat', 'CSV')}
+                          >CSV</button>
+                          <button
+                            className={`px-4 py-2 rounded-lg border ${settings.exportFormat === 'Excel' ? 'bg-indigo-600 text-white' : 'bg-gray-50 text-gray-700'}`}
+                            onClick={() => updateSetting('exportFormat', 'Excel')}
+                          >Excel</button>
+                          <button
+                            className={`px-4 py-2 rounded-lg border ${settings.exportFormat === 'PDF' ? 'bg-indigo-600 text-white' : 'bg-gray-50 text-gray-700'}`}
+                            onClick={() => updateSetting('exportFormat', 'PDF')}
+                          >PDF</button>
                         </div>
                       </div>
                       <div>
