@@ -86,6 +86,14 @@ const Settings = () => {
   const [loading, setLoading] = useState(true);
   const [saveStatus, setSaveStatus] = useState('');
   const [activeTab, setActiveTab] = useState('Profile');
+  // Read tab from navigation state (react-router-dom)
+  useEffect(() => {
+    // Only run on mount
+    const nav = window.history.state && window.history.state.usr;
+    if (nav && nav.tab) {
+      setActiveTab(nav.tab);
+    }
+  }, []);
   // Example company details state
   const [companyDetails, setCompanyDetails] = useState({
     name: user?.companyName || '',
