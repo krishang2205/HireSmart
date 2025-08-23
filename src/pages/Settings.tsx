@@ -27,6 +27,8 @@ const fetchSettings = async () => {
     maxFileSize: 5,
     duplicateDetection: true,
     emailNotif: true,
+    soundNotif: false,
+    pushNotif: false,
     tableColumns: ['Name', 'Score', 'Category'],
     colorCoding: true,
     exportFormat: 'CSV',
@@ -49,7 +51,9 @@ const initialState = {
   resumeFormat: ['PDF', 'DOCX'],
   maxFileSize: 5,
   duplicateDetection: true,
-  emailNotif: true,
+    emailNotif: true,
+    soundNotif: false,
+    pushNotif: false,
   tableColumns: ['Name', 'Score', 'Category'],
   colorCoding: true,
   exportFormat: 'CSV',
@@ -476,12 +480,40 @@ const Settings = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                       <div className="flex flex-col gap-4">
                         <label className="flex items-center gap-2 cursor-pointer">
-                          <input type="checkbox" checked={settings.emailNotif} onChange={e => updateSetting('emailNotif', e.target.checked)} className="accent-indigo-600 w-6 h-6 transition-all" />
                           <span className="font-medium text-gray-700">Email Notification</span>
+                          <button
+                            type="button"
+                            className={`relative inline-flex h-6 w-12 items-center rounded-full transition-colors focus:outline-none ${settings.emailNotif ? 'bg-indigo-600' : 'bg-gray-300'}`}
+                            onClick={() => updateSetting('emailNotif', !settings.emailNotif)}
+                          >
+                            <span
+                              className={`inline-block h-5 w-5 transform rounded-full bg-white shadow transition-transform ${settings.emailNotif ? 'translate-x-6' : 'translate-x-1'}`}
+                            />
+                          </button>
                         </label>
                         <label className="flex items-center gap-2 cursor-pointer">
-                          <input type="checkbox" className="accent-indigo-600 w-6 h-6 transition-all" />
                           <span className="font-medium text-gray-700">Sound Notification</span>
+                          <button
+                            type="button"
+                            className={`relative inline-flex h-6 w-12 items-center rounded-full transition-colors focus:outline-none ${settings.soundNotif ? 'bg-indigo-600' : 'bg-gray-300'}`}
+                            onClick={() => updateSetting('soundNotif', !settings.soundNotif)}
+                          >
+                            <span
+                              className={`inline-block h-5 w-5 transform rounded-full bg-white shadow transition-transform ${settings.soundNotif ? 'translate-x-6' : 'translate-x-1'}`}
+                            />
+                          </button>
+                        </label>
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <span className="font-medium text-gray-700">Push Notification</span>
+                          <button
+                            type="button"
+                            className={`relative inline-flex h-6 w-12 items-center rounded-full transition-colors focus:outline-none ${settings.pushNotif ? 'bg-indigo-600' : 'bg-gray-300'}`}
+                            onClick={() => updateSetting('pushNotif', !settings.pushNotif)}
+                          >
+                            <span
+                              className={`inline-block h-5 w-5 transform rounded-full bg-white shadow transition-transform ${settings.pushNotif ? 'translate-x-6' : 'translate-x-1'}`}
+                            />
+                          </button>
                         </label>
                         <label className="block font-medium text-gray-700 mb-1">Notification Frequency</label>
                         <div className="flex gap-2">
