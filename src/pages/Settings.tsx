@@ -87,7 +87,12 @@ const tabSections = [
 
 const Settings = () => {
   // Search query state for settings search bar
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
+  // Filter tabs by search query
+  const filteredTabs = searchQuery.trim()
+    ? tabSections.filter(tab => tab.label.toLowerCase().includes(searchQuery.toLowerCase()))
+    : tabSections;
+  // ...existing code...
   // Auth context for user info
   const { user, updateProfile, logout } = useAuth();
   // State
@@ -299,15 +304,19 @@ const Settings = () => {
               <h1 className="text-2xl font-extrabold mb-2 text-blue-900 tracking-tight">Settings</h1>
               {/* Tabs */}
               <div className="flex gap-4 border-b mb-8 sticky top-14 bg-white/80 z-10 backdrop-blur-lg">
-                {tabSections.map(tab => (
-                  <button
-                    key={tab.label}
-                    className={`py-2 px-4 font-semibold border-b-2 transition-all duration-150 rounded-t-lg ${activeTab === tab.label ? 'border-indigo-600 text-indigo-700 bg-white shadow' : 'border-transparent text-gray-500 hover:text-indigo-600 hover:bg-indigo-50'}`}
-                    onClick={() => setActiveTab(tab.label)}
-                  >
-                    {tab.label}
-                  </button>
-                ))}
+                {filteredTabs.length > 0 ? (
+                  filteredTabs.map(tab => (
+                    <button
+                      key={tab.label}
+                      className={`py-2 px-4 font-semibold border-b-2 transition-all duration-150 rounded-t-lg ${activeTab === tab.label ? 'border-indigo-600 text-indigo-700 bg-white shadow' : 'border-transparent text-gray-500 hover:text-indigo-600 hover:bg-indigo-50'}`}
+                      onClick={() => setActiveTab(tab.label)}
+                    >
+                      {tab.label}
+                    </button>
+                  ))
+                ) : (
+                  <span className="px-4 py-2 text-gray-400">No matching settings</span>
+                )}
               </div>
               {/* Tab Content - open, not in a single container */}
               {activeTab === 'Profile' && (
