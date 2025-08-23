@@ -18,6 +18,7 @@ const buttonClass =
 
 // Mock API functions
 const fetchSettings = async () => {
+  
   // Simulate API call
   return {
     profile: { name: 'John Doe', email: 'john@example.com', password: '' },
@@ -29,6 +30,7 @@ const fetchSettings = async () => {
     emailNotif: true,
     soundNotif: false,
     pushNotif: false,
+  // ...existing code...
     tableColumns: ['Name', 'Score', 'Category'],
     colorCoding: true,
     exportFormat: 'CSV',
@@ -45,6 +47,8 @@ const saveSettings = async (settings: any) => {
 
 // Initial state
 const initialState = {
+  smsNotif: false,
+  whatsappNotif: false,
   profile: { name: '', email: '', password: '' },
   minScore: 0.7,
   thresholds: { best: 0.85, consider: 0.7 },
@@ -133,7 +137,7 @@ const Settings = () => {
             email: user.email || '',
           });
         }
-        setSettings(data);
+        setSettings({ ...initialState, ...data });
         setLoading(false);
       });
     }, [user]);
@@ -160,7 +164,7 @@ const Settings = () => {
           email: user.email || '',
         });
       }
-      setSettings(data);
+      setSettings({ ...initialState, ...data });
       setLoading(false);
     });
   }, [user]);
@@ -479,42 +483,68 @@ const Settings = () => {
                     <h2 className="text-lg font-bold mb-2 text-blue-800 flex items-center gap-2">Notifications & Alerts <span className="bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-full text-xs font-semibold">Integrations</span></h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                       <div className="flex flex-col gap-4">
-                        <label className="flex items-center gap-2 cursor-pointer">
-                          <span className="font-medium text-gray-700">Email Notification</span>
-                          <button
-                            type="button"
-                            className={`relative inline-flex h-6 w-12 items-center rounded-full transition-colors focus:outline-none ${settings.emailNotif ? 'bg-indigo-600' : 'bg-gray-300'}`}
-                            onClick={() => updateSetting('emailNotif', !settings.emailNotif)}
-                          >
-                            <span
-                              className={`inline-block h-5 w-5 transform rounded-full bg-white shadow transition-transform ${settings.emailNotif ? 'translate-x-6' : 'translate-x-1'}`}
-                            />
-                          </button>
-                        </label>
-                        <label className="flex items-center gap-2 cursor-pointer">
-                          <span className="font-medium text-gray-700">Sound Notification</span>
-                          <button
-                            type="button"
-                            className={`relative inline-flex h-6 w-12 items-center rounded-full transition-colors focus:outline-none ${settings.soundNotif ? 'bg-indigo-600' : 'bg-gray-300'}`}
-                            onClick={() => updateSetting('soundNotif', !settings.soundNotif)}
-                          >
-                            <span
-                              className={`inline-block h-5 w-5 transform rounded-full bg-white shadow transition-transform ${settings.soundNotif ? 'translate-x-6' : 'translate-x-1'}`}
-                            />
-                          </button>
-                        </label>
-                        <label className="flex items-center gap-2 cursor-pointer">
-                          <span className="font-medium text-gray-700">Push Notification</span>
-                          <button
-                            type="button"
-                            className={`relative inline-flex h-6 w-12 items-center rounded-full transition-colors focus:outline-none ${settings.pushNotif ? 'bg-indigo-600' : 'bg-gray-300'}`}
-                            onClick={() => updateSetting('pushNotif', !settings.pushNotif)}
-                          >
-                            <span
-                              className={`inline-block h-5 w-5 transform rounded-full bg-white shadow transition-transform ${settings.pushNotif ? 'translate-x-6' : 'translate-x-1'}`}
-                            />
-                          </button>
-                        </label>
+                        <div className="flex flex-col gap-2">
+                          <label className="flex items-center gap-2 cursor-pointer">
+                            <span className="font-medium text-gray-700">Email Notification</span>
+                            <button
+                              type="button"
+                              className={`relative inline-flex h-6 w-12 items-center rounded-full transition-colors focus:outline-none ${settings.emailNotif ? 'bg-indigo-600' : 'bg-gray-300'}`}
+                              onClick={() => updateSetting('emailNotif', !settings.emailNotif)}
+                            >
+                              <span
+                                className={`inline-block h-5 w-5 transform rounded-full bg-white shadow transition-transform ${settings.emailNotif ? 'translate-x-6' : 'translate-x-1'}`}
+                              />
+                            </button>
+                          </label>
+                          <label className="flex items-center gap-2 cursor-pointer">
+                            <span className="font-medium text-gray-700">Sound Notification</span>
+                            <button
+                              type="button"
+                              className={`relative inline-flex h-6 w-12 items-center rounded-full transition-colors focus:outline-none ${settings.soundNotif ? 'bg-indigo-600' : 'bg-gray-300'}`}
+                              onClick={() => updateSetting('soundNotif', !settings.soundNotif)}
+                            >
+                              <span
+                                className={`inline-block h-5 w-5 transform rounded-full bg-white shadow transition-transform ${settings.soundNotif ? 'translate-x-6' : 'translate-x-1'}`}
+                              />
+                            </button>
+                          </label>
+                          <label className="flex items-center gap-2 cursor-pointer">
+                            <span className="font-medium text-gray-700">Push Notification</span>
+                            <button
+                              type="button"
+                              className={`relative inline-flex h-6 w-12 items-center rounded-full transition-colors focus:outline-none ${settings.pushNotif ? 'bg-indigo-600' : 'bg-gray-300'}`}
+                              onClick={() => updateSetting('pushNotif', !settings.pushNotif)}
+                            >
+                              <span
+                                className={`inline-block h-5 w-5 transform rounded-full bg-white shadow transition-transform ${settings.pushNotif ? 'translate-x-6' : 'translate-x-1'}`}
+                              />
+                            </button>
+                          </label>
+                          <label className="flex items-center gap-2 cursor-pointer">
+                            <span className="font-medium text-gray-700">SMS Notification</span>
+                            <button
+                              type="button"
+                              className={`relative inline-flex h-6 w-12 items-center rounded-full transition-colors focus:outline-none ${settings.smsNotif ? 'bg-indigo-600' : 'bg-gray-300'}`}
+                              onClick={() => updateSetting('smsNotif', !settings.smsNotif)}
+                            >
+                              <span
+                                className={`inline-block h-5 w-5 transform rounded-full bg-white shadow transition-transform ${settings.smsNotif ? 'translate-x-6' : 'translate-x-1'}`}
+                              />
+                            </button>
+                          </label>
+                          <label className="flex items-center gap-2 cursor-pointer">
+                            <span className="font-medium text-gray-700">WhatsApp Notification</span>
+                            <button
+                              type="button"
+                              className={`relative inline-flex h-6 w-12 items-center rounded-full transition-colors focus:outline-none ${settings.whatsappNotif ? 'bg-indigo-600' : 'bg-gray-300'}`}
+                              onClick={() => updateSetting('whatsappNotif', !settings.whatsappNotif)}
+                            >
+                              <span
+                                className={`inline-block h-5 w-5 transform rounded-full bg-white shadow transition-transform ${settings.whatsappNotif ? 'translate-x-6' : 'translate-x-1'}`}
+                              />
+                            </button>
+                          </label>
+                        </div>
                         <label className="block font-medium text-gray-700 mb-1">Notification Frequency</label>
                         <div className="flex gap-2">
                           <button className="px-4 py-2 rounded-lg border bg-indigo-600 text-white">Immediate</button>
