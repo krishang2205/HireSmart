@@ -17,8 +17,3 @@ exports.saveMatchResults = async (jobId, matchResults) => {
 exports.getMatchResultsByJob = async (jobId) => {
   return await MatchResult.find({ jobId }).sort({ matchScore: -1 });
 };
-
-// Example usage:
-// const jobId = '64e3b...';
-// const results = await getMatchResultsByJob(jobId);
-

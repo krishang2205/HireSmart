@@ -48,6 +48,21 @@ const ResumeScreener = () => {
       const data = await response.json();
       setResult(data);
       setError(null);
+
+      // Save match results to database (Node.js backend)
+      // Use a valid ObjectId for jobId
+      const jobId = '64e3b123456789abcdef1234'; // Replace with a real ObjectId from your jobs collection
+      // Prepare matchResults for saving (candidateId must be available)
+      const matchResults = Array.isArray(data)
+        ? data.map(r => ({ candidateId: r.filename, matchScore: r.cosine_similarity_score }))
+        : [];
+      if (matchResults.length > 0) {
+        await fetch(`/api/match-results/${jobId}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ matchResults })
+        });
+      }
     } catch (err) {
       setError('Failed to connect to the server. Please try again later.');
     }
