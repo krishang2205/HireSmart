@@ -180,7 +180,7 @@ def evaluate():
         print("Cosine similarity score:", score)  # Debugging log
 
         # Categorize based on score and matched skills
-        if score > 0.8:
+        if score > 0.8 and len(matched_skills) >= 10:
             category = "Best for Hire"
             highlight = "green"
         elif 0.3 <= score <= 0.7 and len(matched_skills) >= 10:
