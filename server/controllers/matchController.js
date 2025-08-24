@@ -13,3 +13,12 @@ exports.saveMatchResults = async (jobId, matchResults) => {
   return await MatchResult.insertMany(docs);
 };
 
+// Fetch all match results for a specific jobId, sorted by matchScore descending
+exports.getMatchResultsByJob = async (jobId) => {
+  return await MatchResult.find({ jobId }).sort({ matchScore: -1 });
+};
+
+// Example usage:
+// const jobId = '64e3b...';
+// const results = await getMatchResultsByJob(jobId);
+
