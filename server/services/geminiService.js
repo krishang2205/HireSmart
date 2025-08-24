@@ -36,9 +36,11 @@ Steps:
    Round to 2 decimals.
 
 5. Based on final_score:
-   - score >= 0.7 → "Can Consider for Interview"
-   - score >= 0.4 and < 0.7 → "Consider with Caution"
+   - score >= 0.7 → "Best Match"
+   - score >= 0.4 and < 0.7 → "Can consider for interview"
    - score < 0.4 → "Not Good Candidate"
+   - score < 0.4 but have more than 10 skills matched → "Consider with Caution"
+
 
 6. Return ONLY valid JSON in this exact format:
 {

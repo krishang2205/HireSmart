@@ -1,20 +1,33 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Accordion from './ui/accordion';
 
 const getColorByPrediction = (prediction) => {
-  if (prediction === 'Can Consider for Interview' || prediction === 'Consider with Caution') {
+  if (prediction === 'Best Match') {
+    return { bar: 'bg-green-500', badge: 'bg-green-500 text-white' };
+  }
+  if (prediction === 'Can consider for interview') {
     return { bar: 'bg-yellow-500', badge: 'bg-yellow-500 text-black' };
   }
-  if (prediction === 'Best to Hire') {
-    return { bar: 'bg-green-500', badge: 'bg-green-500 text-white' };
+  if (prediction === 'Consider with Caution') {
+    return { bar: 'bg-orange-400', badge: 'bg-orange-400 text-black' };
   }
   return { bar: 'bg-red-500', badge: 'bg-red-500 text-white' };
 };
 
 const MatchResults = ({ results }) => {
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalContent, setModalContent] = useState('');
+
   if (!results || !Array.isArray(results) || results.length === 0) {
     return <p className="text-gray-500 mt-4">No results to display.</p>;
   }
+
+  const handleOverviewClick = (explanation) => {
+    setModalContent(explanation);
+    setModalOpen(true);
+  };
+
+  const closeModal = () => setModalOpen(false);
 
   return (
     <div className="bg-white p-4 rounded-xl shadow-lg max-w-5xl mx-auto">
@@ -79,20 +92,30 @@ const MatchResults = ({ results }) => {
                 </td>
                 <td className="px-4 py-2 align-middle whitespace-nowrap">
                   {res.explanation ? (
-                    <a
-                      href="#"
-                      className="text-blue-600 underline text-xs font-medium"
-                      onClick={e => {
-                        e.preventDefault();
-                        window.alert(res.explanation);
-                      }}
+                    <button
+                      className="text-blue-600 underline text-xs font-medium focus:outline-none"
+                      onClick={() => handleOverviewClick(res.explanation)}
                     >
                       View Overview
-                    </a>
+                    </button>
                   ) : (
                     <span className="text-gray-400 italic text-xs">No overview</span>
                   )}
                 </td>
+      {modalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+          <div className="bg-white rounded-xl shadow-2xl p-6 max-w-lg w-full relative">
+            <button
+              className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 text-lg font-bold focus:outline-none"
+              onClick={closeModal}
+            >
+              &times;
+            </button>
+            <h3 className="text-lg font-bold mb-2 text-indigo-700">AI Overview</h3>
+            <div className="text-gray-800 text-sm whitespace-pre-line">{modalContent}</div>
+          </div>
+        </div>
+      )}
               </tr>
             ))}
           </tbody>
