@@ -4,7 +4,7 @@ const { analyzeResumeWithGemini } = require('../services/geminiService');
 
 // Insert match results for a job
 // matchResults: [{ candidateId, matchScore }, ...], jobId: ObjectId or String
-exports.saveMatchResults = async (jobId, matchResults) => {
+async function saveMatchResults(jobId, matchResults) {
   // Prepare documents for bulk insert
   const docs = matchResults.map(r => ({
     jobId,
@@ -20,13 +20,11 @@ exports.saveMatchResults = async (jobId, matchResults) => {
 };
 
 // Fetch all match results for a specific jobId, sorted by matchScore descending
-exports.getMatchResultsByJob = async (jobId) => {
+async function getMatchResultsByJob(jobId) {
   return await MatchResult.find({ jobId }).sort({ matchScore: -1 });
 };
 
-// Example usage in your matching logic:
-// const geminiResult = await analyzeResumeWithGemini(resumeText, jobDescription);
-// Parse geminiResult for score, skills, explanation and use in your match results
+
 
 // Gemini-powered match analysis
 async function getGeminiMatchResult(resumeText, jobDescription, filename) {
@@ -52,4 +50,9 @@ async function analyzeResumesWithGemini(resumes, jobDescription) {
   return results;
 }
 
-module.exports = { getGeminiMatchResult, analyzeResumesWithGemini };
+module.exports = {
+  getGeminiMatchResult,
+  analyzeResumesWithGemini,
+  saveMatchResults,
+  getMatchResultsByJob
+};

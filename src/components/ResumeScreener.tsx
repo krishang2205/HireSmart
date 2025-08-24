@@ -4,7 +4,10 @@ import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf';
 pdfjsLib.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjsLib.version}/legacy/build/pdf.worker.js`;
 import mammoth from 'mammoth';
 
-const ResumeScreener = () => {
+const ResumeScreener = ({ jobId }) => {
+  // Generate random 6-digit jobId if not provided
+  const getRandomJobId = () => Math.floor(100000 + Math.random() * 900000).toString();
+  const effectiveJobId = jobId || getRandomJobId();
   const [resumeFile, setResumeFile] = useState<FileList | null>(null);
   const [jobDescription, setJobDescription] = useState('');
   const [result, setResult] = useState(null);
@@ -73,6 +76,18 @@ const ResumeScreener = () => {
       const geminiResults = await response.json();
       setResult(geminiResults);
       setError(null);
+
+      // Save results to MongoDB using provided jobId
+      if (effectiveJobId) {
+        await fetch(`/api/match-results/${effectiveJobId}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ matchResults: geminiResults.map((r, idx) => ({
+            candidateId: `candidate-${idx+1}`,
+            ...r
+          })) })
+        });
+      }
     } catch (err) {
       setError('Failed to connect to the server. Please try again later.');
       setResult(null);
