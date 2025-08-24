@@ -9,7 +9,11 @@ exports.saveMatchResults = async (jobId, matchResults) => {
   const docs = matchResults.map(r => ({
     jobId,
     candidateId: r.candidateId,
-    matchScore: r.matchScore
+    filename: r.filename,
+    prediction: r.prediction,
+    matchScore: typeof r.cosine_similarity_score === 'number' ? r.cosine_similarity_score : 0,
+    matched_skills: Array.isArray(r.matched_skills) ? r.matched_skills : [],
+    explanation: r.explanation || ''
   }));
   // Insert all results
   return await MatchResult.insertMany(docs);
