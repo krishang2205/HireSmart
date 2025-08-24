@@ -183,11 +183,11 @@ def evaluate():
         if score > 0.8:
             category = "Best for Hire"
             highlight = "green"
-        elif 0.3 <= score <= 0.7:
+        elif 0.3 <= score <= 0.7 and len(matched_skills) >= 10:
             category = "Can Consider for Interview"
             highlight = "yellow"
         elif score < 0.3:
-            if score < 0.5 and len(matched_skills) > 3:  # Adjust threshold and skill count as needed
+            if score < 0.5 and len(matched_skills) >= 10:
                 category = "Can Consider for Interview"
                 highlight = "yellow"
             else:
