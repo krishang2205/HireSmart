@@ -1,10 +1,14 @@
 import React from 'react';
 import Accordion from './ui/accordion';
 
-const getBarColor = (highlight) => {
-  if (highlight === 'green') return 'bg-green-500';
-  if (highlight === 'yellow') return 'bg-yellow-500';
-  return 'bg-red-500';
+const getColorByPrediction = (prediction) => {
+  if (prediction === 'Can Consider for Interview' || prediction === 'Consider with Caution') {
+    return { bar: 'bg-yellow-500', badge: 'bg-yellow-500 text-black' };
+  }
+  if (prediction === 'Best to Hire') {
+    return { bar: 'bg-green-500', badge: 'bg-green-500 text-white' };
+  }
+  return { bar: 'bg-red-500', badge: 'bg-red-500 text-white' };
 };
 
 const MatchResults = ({ results }) => {
@@ -25,6 +29,7 @@ const MatchResults = ({ results }) => {
               <th className="px-4 py-2 text-left font-semibold text-gray-700">Status</th>
               <th className="px-4 py-2 text-left font-semibold text-gray-700">Skills</th>
               <th className="px-4 py-2 text-left font-semibold text-gray-700">Prediction</th>
+              <th className="px-4 py-2 text-left font-semibold text-gray-700">Overview</th>
             </tr>
           </thead>
           <tbody>
@@ -40,7 +45,7 @@ const MatchResults = ({ results }) => {
                 <td className="px-4 py-2 align-middle">
                   <div className="w-20 h-2 bg-gray-200 rounded-full mx-auto">
                     <div
-                      className={`h-2 ${getBarColor(res.highlight)} rounded-full transition-all`}
+                      className={`h-2 ${getColorByPrediction(res.prediction).bar} rounded-full transition-all`}
                       style={{ width: `${res.cosine_similarity_score * 100}%` }}
                     ></div>
                   </div>
@@ -67,10 +72,26 @@ const MatchResults = ({ results }) => {
                 </td>
                 <td className="px-4 py-2 align-middle whitespace-nowrap">
                   <span
-                    className={`inline-block font-semibold ${getBarColor(res.highlight)} text-white px-3 py-1 rounded-full text-xs text-center`}
+                    className={`inline-block font-semibold ${getColorByPrediction(res.prediction).badge} px-3 py-1 rounded-full text-xs text-center`}
                   >
                     {res.prediction}
                   </span>
+                </td>
+                <td className="px-4 py-2 align-middle whitespace-nowrap">
+                  {res.explanation ? (
+                    <a
+                      href="#"
+                      className="text-blue-600 underline text-xs font-medium"
+                      onClick={e => {
+                        e.preventDefault();
+                        window.alert(res.explanation);
+                      }}
+                    >
+                      View Overview
+                    </a>
+                  ) : (
+                    <span className="text-gray-400 italic text-xs">No overview</span>
+                  )}
                 </td>
               </tr>
             ))}

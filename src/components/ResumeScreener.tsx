@@ -1,11 +1,15 @@
 import React, { useState } from 'react';
 import MatchResults from './MatchResults';
+import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf';
+pdfjsLib.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjsLib.version}/legacy/build/pdf.worker.js`;
+import mammoth from 'mammoth';
 
 const ResumeScreener = () => {
   const [resumeFile, setResumeFile] = useState<FileList | null>(null);
   const [jobDescription, setJobDescription] = useState('');
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setResumeFile(e.target.files); // Allow multiple files to be selected
@@ -15,57 +19,65 @@ const ResumeScreener = () => {
     setJobDescription(e.target.value); // Update the job description state
   };
 
+  const extractTextFromPDF = async (file) => {
+    const arrayBuffer = await file.arrayBuffer();
+    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+    let text = '';
+    for (let i = 1; i <= pdf.numPages; i++) {
+      const page = await pdf.getPage(i);
+      const content = await page.getTextContent();
+      text += content.items
+        .filter((item): item is typeof item & { str: string } => 'str' in item)
+        .map(item => item.str)
+        .join(' ');
+    }
+    return text;
+  };
+
+  const extractTextFromDOCX = async (file) => {
+    const arrayBuffer = await file.arrayBuffer();
+    const { value } = await mammoth.extractRawText({ arrayBuffer });
+    return value;
+  };
+
   const handleAnalyzeMatch = async () => {
     if (!resumeFile || !jobDescription) {
       setError('Please provide both resumes and a job description.');
       return;
     }
-
-    console.log('Job Description:', jobDescription); // Debugging log
-    console.log('Selected Resumes:', resumeFile); // Debugging log
-
-    const formData = new FormData();
-    if (resumeFile) {
-      Array.from(resumeFile).forEach((file) => {
-        formData.append('resumes', file as File); // Append multiple files to the form data
-      });
+    setLoading(true);
+    // Extract text from resumes before Gemini analysis
+    const resumesForGemini = [];
+    for (const file of Array.from(resumeFile)) {
+      let text = '';
+      if (file.name.toLowerCase().endsWith('.pdf')) {
+        text = await extractTextFromPDF(file);
+      } else if (file.name.toLowerCase().endsWith('.docx')) {
+        text = await extractTextFromDOCX(file);
+      }
+      resumesForGemini.push({ text, filename: file.name });
     }
-    formData.append('job_description', jobDescription);
-
     try {
-  // Use relative path so it works both in dev (proxy) and production (same origin)
-  const response = await fetch('/evaluate', {
+      const response = await fetch('/api/gemini-match', {
         method: 'POST',
-        body: formData,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ resumes: resumesForGemini, jobDescription })
       });
-
       if (!response.ok) {
         const errorData = await response.json();
         setError(errorData.error || 'An error occurred while processing the request.');
+        setResult(null);
+        setLoading(false);
         return;
       }
-
-      const data = await response.json();
-      setResult(data);
+      const geminiResults = await response.json();
+      setResult(geminiResults);
       setError(null);
-
-      // Save match results to database (Node.js backend)
-      // Use a valid ObjectId for jobId
-      const jobId = '64e3b123456789abcdef1234'; // Replace with a real ObjectId from your jobs collection
-      // Prepare matchResults for saving (candidateId must be available)
-      const matchResults = Array.isArray(data)
-        ? data.map(r => ({ candidateId: r.filename, matchScore: r.cosine_similarity_score }))
-        : [];
-      if (matchResults.length > 0) {
-        await fetch(`/api/match-results/${jobId}`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ matchResults })
-        });
-      }
     } catch (err) {
       setError('Failed to connect to the server. Please try again later.');
+      setResult(null);
     }
+    setLoading(false);
   };
 
   return (
@@ -109,7 +121,15 @@ const ResumeScreener = () => {
       </div>
       {error && <p className="text-red-500 mt-4">{error}</p>}
       <div className="mt-6 w-full flex justify-center">
-        {result && Array.isArray(result) && result.length > 0 ? (
+        {loading ? (
+          <div className="flex flex-col items-center">
+            <svg className="animate-spin h-8 w-8 text-indigo-600 mb-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
+            </svg>
+            <span className="text-indigo-600 font-semibold">Screening resumes, please wait...</span>
+          </div>
+        ) : result && Array.isArray(result) && result.length > 0 ? (
           <MatchResults results={result} />
         ) : (
           <p className="text-gray-500 mt-4">No results to display.</p>

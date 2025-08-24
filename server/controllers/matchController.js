@@ -1,4 +1,6 @@
 const MatchResult = require('../models/MatchResult');
+const { analyzeResumeWithGemini } = require('../services/geminiService');
+// ...existing code...
 
 // Insert match results for a job
 // matchResults: [{ candidateId, matchScore }, ...], jobId: ObjectId or String
@@ -17,3 +19,33 @@ exports.saveMatchResults = async (jobId, matchResults) => {
 exports.getMatchResultsByJob = async (jobId) => {
   return await MatchResult.find({ jobId }).sort({ matchScore: -1 });
 };
+
+// Example usage in your matching logic:
+// const geminiResult = await analyzeResumeWithGemini(resumeText, jobDescription);
+// Parse geminiResult for score, skills, explanation and use in your match results
+
+// Gemini-powered match analysis
+async function getGeminiMatchResult(resumeText, jobDescription, filename) {
+  const geminiResult = await analyzeResumeWithGemini(resumeText, jobDescription, filename);
+  // Use the returned object directly, with correct keys
+  return {
+    filename: geminiResult.filename || filename,
+    prediction: geminiResult.prediction || "Not Good Candidate",
+    cosine_similarity_score: typeof geminiResult.cosine_similarity_score === 'number' ? geminiResult.cosine_similarity_score : 0,
+    matched_skills: Array.isArray(geminiResult.matched_skills) ? geminiResult.matched_skills : [],
+    explanation: geminiResult.explanation || '',
+  };
+}
+
+// Example: Gemini-powered batch resume analysis
+// resumes: [{ text, filename }], jobDescription: string
+async function analyzeResumesWithGemini(resumes, jobDescription) {
+  const results = [];
+  for (const resume of resumes) {
+    const result = await getGeminiMatchResult(resume.text, jobDescription, resume.filename);
+    results.push(result);
+  }
+  return results;
+}
+
+module.exports = { getGeminiMatchResult, analyzeResumesWithGemini };
