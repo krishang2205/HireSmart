@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+
 import Accordion from './ui/accordion';
 
 const getColorByPrediction = (prediction) => {
@@ -29,8 +30,32 @@ const MatchResults = ({ results }) => {
 
   const closeModal = () => setModalOpen(false);
 
+  const handleExportExcel = async () => {
+    const XLSX = await import('xlsx');
+    const data = results.map(res => ({
+      Name: res.filename,
+      Type: res.filename?.toLowerCase().endsWith('.pdf') ? 'PDF' : 'DOCX',
+      Score: `${(res.cosine_similarity_score * 100).toFixed(1)}%`,
+      Skills: Array.isArray(res.matched_skills) ? res.matched_skills.join(', ') : '',
+      Prediction: res.prediction,
+      Explanation: res.explanation || '',
+      CandidateId: res.candidateId || '',
+      JobId: res.jobId || ''
+    }));
+    const worksheet = XLSX.utils.json_to_sheet(data);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Results');
+    XLSX.writeFile(workbook, 'screening_results.xlsx');
+  };
+
   return (
-    <div className="bg-white p-4 rounded-xl shadow-lg max-w-5xl mx-auto">
+    <div className="bg-white p-4 rounded-xl shadow-lg max-w-5xl mx-auto relative">
+      <button
+        className="absolute top-4 right-4 bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold shadow hover:bg-blue-700 transition z-10"
+        onClick={handleExportExcel}
+      >
+        Export
+      </button>
       <h2 className="text-2xl font-semibold text-indigo-700 mb-6">Screening Results</h2>
       <div>
         <table className="w-full border border-gray-200 rounded-xl overflow-hidden shadow-sm text-sm table-auto">
