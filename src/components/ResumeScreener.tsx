@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { extractNameFromResume } from './utils';
 import MatchResults from './MatchResults';
 import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf';
 pdfjsLib.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjsLib.version}/legacy/build/pdf.worker.js`;
@@ -8,6 +9,20 @@ const ResumeScreener = ({ jobId }) => {
   // Generate random 6-digit jobId if not provided
   const getRandomJobId = () => Math.floor(100000 + Math.random() * 900000).toString();
   const effectiveJobId = jobId || getRandomJobId();
+
+  // Fetch persisted results on mount if jobId is present
+  React.useEffect(() => {
+    if (effectiveJobId) {
+      fetch(`/api/match-results/${effectiveJobId}`)
+        .then(res => res.ok ? res.json() : [])
+        .then(data => {
+          if (Array.isArray(data) && data.length > 0) {
+            setResult(data);
+          }
+        })
+        .catch(() => {});
+    }
+  }, [effectiveJobId]);
   const [resumeFile, setResumeFile] = useState<FileList | null>(null);
   const [jobDescription, setJobDescription] = useState('');
   const [result, setResult] = useState(null);
@@ -58,6 +73,7 @@ const ResumeScreener = ({ jobId }) => {
       } else if (file.name.toLowerCase().endsWith('.docx')) {
         text = await extractTextFromDOCX(file);
       }
+      // Do NOT extract candidateName locally; let Gemini handle it
       resumesForGemini.push({ text, filename: file.name });
     }
     try {
@@ -74,8 +90,9 @@ const ResumeScreener = ({ jobId }) => {
         return;
       }
       const geminiResults = await response.json();
-      setResult(geminiResults);
-      setError(null);
+  // Use candidateName from Gemini response only
+  setResult(geminiResults);
+  setError(null);
 
       // Save results to MongoDB using provided jobId
       if (effectiveJobId) {

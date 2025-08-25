@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { extract_text_from_pdf, extract_text_from_docx } from './utils';
+import { extract_text_from_pdf, extract_text_from_docx, extractNameFromResume } from './utils';
 
 const ResumeUploader = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -29,7 +29,7 @@ const ResumeUploader = () => {
     setIsLoading(true);
     setErrorMessage(''); // Reset error message
     const file = acceptedFiles[0];
-    
+
     // File size validation (example: 10MB limit)
     if (file.size > 10 * 1024 * 1024) {
       setErrorMessage('File is too large. Please upload a file smaller than 10MB.');
@@ -38,7 +38,8 @@ const ResumeUploader = () => {
     }
 
     const extractedText = await handleFileProcessing(file);
-    setUploadedFile({ file, extractedText });
+    const candidateName = extractNameFromResume(extractedText);
+    setUploadedFile({ file, extractedText, candidateName });
     setIsLoading(false);
   };
 
@@ -68,7 +69,8 @@ const ResumeUploader = () => {
           <p className="text-blue-500 animate-pulse">Processing your file...</p>
         ) : uploadedFile ? (
           <div>
-            <p className="text-green-600 font-semibold">Uploaded: {uploadedFile.file.name}</p>
+            <p className="text-green-600 font-semibold">Candidate Name: {uploadedFile.candidateName || 'Not found'}</p>
+            <p className="text-gray-700 mt-2">Uploaded File: {uploadedFile.file.name}</p>
             <p className="text-gray-700 mt-4">Extracted Text:</p>
             <pre className="text-sm bg-gray-100 p-4 rounded-lg overflow-auto max-h-40 border border-gray-300">{uploadedFile.extractedText}</pre>
           </div>

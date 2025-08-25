@@ -33,7 +33,7 @@ const MatchResults = ({ results }) => {
   const handleExportExcel = async () => {
     const XLSX = await import('xlsx');
     const data = results.map(res => ({
-      Name: res.filename,
+          Name: res.candidateName,
       Type: res.filename?.toLowerCase().endsWith('.pdf') ? 'PDF' : 'DOCX',
       Score: `${(res.cosine_similarity_score * 100).toFixed(1)}%`,
       Skills: Array.isArray(res.matched_skills) ? res.matched_skills.join(', ') : '',
@@ -78,7 +78,7 @@ const MatchResults = ({ results }) => {
           <tbody>
             {results.map((res, idx) => (
               <tr key={idx} className="border-t transition-all hover:bg-blue-50">
-                <td className="px-4 py-2 align-middle break-words">{res.filename}</td>
+                  <td className="px-4 py-2 align-middle break-words">{res.candidateName || res.filename}</td>
                 <td className="px-4 py-2 align-middle whitespace-nowrap">
                   {res.filename?.toLowerCase().endsWith('.pdf') ? 'PDF' : 'DOCX'}
                 </td>

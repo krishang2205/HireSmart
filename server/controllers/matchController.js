@@ -10,6 +10,9 @@ async function saveMatchResults(jobId, matchResults) {
     jobId,
     candidateId: r.candidateId,
     filename: r.filename,
+    candidateName: r.candidateName,
+    email: r.email,
+    contactNumber: r.contactNumber,
     prediction: r.prediction,
     matchScore: typeof r.cosine_similarity_score === 'number' ? r.cosine_similarity_score : 0,
     matched_skills: Array.isArray(r.matched_skills) ? r.matched_skills : [],
@@ -32,6 +35,9 @@ async function getGeminiMatchResult(resumeText, jobDescription, filename) {
   // Use the returned object directly, with correct keys
   return {
     filename: geminiResult.filename || filename,
+    candidateName: geminiResult.candidateName || '',
+    email: geminiResult.email || '',
+    contactNumber: geminiResult.contactNumber || '',
     prediction: geminiResult.prediction || "Not Good Candidate",
     cosine_similarity_score: typeof geminiResult.cosine_similarity_score === 'number' ? geminiResult.cosine_similarity_score : 0,
     matched_skills: Array.isArray(geminiResult.matched_skills) ? geminiResult.matched_skills : [],
