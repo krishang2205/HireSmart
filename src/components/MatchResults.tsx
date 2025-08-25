@@ -151,6 +151,25 @@ const MatchResults = ({ results }) => {
           </tbody>
         </table>
       </div>
+        {/* Next Step Button */}
+        <div style={{ marginTop: '2rem', textAlign: 'right' }}>
+          <button
+            className="next-step-btn"
+            style={{
+              padding: '0.75rem 2rem',
+              background: '#2563eb',
+              color: '#fff',
+              border: 'none',
+              borderRadius: '0.5rem',
+              fontWeight: 'bold',
+              cursor: 'pointer',
+              fontSize: '1rem',
+            }}
+            onClick={() => window.location.href = '/next-steps'}
+          >
+            Next Step
+          </button>
+        </div>
     </div>
   );
 };

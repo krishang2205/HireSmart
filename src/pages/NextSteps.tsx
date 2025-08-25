@@ -15,14 +15,32 @@ export default function NextSteps() {
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(false);
 
+
   useEffect(() => {
-    fetchCandidates();
+    fetchMatchResults();
   }, []);
 
-  const fetchCandidates = async () => {
+  // Fetch match results from DB (MatchResult model)
+  const fetchMatchResults = async () => {
     setLoading(true);
-    const res = await axios.get('/api/candidates');
-    setCandidates(res.data);
+    // TODO: Replace with actual jobId source (query param, localStorage, etc.)
+    const jobId = localStorage.getItem('jobId') || 'demo-job';
+    try {
+      const res = await axios.get(`/api/match-results/${jobId}`);
+      // Map results to candidate-like objects for table
+      setCandidates(res.data.map(r => ({
+        _id: r._id,
+        name: r.candidateName,
+        resumeScore: r.matchScore,
+        category: r.prediction,
+        contactInfo: { email: r.email, phone: r.contactNumber },
+        status: 'Pending Communication', // Default, update as needed
+        assessmentScore: r.assessmentScore || null,
+        finalRank: r.finalRank || null
+      })));
+    } catch (err) {
+      setCandidates([]);
+    }
     setLoading(false);
   };
 
