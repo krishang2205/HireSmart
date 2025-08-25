@@ -176,7 +176,11 @@ export default function NextSteps() {
                     {c.finalRank ? <Box sx={{ fontWeight: 500, px: 1, py: 0.5, borderRadius: 2, background: '#e0e7ff', color: '#3730a3', display: 'inline-block' }}>{c.finalRank}/100</Box> : 'N/A'}
                   </TableCell>
                   <TableCell>
-                    {/* Actions intentionally omitted for this step */}
+                    <Box sx={{ display: 'flex', gap: 1 }}>
+                      <Button variant="outlined" size="small" onClick={() => handleSendCommunication(c._id)} startIcon={<EmailIcon />}>Send</Button>
+                      <Button variant="outlined" size="small" onClick={() => handleAssignAssessment(c._id)} startIcon={<TrendingUpIcon />}>Assess</Button>
+                      <Button variant="outlined" size="small" onClick={() => handleViewAssessmentScore(c._id)} startIcon={<CheckCircleIcon />}>View</Button>
+                    </Box>
                   </TableCell>
                 </TableRow>
               ))}
