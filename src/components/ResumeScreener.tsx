@@ -9,6 +9,12 @@ const ResumeScreener = ({ jobId }) => {
   // Generate random 6-digit jobId if not provided
   const getRandomJobId = () => Math.floor(100000 + Math.random() * 900000).toString();
   const effectiveJobId = jobId || getRandomJobId();
+  // Save jobId to localStorage for use in NextSteps
+  React.useEffect(() => {
+    if (effectiveJobId) {
+      localStorage.setItem('jobId', effectiveJobId);
+    }
+  }, [effectiveJobId]);
 
   // Fetch persisted results on mount if jobId is present
   React.useEffect(() => {
@@ -96,7 +102,7 @@ const ResumeScreener = ({ jobId }) => {
 
       // Save results to MongoDB using provided jobId
       if (effectiveJobId) {
-        await fetch(`/api/match-results/${effectiveJobId}`, {
+        const saveRes = await fetch(`/api/match-results/${effectiveJobId}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ matchResults: geminiResults.map((r, idx) => ({
@@ -104,6 +110,10 @@ const ResumeScreener = ({ jobId }) => {
             ...r
           })) })
         });
+        if (saveRes.ok) {
+          // Persist jobId to localStorage only after successful save
+          localStorage.setItem('jobId', effectiveJobId);
+        }
       }
     } catch (err) {
       setError('Failed to connect to the server. Please try again later.');

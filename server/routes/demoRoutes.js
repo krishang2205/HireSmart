@@ -1,6 +1,17 @@
+
 const express = require('express');
 const router = express.Router();
-const { getMatchResultsByJob, saveMatchResults, analyzeResumesWithGemini } = require('../controllers/matchController');
+const { getMatchResultsByJob, saveMatchResults, analyzeResumesWithGemini, getAllMatchResults } = require('../controllers/matchController');
+
+// GET /api/match-results (all results)
+router.get('/match-results', async (req, res) => {
+  try {
+    const results = await getAllMatchResults();
+    res.json(results);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to fetch all match results' });
+  }
+});
 
 // GET /api/match-results/:jobId
 router.get('/match-results/:jobId', async (req, res) => {

@@ -56,9 +56,15 @@ async function analyzeResumesWithGemini(resumes, jobDescription) {
   return results;
 }
 
+// Fetch all match results (no jobId filter)
+async function getAllMatchResults() {
+  return await MatchResult.find({}).sort({ matchScore: -1 });
+};
+
 module.exports = {
   getGeminiMatchResult,
   analyzeResumesWithGemini,
   saveMatchResults,
   getMatchResultsByJob
+  ,getAllMatchResults
 };
