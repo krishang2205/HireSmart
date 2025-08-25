@@ -153,37 +153,45 @@ export default function NextSteps() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {filteredCandidates.map(c => (
-                <TableRow key={c._id}>
-                  <TableCell sx={{ fontWeight: 600 }}>{c.name}</TableCell>
-                  <TableCell>
-                    {c.resumeScore ? <Box sx={{ fontWeight: 500, px: 1, py: 0.5, borderRadius: 2, background: '#f3f4f6', display: 'inline-block' }}>{c.resumeScore}/100</Box> : 'N/A'}
-                  </TableCell>
-                  <TableCell>
-                    <Box sx={{ px: 1.5, py: 0.5, borderRadius: 2, fontWeight: 600, fontSize: 13, background: getCategoryColor(c.category).bg, color: getCategoryColor(c.category).color, display: 'inline-block' }}>{c.category}</Box>
-                  </TableCell>
-                  <TableCell>
-                    <Box>{c.contactInfo?.email}</Box>
-                    <Box sx={{ color: 'text.secondary', fontSize: 13 }}>{c.contactInfo?.phone}</Box>
-                  </TableCell>
-                  <TableCell>
-                    <Box sx={{ px: 1.5, py: 0.5, borderRadius: 2, fontWeight: 600, fontSize: 13, background: getStatusColor(c.status).bg, color: getStatusColor(c.status).color, display: 'inline-block' }}>{c.status}</Box>
-                  </TableCell>
-                  <TableCell>
-                    {c.assessmentScore ? <Box sx={{ fontWeight: 500, px: 1, py: 0.5, borderRadius: 2, background: '#f3f4f6', display: 'inline-block' }}>{c.assessmentScore}/100</Box> : 'N/A'}
-                  </TableCell>
-                  <TableCell>
-                    {c.finalRank ? <Box sx={{ fontWeight: 500, px: 1, py: 0.5, borderRadius: 2, background: '#e0e7ff', color: '#3730a3', display: 'inline-block' }}>{c.finalRank}/100</Box> : 'N/A'}
-                  </TableCell>
-                  <TableCell>
-                    <Box sx={{ display: 'flex', gap: 1 }}>
-                      <Button variant="outlined" size="small" onClick={() => handleSendCommunication(c._id)} startIcon={<EmailIcon />}>Send</Button>
-                      <Button variant="outlined" size="small" onClick={() => handleAssignAssessment(c._id)} startIcon={<TrendingUpIcon />}>Assess</Button>
-                      <Button variant="outlined" size="small" onClick={() => handleViewAssessmentScore(c._id)} startIcon={<CheckCircleIcon />}>View</Button>
-                    </Box>
+              {filteredCandidates.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={8} align="center" sx={{ py: 6, color: 'text.secondary' }}>
+                    No candidates found. Please upload resumes to see shortlisted candidates here.
                   </TableCell>
                 </TableRow>
-              ))}
+              ) : (
+                filteredCandidates.map(c => (
+                  <TableRow key={c._id}>
+                    <TableCell sx={{ fontWeight: 600 }}>{c.name}</TableCell>
+                    <TableCell>
+                      {c.resumeScore ? <Box sx={{ fontWeight: 500, px: 1, py: 0.5, borderRadius: 2, background: '#f3f4f6', display: 'inline-block' }}>{c.resumeScore}/100</Box> : 'N/A'}
+                    </TableCell>
+                    <TableCell>
+                      <Box sx={{ px: 1.5, py: 0.5, borderRadius: 2, fontWeight: 600, fontSize: 13, background: getCategoryColor(c.category).bg, color: getCategoryColor(c.category).color, display: 'inline-block' }}>{c.category}</Box>
+                    </TableCell>
+                    <TableCell>
+                      <Box>{c.contactInfo?.email}</Box>
+                      <Box sx={{ color: 'text.secondary', fontSize: 13 }}>{c.contactInfo?.phone}</Box>
+                    </TableCell>
+                    <TableCell>
+                      <Box sx={{ px: 1.5, py: 0.5, borderRadius: 2, fontWeight: 600, fontSize: 13, background: getStatusColor(c.status).bg, color: getStatusColor(c.status).color, display: 'inline-block' }}>{c.status}</Box>
+                    </TableCell>
+                    <TableCell>
+                      {c.assessmentScore ? <Box sx={{ fontWeight: 500, px: 1, py: 0.5, borderRadius: 2, background: '#f3f4f6', display: 'inline-block' }}>{c.assessmentScore}/100</Box> : 'N/A'}
+                    </TableCell>
+                    <TableCell>
+                      {c.finalRank ? <Box sx={{ fontWeight: 500, px: 1, py: 0.5, borderRadius: 2, background: '#e0e7ff', color: '#3730a3', display: 'inline-block' }}>{c.finalRank}/100</Box> : 'N/A'}
+                    </TableCell>
+                    <TableCell>
+                      <Box sx={{ display: 'flex', gap: 1 }}>
+                        <Button variant="outlined" size="small" onClick={() => handleSendCommunication(c._id)} startIcon={<EmailIcon />}>Send</Button>
+                        <Button variant="outlined" size="small" onClick={() => handleAssignAssessment(c._id)} startIcon={<TrendingUpIcon />}>Assess</Button>
+                        <Button variant="outlined" size="small" onClick={() => handleViewAssessmentScore(c._id)} startIcon={<CheckCircleIcon />}>View</Button>
+                      </Box>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
             </TableBody>
           </Table>
         )}
