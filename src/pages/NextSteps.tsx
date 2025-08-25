@@ -167,7 +167,7 @@ export default function NextSteps() {
                     <Box sx={{ color: 'text.secondary', fontSize: 13 }}>{c.contactInfo?.phone}</Box>
                   </TableCell>
                   <TableCell>
-                    {/* Status intentionally omitted for this step */}
+                    <Box sx={{ px: 1.5, py: 0.5, borderRadius: 2, fontWeight: 600, fontSize: 13, background: getStatusColor(c.status).bg, color: getStatusColor(c.status).color, display: 'inline-block' }}>{c.status}</Box>
                   </TableCell>
                   <TableCell>
                     {c.assessmentScore ? <Box sx={{ fontWeight: 500, px: 1, py: 0.5, borderRadius: 2, background: '#f3f4f6', display: 'inline-block' }}>{c.assessmentScore}/100</Box> : 'N/A'}
