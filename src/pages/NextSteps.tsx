@@ -167,7 +167,7 @@ export default function NextSteps() {
                     <Box sx={{ color: 'text.secondary', fontSize: 13 }}>{c.contactInfo?.phone}</Box>
                   </TableCell>
                   <TableCell>
-                    <Box sx={{ px: 1.5, py: 0.5, borderRadius: 2, fontWeight: 600, fontSize: 13, background: getStatusColor(c.status).bg, color: getStatusColor(c.status).color, display: 'inline-block' }}>{c.status}</Box>
+                    {/* Status intentionally omitted for this step */}
                   </TableCell>
                   <TableCell>
                     {c.assessmentScore ? <Box sx={{ fontWeight: 500, px: 1, py: 0.5, borderRadius: 2, background: '#f3f4f6', display: 'inline-block' }}>{c.assessmentScore}/100</Box> : 'N/A'}
@@ -176,12 +176,7 @@ export default function NextSteps() {
                     {c.finalRank ? <Box sx={{ fontWeight: 500, px: 1, py: 0.5, borderRadius: 2, background: '#e0e7ff', color: '#3730a3', display: 'inline-block' }}>{c.finalRank}/100</Box> : 'N/A'}
                   </TableCell>
                   <TableCell>
-                    <Box sx={{ display: 'flex', gap: 1 }}>
-                      {c.status === 'Pending Communication' && <Button variant="outlined" size="small" onClick={() => handleSendCommunication(c._id)} startIcon={<EmailIcon />}>Send</Button>}
-                      {(c.status === 'Pending Communication' || c.status === 'Communication Sent') && <Button variant="outlined" size="small" onClick={() => handleAssignAssessment(c._id)} startIcon={<TrendingUpIcon />}>Assess</Button>}
-                      {c.status === 'Assessment Assigned' && <Button variant="outlined" size="small" onClick={() => handleViewAssessmentScore(c._id)} startIcon={<CheckCircleIcon />}>View</Button>}
-                      {c.status === 'Assessment Completed' && <Button variant="outlined" size="small" onClick={() => handleViewAssessmentScore(c._id)} startIcon={<TrendingUpIcon />}>View</Button>}
-                    </Box>
+                    {/* Actions intentionally omitted for this step */}
                   </TableCell>
                 </TableRow>
               ))}
