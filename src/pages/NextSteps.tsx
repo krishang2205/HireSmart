@@ -24,7 +24,9 @@ export default function NextSteps() {
   const fetchMatchResults = async () => {
     setLoading(true);
     // TODO: Replace with actual jobId source (query param, localStorage, etc.)
-    const jobId = localStorage.getItem('jobId') || 'demo-job';
+  // DEBUG: Set your actual jobId here for testing
+  const jobId = '298633';
+  console.log('Fetching match results for jobId:', jobId);
     try {
       const res = await axios.get(`/api/match-results/${jobId}`);
       // Map results to candidate-like objects for table
