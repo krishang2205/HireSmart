@@ -1,6 +1,7 @@
 import { useAuth } from '@/context/AuthContext';
 import Brand from '@/components/Brand';
 import ResumeScreener from '@/components/ResumeScreener';
+import NextSteps from './NextSteps';
 import { useState, useEffect } from 'react';
 import Footer from '@/components/Footer';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -114,6 +115,9 @@ export default function Dashboard() {
             <a href="#" className="flex items-center gap-3 px-4 py-2 rounded-lg text-gray-700 hover:bg-blue-50">
               <span>Activity Log</span>
             </a>
+            <a href="/next-steps" className="flex items-center gap-3 px-4 py-2 rounded-lg text-primary font-semibold bg-blue-50 hover:bg-blue-100">
+              <span>Next Steps</span>
+            </a>
             <a href="/settings" className="flex items-center gap-3 px-4 py-2 rounded-lg text-gray-700 hover:bg-blue-50">
               <span>Settings</span>
             </a>
@@ -162,8 +166,8 @@ export default function Dashboard() {
                   <span className="inline-block px-4 py-1 rounded-full bg-blue-200 text-blue-900 font-semibold text-sm">Secure</span>
                 </div>
               </div> {/* Resume screener section - full width */}
-              <div className="w-full" >
-                <ResumeScreener />
+              <div className="w-full">
+                {location.pathname === '/next-steps' ? <NextSteps /> : <ResumeScreener />}
               </div>
             </motion.main>
           </AnimatePresence>

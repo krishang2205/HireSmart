@@ -51,10 +51,15 @@ const MatchResults = ({ results }) => {
   return (
     <div className="bg-white p-4 rounded-xl shadow-lg max-w-5xl mx-auto relative">
       <button
-        className="absolute top-4 right-4 bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold shadow hover:bg-blue-700 transition z-10"
+        className="absolute top-4 right-4 z-10 flex items-center justify-center w-10 h-10 rounded-full border-2 border-gray-400 bg-white hover:bg-blue-50 transition shadow"
+        title="Export to Excel"
         onClick={handleExportExcel}
+        aria-label="Export"
       >
-        Export
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M14 8v8M14 8l-4 4M14 8l4 4" stroke="#333" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+          <rect x="9" y="18" width="10" height="2" rx="1" fill="#333" />
+        </svg>
       </button>
       <h2 className="text-2xl font-semibold text-indigo-700 mb-6">Screening Results</h2>
       <div>

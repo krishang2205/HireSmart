@@ -13,6 +13,7 @@ const Header = () => (
           <a href="#how-it-works" className="story-link text-sm text-muted-foreground hover:text-foreground">How it works</a>
           <a href="#testimonials" className="story-link text-sm text-muted-foreground hover:text-foreground">Testimonials</a>
           <a href="#cta" className="story-link text-sm text-muted-foreground hover:text-foreground">Request demo</a>
+          <Link to="/next-steps" className="story-link text-sm text-primary font-semibold hover:text-primary-dark">Next Steps</Link>
         </div>
         <div className="hidden md:flex items-center gap-2">
           <Button variant="outline" size="sm" asChild>

@@ -27,6 +27,7 @@ if (rootEl) {
               <Route path="/" element={<App />} />
               <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
               <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
+              <Route path="/next-steps" element={<ProtectedRoute><Dashboard /> </ProtectedRoute>} />
               <Route path="/auth/signup" element={<Signup />} />
               <Route path="/auth/login" element={<Login />} />
               <Route path="/auth/forgot-password" element={<ForgotPassword />} />

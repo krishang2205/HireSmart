@@ -41,6 +41,7 @@ const transporter = nodemailer.createTransport({
 // Routes
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api', require('./routes/demoRoutes'));
+app.use('/api/candidates', require('./routes/candidateRoutes'));
 
 app.get('/api/health', (req, res) => {
 	res.json({ status: 'ok', timestamp: Date.now() });
