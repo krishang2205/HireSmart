@@ -18,14 +18,21 @@ const getColorByPrediction = (prediction) => {
 const MatchResults = ({ results }) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState('');
-  const [showNextStepMessage, setShowNextStepMessage] = useState(false);
+  const [showNextStepMessage, setShowNextStepMessage] = useState(() => {
+    return localStorage.getItem('showNextStepMessage') === 'true';
+  });
 
   if (showNextStepMessage) {
     return (
       <div className="flex flex-col items-center justify-center py-16">
         <h2 className="text-2xl font-bold text-indigo-700 mb-4">Thank you for screening!</h2>
         <p className="text-lg text-gray-700 mb-6">You have completed the resume screening process. Proceed to the next steps for further candidate evaluation.</p>
-        <span className="inline-block px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold text-lg">Next steps coming soon!</span>
+        <button
+          className="inline-block px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold text-lg"
+          onClick={() => window.location.href = '/next-steps'}
+        >
+          Go to Next Steps
+        </button>
       </div>
     );
   }
@@ -177,9 +184,12 @@ const MatchResults = ({ results }) => {
               cursor: 'pointer',
               fontSize: '1rem',
             }}
-            onClick={() => setShowNextStepMessage(true)}
+            onClick={() => {
+              setShowNextStepMessage(true);
+              localStorage.setItem('showNextStepMessage', 'true');
+            }}
           >
-            Next Step
+            Push to Next Step
           </button>
         </div>
     </div>

@@ -30,18 +30,32 @@ const ResumeScreener = ({ jobId }) => {
     }
   }, [effectiveJobId]);
   const [resumeFile, setResumeFile] = useState<FileList | null>(null);
-  const [jobDescription, setJobDescription] = useState('');
+  const [jobDescription, setJobDescription] = useState(() => localStorage.getItem('jobDescription') || '');
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setResumeFile(e.target.files); // Allow multiple files to be selected
+    // Persist file names in localStorage (cannot store File objects, so store names)
+    if (e.target.files) {
+      const fileNames = Array.from(e.target.files).map(f => f.name);
+      localStorage.setItem('resumeFileNames', JSON.stringify(fileNames));
+    }
   };
 
   const handleJobDescriptionChange = (e) => {
     setJobDescription(e.target.value); // Update the job description state
+    localStorage.setItem('jobDescription', e.target.value);
   };
+  // Restore resume file names on mount (for display only, cannot restore File objects)
+  React.useEffect(() => {
+    const storedFileNames = localStorage.getItem('resumeFileNames');
+    if (storedFileNames && !resumeFile) {
+      // Only restore file names for display, not actual File objects
+      // You may want to show these names in the UI as a reminder
+    }
+  }, []);
 
   const extractTextFromPDF = async (file) => {
     const arrayBuffer = await file.arrayBuffer();
