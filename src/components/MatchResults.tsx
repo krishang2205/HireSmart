@@ -19,7 +19,7 @@ const MatchResults = ({ results }) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState('');
   const [showNextStepMessage, setShowNextStepMessage] = useState(() => {
-    return localStorage.getItem('showNextStepMessage') === 'true';
+    return sessionStorage.getItem('showNextStepMessage') === 'true';
   });
 
   if (showNextStepMessage) {
@@ -27,17 +27,34 @@ const MatchResults = ({ results }) => {
       <div className="flex flex-col items-center justify-center py-16">
         <h2 className="text-2xl font-bold text-indigo-700 mb-4">Thank you for screening!</h2>
         <p className="text-lg text-gray-700 mb-6">You have completed the resume screening process. Proceed to the next steps for further candidate evaluation.</p>
-        <button
-          className="inline-block px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold text-lg"
-          onClick={() => window.location.href = '/next-steps'}
-        >
-          Go to Next Steps
-        </button>
+        <div className="flex gap-4">
+          <button
+            className="inline-block px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold text-lg"
+            onClick={() => window.location.href = '/next-steps'}
+          >
+            Go to Next Steps
+          </button>
+          <button
+            className="inline-block px-6 py-3 bg-gray-200 text-indigo-700 rounded-lg font-semibold text-lg border border-gray-300 hover:bg-gray-300"
+            onClick={() => {
+              setShowNextStepMessage(false);
+              sessionStorage.removeItem('showNextStepMessage');
+              window.dispatchEvent(new Event('showResultsAgain'));
+            }}
+          >
+            Show Results Again
+          </button>
+        </div>
       </div>
     );
   }
   if (!results || !Array.isArray(results) || results.length === 0) {
-    return <p className="text-gray-500 mt-4">No results to display.</p>;
+    return (
+      <div className="flex flex-col items-center justify-center py-16">
+        <h2 className="text-2xl font-bold text-gray-400 mb-4">No screening results yet</h2>
+        <p className="text-lg text-gray-500 mb-6">Start by uploading resumes and entering a job description, then click Analyze Match.</p>
+      </div>
+    );
   }
 
   const handleOverviewClick = (explanation) => {
@@ -186,7 +203,7 @@ const MatchResults = ({ results }) => {
             }}
             onClick={() => {
               setShowNextStepMessage(true);
-              localStorage.setItem('showNextStepMessage', 'true');
+              sessionStorage.setItem('showNextStepMessage', 'true');
             }}
           >
             Push to Next Step

@@ -1,3 +1,5 @@
+    // Clear results and message state on manual refresh
+    
 import React, { useState } from 'react';
 import { extractNameFromResume } from './utils';
 import MatchResults from './MatchResults';
@@ -31,9 +33,52 @@ const ResumeScreener = ({ jobId }) => {
   }, [effectiveJobId]);
   const [resumeFile, setResumeFile] = useState<FileList | null>(null);
   const [jobDescription, setJobDescription] = useState(() => localStorage.getItem('jobDescription') || '');
-  const [result, setResult] = useState(null);
+  const normalizeResults = (data) => {
+    if (Array.isArray(data)) {
+      return data.map(r => ({
+        ...r,
+        cosine_similarity_score:
+          r.cosine_similarity_score != null ? Number(r.cosine_similarity_score)
+          : (r.matchScore != null ? Number(r.matchScore) : null)
+      }));
+    }
+    if (data && Array.isArray(data.results)) {
+      return data.results.map(r => ({
+        ...r,
+        cosine_similarity_score:
+          r.cosine_similarity_score != null ? Number(r.cosine_similarity_score)
+          : (r.matchScore != null ? Number(r.matchScore) : null)
+      }));
+    }
+    if (data && typeof data === 'object') {
+      return [{
+        ...data,
+        cosine_similarity_score:
+          data.cosine_similarity_score != null ? Number(data.cosine_similarity_score)
+          : (data.matchScore != null ? Number(data.matchScore) : null)
+      }];
+    }
+    return null;
+  };
+
+  const [result, setResult] = useState(() => {
+    const stored = sessionStorage.getItem('screeningResults');
+    return stored ? normalizeResults(JSON.parse(stored)) : null;
+  });
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
+  
+  React.useEffect(() => {
+    if (performance && performance.navigation && performance.navigation.type === 1) {
+      // Type 1 means reload (manual refresh)
+      localStorage.removeItem('jobId');
+      localStorage.removeItem('resumeFileNames');
+      localStorage.removeItem('jobDescription');
+      sessionStorage.removeItem('showNextStepMessage');
+      sessionStorage.removeItem('screeningResults');
+      setResult(null);
+    }
+  }, []);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setResumeFile(e.target.files); // Allow multiple files to be selected
@@ -78,7 +123,42 @@ const ResumeScreener = ({ jobId }) => {
     return value;
   };
 
+  React.useEffect(() => {
+    if (result) {
+      sessionStorage.setItem('screeningResults', JSON.stringify(result));
+    }
+  }, [result]);
+
+  // Listen for custom event to reload results from sessionStorage
+  React.useEffect(() => {
+    const reloadResults = () => {
+      const stored = sessionStorage.getItem('screeningResults');
+      console.log('[ResumeScreener] Reloading from sessionStorage:', stored);
+      if (stored) {
+        try {
+          const parsed = JSON.parse(stored);
+          console.log('[ResumeScreener] Parsed:', parsed);
+          const normalized = normalizeResults(parsed);
+          console.log('[ResumeScreener] Normalized:', normalized);
+          if (Array.isArray(normalized)) {
+            normalized.forEach((r, i) => console.log(`[ResumeScreener] Result[${i}] score:`, r.cosine_similarity_score));
+          }
+          setResult(normalized);
+        } catch (e) {
+          console.error('[ResumeScreener] Error parsing sessionStorage:', e);
+          setResult(null);
+        }
+      } else {
+        setResult(null);
+      }
+    };
+    window.addEventListener('showResultsAgain', reloadResults);
+    return () => window.removeEventListener('showResultsAgain', reloadResults);
+  }, []);
+
   const handleAnalyzeMatch = async () => {
+    // Reset Next Step message state before analyzing
+    localStorage.removeItem('showNextStepMessage');
     if (!resumeFile || !jobDescription) {
       setError('Please provide both resumes and a job description.');
       return;
@@ -186,7 +266,7 @@ const ResumeScreener = ({ jobId }) => {
             <span className="text-indigo-600 font-semibold">Screening resumes, please wait...</span>
           </div>
         ) : result && Array.isArray(result) && result.length > 0 ? (
-          <MatchResults results={result} />
+          <MatchResults key={JSON.stringify(result)} results={result} />
         ) : (
           <p className="text-gray-500 mt-4">No results to display.</p>
         )}
