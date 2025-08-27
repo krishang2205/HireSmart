@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { extractNameFromResume } from './utils';
 import MatchResults from './MatchResults';
-import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf';
-pdfjsLib.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjsLib.version}/legacy/build/pdf.worker.js`;
+import * as pdfjsLib from 'pdfjs-dist/build/pdf';
+pdfjsLib.GlobalWorkerOptions.workerSrc = '/pdf.worker.js';
 import mammoth from 'mammoth';
 
 const ResumeScreener = ({ jobId }) => {

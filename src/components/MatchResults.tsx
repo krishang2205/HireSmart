@@ -18,7 +18,17 @@ const getColorByPrediction = (prediction) => {
 const MatchResults = ({ results }) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState('');
+  const [showNextStepMessage, setShowNextStepMessage] = useState(false);
 
+  if (showNextStepMessage) {
+    return (
+      <div className="flex flex-col items-center justify-center py-16">
+        <h2 className="text-2xl font-bold text-indigo-700 mb-4">Thank you for screening!</h2>
+        <p className="text-lg text-gray-700 mb-6">You have completed the resume screening process. Proceed to the next steps for further candidate evaluation.</p>
+        <span className="inline-block px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold text-lg">Next steps coming soon!</span>
+      </div>
+    );
+  }
   if (!results || !Array.isArray(results) || results.length === 0) {
     return <p className="text-gray-500 mt-4">No results to display.</p>;
   }
@@ -83,7 +93,9 @@ const MatchResults = ({ results }) => {
                   {res.filename?.toLowerCase().endsWith('.pdf') ? 'PDF' : 'DOCX'}
                 </td>
                 <td className="px-4 py-2 align-middle whitespace-nowrap">
-                  {(res.cosine_similarity_score * 100).toFixed(1)}%
+                  {res.cosine_similarity_score != null && !isNaN(Number(res.cosine_similarity_score))
+                    ? (Number(res.cosine_similarity_score) * 100).toFixed(1) + '%'
+                    : 'N/A'}
                 </td>
                 <td className="px-4 py-2 align-middle">
                   <div className="w-20 h-2 bg-gray-200 rounded-full mx-auto">
@@ -165,7 +177,7 @@ const MatchResults = ({ results }) => {
               cursor: 'pointer',
               fontSize: '1rem',
             }}
-            onClick={() => window.location.href = '/next-steps'}
+            onClick={() => setShowNextStepMessage(true)}
           >
             Next Step
           </button>

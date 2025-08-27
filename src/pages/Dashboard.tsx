@@ -1,6 +1,6 @@
 import { useAuth } from '@/context/AuthContext';
+import ResumeScreener from '../components/ResumeScreener';
 import Brand from '@/components/Brand';
-import ResumeScreener from '@/components/ResumeScreener';
 import NextSteps from './NextSteps';
 import { useState, useEffect } from 'react';
 import Footer from '@/components/Footer';
@@ -166,8 +166,8 @@ export default function Dashboard() {
                   <span className="inline-block px-4 py-1 rounded-full bg-blue-200 text-blue-900 font-semibold text-sm">Secure</span>
                 </div>
               </div> {/* Resume screener section - full width */}
-              <div className="w-full">
-                {location.pathname === '/next-steps' ? <NextSteps /> : <ResumeScreener />}
+                <div className="w-full">
+                  {location.pathname === '/next-steps' ? <NextSteps /> : <ResumeScreener jobId={localStorage.getItem('jobId')} />}
               </div>
             </motion.main>
           </AnimatePresence>
