@@ -2,38 +2,57 @@ import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import DashboardLayout from '@/components/DashboardLayout';
 
-// Mock data for demonstration
-const mockCandidates = [
-  {
-    _id: '1',
-    name: 'Krishang Darji',
-    resumeScore: 0.56,
-    category: 'Can consider for interview',
-    contactInfo: { email: 'krishangdarji@gmail.com', phone: '+917778013901' },
-    status: 'Pending Communication',
-    assessmentScore: null,
-    finalRank: null
-  },
-  {
-    _id: '2',
-    name: 'Krishang Darji',
-    resumeScore: 0.47,
-    category: 'Can consider for interview',
-    contactInfo: { email: 'krishangdarji@gmail.com', phone: '+917778013901' },
-    status: 'Pending Communication',
-    assessmentScore: null,
-    finalRank: null
-  }
-];
-
-const categories = ['Not hire', 'Can consider', 'Best one'];
-const statuses = ['Pending Communication', 'Communication Sent', 'Assessment Assigned', 'Assessment Completed', 'Rejected'];
+  // Statuses remain static
+  const statuses = ['Pending Communication', 'Communication Sent', 'Assessment Assigned', 'Assessment Completed', 'Rejected'];
+  // Gemini categories (fixed)
+  const categories = [
+    'Best Match',
+    'Can consider for interview',
+    'Not Good Candidate',
+    'Consider with Caution'
+  ];
 
 export default function NextSteps() {
-  const [candidates, setCandidates] = useState(mockCandidates);
+  const [candidates, setCandidates] = useState([]);
   const [filter, setFilter] = useState({ category: '', status: '' });
   const [search, setSearch] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch candidates from the database on component mount
+  useEffect(() => {
+    const fetchCandidates = async () => {
+      try {
+        setLoading(true);
+        // Always fetch all candidates
+        const response = await fetch('/api/match-results');
+        if (response.ok) {
+          const data = await response.json();
+          const transformedCandidates = data.map((candidate, index) => ({
+            _id: candidate._id || `candidate-${index + 1}`,
+            name: candidate.candidateName || 'Name not found',
+            resumeScore: candidate.matchScore || 0,
+            category: candidate.prediction || 'Not categorized',
+            contactInfo: { 
+              email: candidate.email || 'Email not found', 
+              phone: candidate.contactNumber || 'Phone not found' 
+            },
+            status: 'Pending Communication',
+            assessmentScore: null,
+            finalRank: null,
+            filename: candidate.filename || 'Unknown file'
+          }));
+          setCandidates(transformedCandidates);
+        } else {
+          setCandidates([]);
+        }
+      } catch (error) {
+        setCandidates([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchCandidates();
+  }, []);
 
   // Analytics
   const total = candidates.length;
@@ -43,8 +62,9 @@ export default function NextSteps() {
 
   // Color helpers matching your theme
   const getCategoryColor = (cat) => {
-    if (cat === 'Best one') return { bg: 'bg-indigo-600', text: 'text-white', border: 'border-indigo-600' };
-    if (cat === 'Can consider') return { bg: 'bg-orange-100', text: 'text-orange-700', border: 'border-orange-200' };
+    if (cat === 'Best Match' || cat === 'Best one') return { bg: 'bg-indigo-600', text: 'text-white', border: 'border-indigo-600' };
+    if (cat === 'Can consider for interview' || cat === 'Can consider') return { bg: 'bg-orange-100', text: 'text-orange-700', border: 'border-orange-200' };
+    if (cat === 'Consider with Caution') return { bg: 'bg-yellow-100', text: 'text-yellow-700', border: 'border-yellow-200' };
     return { bg: 'bg-red-100', text: 'text-red-700', border: 'border-red-200' };
   };
 
@@ -78,6 +98,19 @@ export default function NextSteps() {
     // Implementation for viewing assessment score
     console.log('Viewing assessment score for:', id);
   };
+
+  if (loading) {
+    return (
+      <DashboardLayout>
+        <div className="w-full flex justify-center items-center py-20">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto mb-4"></div>
+            <p className="text-lg text-gray-600">Loading candidates...</p>
+          </div>
+        </div>
+      </DashboardLayout>
+    );
+  }
 
   return (
     <DashboardLayout>
@@ -314,7 +347,16 @@ export default function NextSteps() {
                           <path strokeLinecap="round" strokeLinejoin="round" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
                         </svg>
                         <p className="text-lg font-medium">No candidates found</p>
-                        <p className="text-sm">Please upload resumes to see shortlisted candidates here.</p>
+                        <p className="text-sm mb-4">Please complete resume screening first to see shortlisted candidates here.</p>
+                        <button
+                          onClick={() => window.location.href = '/dashboard'}
+                          className="inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium bg-gradient-to-r from-indigo-600 to-blue-600 text-white hover:from-indigo-700 hover:to-blue-700 transition-all duration-200 shadow-sm hover:shadow-md"
+                        >
+                          <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                          </svg>
+                          Go to Resume Screening
+                        </button>
                       </div>
                     </td>
                   </tr>

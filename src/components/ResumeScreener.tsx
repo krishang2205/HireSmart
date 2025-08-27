@@ -196,6 +196,8 @@ const ResumeScreener = ({ jobId }) => {
 
       // Save results to MongoDB using provided jobId
       if (effectiveJobId) {
+        console.log('ResumeScreener: Saving results for jobId:', effectiveJobId);
+        console.log('ResumeScreener: Results to save:', geminiResults);
         const saveRes = await fetch(`/api/match-results/${effectiveJobId}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -204,9 +206,15 @@ const ResumeScreener = ({ jobId }) => {
             ...r
           })) })
         });
+        console.log('ResumeScreener: Save response status:', saveRes.status);
         if (saveRes.ok) {
+          const saveData = await saveRes.json();
+          console.log('ResumeScreener: Save response data:', saveData);
           // Persist jobId to localStorage only after successful save
           localStorage.setItem('jobId', effectiveJobId);
+          console.log('ResumeScreener: Saved jobId to localStorage:', effectiveJobId);
+        } else {
+          console.error('ResumeScreener: Failed to save results:', saveRes.statusText);
         }
       }
     } catch (err) {

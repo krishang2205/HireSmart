@@ -5,6 +5,9 @@ const { analyzeResumeWithGemini } = require('../services/geminiService');
 // Insert match results for a job
 // matchResults: [{ candidateId, matchScore }, ...], jobId: ObjectId or String
 async function saveMatchResults(jobId, matchResults) {
+  console.log('matchController: saveMatchResults called with jobId:', jobId);
+  console.log('matchController: matchResults:', matchResults);
+  
   // Prepare documents for bulk insert
   const docs = matchResults.map(r => ({
     jobId,
@@ -18,13 +21,21 @@ async function saveMatchResults(jobId, matchResults) {
     matched_skills: Array.isArray(r.matched_skills) ? r.matched_skills : [],
     explanation: r.explanation || ''
   }));
+  
+  console.log('matchController: Prepared docs for insert:', docs);
+  
   // Insert all results
-  return await MatchResult.insertMany(docs);
+  const result = await MatchResult.insertMany(docs);
+  console.log('matchController: Insert result:', result);
+  return result;
 };
 
 // Fetch all match results for a specific jobId, sorted by matchScore descending
 async function getMatchResultsByJob(jobId) {
-  return await MatchResult.find({ jobId }).sort({ matchScore: -1 });
+  console.log('matchController: getMatchResultsByJob called with jobId:', jobId);
+  const results = await MatchResult.find({ jobId }).sort({ matchScore: -1 });
+  console.log('matchController: Found results:', results);
+  return results;
 };
 
 
@@ -58,7 +69,10 @@ async function analyzeResumesWithGemini(resumes, jobDescription) {
 
 // Fetch all match results (no jobId filter)
 async function getAllMatchResults() {
-  return await MatchResult.find({}).sort({ matchScore: -1 });
+  console.log('matchController: getAllMatchResults called');
+  const results = await MatchResult.find({}).sort({ matchScore: -1 });
+  console.log('matchController: All results found:', results);
+  return results;
 };
 
 module.exports = {
