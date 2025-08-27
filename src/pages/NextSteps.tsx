@@ -1,73 +1,39 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Typography, Table, TableHead, TableRow, TableCell, TableBody, Button, Select, MenuItem, LinearProgress, Paper, TextField, InputAdornment } from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
-import EmailIcon from '@mui/icons-material/Email';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import TrendingUpIcon from '@mui/icons-material/TrendingUp';
-import axios from 'axios';
+import { motion, AnimatePresence } from 'framer-motion';
 import DashboardLayout from '@/components/DashboardLayout';
+
+// Mock data for demonstration
+const mockCandidates = [
+  {
+    _id: '1',
+    name: 'Krishang Darji',
+    resumeScore: 0.56,
+    category: 'Can consider for interview',
+    contactInfo: { email: 'krishangdarji@gmail.com', phone: '+917778013901' },
+    status: 'Pending Communication',
+    assessmentScore: null,
+    finalRank: null
+  },
+  {
+    _id: '2',
+    name: 'Krishang Darji',
+    resumeScore: 0.47,
+    category: 'Can consider for interview',
+    contactInfo: { email: 'krishangdarji@gmail.com', phone: '+917778013901' },
+    status: 'Pending Communication',
+    assessmentScore: null,
+    finalRank: null
+  }
+];
 
 const categories = ['Not hire', 'Can consider', 'Best one'];
 const statuses = ['Pending Communication', 'Communication Sent', 'Assessment Assigned', 'Assessment Completed', 'Rejected'];
 
-
 export default function NextSteps() {
-  // ...existing state and logic...
-  const [candidates, setCandidates] = useState([]);
+  const [candidates, setCandidates] = useState(mockCandidates);
   const [filter, setFilter] = useState({ category: '', status: '' });
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    fetchMatchResults();
-  }, []);
-
-  // Fetch match results from DB (MatchResult model)
-  const fetchMatchResults = async () => {
-    setLoading(true);
-    try {
-      const res = await axios.get('/api/match-results');
-      // Map results to candidate-like objects for table
-      setCandidates(res.data.map(r => ({
-        _id: r._id,
-        name: r.candidateName,
-        resumeScore: r.matchScore,
-        category: r.prediction,
-        contactInfo: { email: r.email, phone: r.contactNumber },
-        status: 'Pending Communication', // Default, update as needed
-        assessmentScore: r.assessmentScore || null,
-        finalRank: r.finalRank || null
-      })));
-    } catch (err) {
-      setCandidates([]);
-    }
-    setLoading(false);
-  };
-
-  const handleSendCommunication = async (id) => {
-    setLoading(true);
-    await axios.post('/api/candidates/send-communication', { candidateId: id, templateType: 'default' });
-    fetchCandidates();
-  };
-
-  const handleAssignAssessment = async (id) => {
-    setLoading(true);
-    await axios.post('/api/candidates/assign-assessment', { candidateId: id, assessmentLink: 'https://assessment.link' });
-    fetchCandidates();
-  };
-
-  const handleViewAssessmentScore = async (id) => {
-    const res = await axios.get(`/api/candidates/assessment-score/${id}`);
-    alert(`Assessment Score: ${res.data.assessmentScore}`);
-    fetchCandidates();
-  };
-
-  // Filtering logic
-  const filteredCandidates = candidates.filter(c =>
-    (!filter.category || c.category === filter.category) &&
-    (!filter.status || c.status === filter.status) &&
-    (search === '' || c.name.toLowerCase().includes(search.toLowerCase()))
-  );
 
   // Analytics
   const total = candidates.length;
@@ -75,147 +41,365 @@ export default function NextSteps() {
   const completed = candidates.filter(c => c.status === 'Assessment Completed').length;
   const progress = total ? Math.round((completed / total) * 100) : 0;
 
-  // Color helpers
+  // Color helpers matching your theme
   const getCategoryColor = (cat) => {
-    if (cat === 'Best one') return { bg: '#2563eb', color: '#fff' };
-    if (cat === 'Can consider') return { bg: '#e0e7ff', color: '#3730a3' };
-    return { bg: '#fee2e2', color: '#b91c1c' };
+    if (cat === 'Best one') return { bg: 'bg-indigo-600', text: 'text-white', border: 'border-indigo-600' };
+    if (cat === 'Can consider') return { bg: 'bg-orange-100', text: 'text-orange-700', border: 'border-orange-200' };
+    return { bg: 'bg-red-100', text: 'text-red-700', border: 'border-red-200' };
   };
+
   const getStatusColor = (status) => {
-    if (status === 'Pending Communication') return { bg: '#fde68a', color: '#b45309' };
-    if (status === 'Communication Sent') return { bg: '#dbeafe', color: '#2563eb' };
-    if (status === 'Assessment Assigned') return { bg: '#dbeafe', color: '#2563eb' };
-    if (status === 'Assessment Completed') return { bg: '#bbf7d0', color: '#166534' };
-    if (status === 'Rejected') return { bg: '#fecaca', color: '#b91c1c' };
-    return { bg: '#f3f4f6', color: '#374151' };
+    if (status === 'Pending Communication') return { bg: 'bg-yellow-100', text: 'text-yellow-700', border: 'border-yellow-200' };
+    if (status === 'Communication Sent') return { bg: 'bg-blue-100', text: 'text-blue-700', border: 'border-blue-200' };
+    if (status === 'Assessment Assigned') return { bg: 'bg-indigo-100', text: 'text-indigo-700', border: 'border-indigo-200' };
+    if (status === 'Assessment Completed') return { bg: 'bg-green-100', text: 'text-green-700', border: 'border-green-200' };
+    if (status === 'Rejected') return { bg: 'bg-red-100', text: 'text-red-700', border: 'border-red-200' };
+    return { bg: 'bg-gray-100', text: 'text-gray-700', border: 'border-gray-200' };
+  };
+
+  // Filtering logic
+  const filteredCandidates = candidates.filter(c =>
+    (!filter.category || c.category === filter.category) &&
+    (!filter.status || c.status === c.status) &&
+    (search === '' || c.name.toLowerCase().includes(search.toLowerCase()))
+  );
+
+  const handleSendCommunication = async (id) => {
+    // Implementation for sending communication
+    console.log('Sending communication to:', id);
+  };
+
+  const handleAssignAssessment = async (id) => {
+    // Implementation for assigning assessment
+    console.log('Assigning assessment to:', id);
+  };
+
+  const handleViewAssessmentScore = async (id) => {
+    // Implementation for viewing assessment score
+    console.log('Viewing assessment score for:', id);
   };
 
   return (
     <DashboardLayout>
-      <Box sx={{ p: { xs: 1, md: 3 }, background: '#fff', minHeight: '100vh' }}>
-        <Typography variant="h4" sx={{ mb: 0.5, fontWeight: 700, color: 'primary.main' }}>Next Steps</Typography>
-        <Typography variant="subtitle1" sx={{ mb: 3, color: 'text.secondary' }}>
-          Manage shortlisted candidates through the hiring process
-        </Typography>
-        {/* Analytics Panel */}
-        <Box sx={{ display: 'flex', gap: 2, mb: 3, flexWrap: 'wrap' }}>
-          <Paper elevation={0} sx={{ flex: 1, p: 2, minWidth: 180, textAlign: 'center', borderRadius: 2, border: '1px solid #f3f4f6' }}>
-            <Typography fontWeight={600}>Total Candidates</Typography>
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1, mt: 1 }}>
-              <Typography variant="h5" color="primary">{total}</Typography>
-              <TrendingUpIcon color="primary" />
-            </Box>
-          </Paper>
-          <Paper elevation={0} sx={{ flex: 1, p: 2, minWidth: 180, textAlign: 'center', borderRadius: 2, border: '1px solid #f3f4f6' }}>
-            <Typography fontWeight={600}>Pending Communications</Typography>
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1, mt: 1 }}>
-              <Typography variant="h5" color="warning.main">{pending}</Typography>
-              <EmailIcon color="warning" />
-            </Box>
-          </Paper>
-          <Paper elevation={0} sx={{ flex: 1, p: 2, minWidth: 180, textAlign: 'center', borderRadius: 2, border: '1px solid #f3f4f6' }}>
-            <Typography fontWeight={600}>Assessments Completed</Typography>
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1, mt: 1 }}>
-              <Typography variant="h5" color="success.main">{completed}</Typography>
-              <CheckCircleIcon color="success" />
-            </Box>
-          </Paper>
-          <Paper elevation={0} sx={{ flex: 1, p: 2, minWidth: 180, textAlign: 'center', borderRadius: 2, border: '1px solid #f3f4f6' }}>
-            <Typography fontWeight={600}>Progress</Typography>
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1, mt: 1 }}>
-              <Typography variant="h5" color="primary">{progress}%</Typography>
-              <LinearProgress variant="determinate" value={progress} sx={{ width: 80, height: 8, borderRadius: 4, background: '#e0e7ff' }} />
-            </Box>
-          </Paper>
-        </Box>
+      <div className="w-full">
+        {/* Page Header */}
+        <div className="mb-8">
+          <div className="flex items-center gap-4 mb-4">
+            <div className="p-3 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-2xl shadow-lg">
+              <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+              </svg>
+            </div>
+            <div>
+              <motion.h1 
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="text-3xl md:text-4xl font-extrabold text-indigo-700 tracking-tight"
+              >
+                Next Steps
+              </motion.h1>
+              <motion.p 
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 }}
+                className="text-lg text-blue-900/80"
+              >
+                Manage shortlisted candidates through the hiring process
+              </motion.p>
+            </div>
+          </div>
+          
+          {/* Progress Bar */}
+          <div className="w-full bg-gray-200 rounded-full h-3 mb-4">
+            <div 
+              className="bg-gradient-to-r from-indigo-500 to-blue-500 h-3 rounded-full transition-all duration-1000 ease-out"
+              style={{ width: `${Math.min(progress + 20, 100)}%` }}
+            ></div>
+          </div>
+          
+          {/* Quick Stats */}
+          <div className="flex items-center gap-6 text-sm text-gray-600">
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 bg-indigo-500 rounded-full"></div>
+              <span>Hiring Pipeline Active</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+              <span>{completed} Assessments Complete</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
+              <span>{pending} Pending Actions</span>
+            </div>
+          </div>
+        </div>
 
-        {/* Candidate Management */}
-        <Paper elevation={0} sx={{ p: { xs: 1, md: 3 }, borderRadius: 3, border: '1px solid #f3f4f6', mb: 2 }}>
-          <Typography variant="h5" sx={{ fontWeight: 700, mb: 0.5 }}>Candidate Management</Typography>
-          <Typography variant="body2" sx={{ mb: 2, color: 'text.secondary' }}>Filter and manage your shortlisted candidates</Typography>
-          <Box sx={{ display: 'flex', gap: 2, mb: 2, flexWrap: 'wrap' }}>
-            <TextField
-              placeholder="Search candidates..."
-              value={search}
-              onChange={e => setSearch(e.target.value)}
-              size="small"
-              sx={{ minWidth: 220 }}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <SearchIcon />
-                  </InputAdornment>
-                ),
-              }}
-            />
-            <Select value={filter.category} onChange={e => setFilter(f => ({ ...f, category: e.target.value }))} displayEmpty size="small" sx={{ minWidth: 160 }}>
-              <MenuItem value="">All Categories</MenuItem>
-              {categories.map(cat => <MenuItem key={cat} value={cat}>{cat}</MenuItem>)}
-            </Select>
-            <Select value={filter.status} onChange={e => setFilter(f => ({ ...f, status: e.target.value }))} displayEmpty size="small" sx={{ minWidth: 160 }}>
-              <MenuItem value="">All Statuses</MenuItem>
-              {statuses.map(st => <MenuItem key={st} value={st}>{st}</MenuItem>)}
-            </Select>
-          </Box>
-          {loading ? <LinearProgress /> : (
-            <Table sx={{ mt: 2 }}>
-              <TableHead>
-                <TableRow>
-                  <TableCell>Name</TableCell>
-                  <TableCell>Resume Score</TableCell>
-                  <TableCell>Category</TableCell>
-                  <TableCell>Contact Info</TableCell>
-                  <TableCell>Status</TableCell>
-                  <TableCell>Assessment Score</TableCell>
-                  <TableCell>Final Rank</TableCell>
-                  <TableCell>Actions</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
+        {/* Analytics Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          {/* Total Candidates */}
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.2 }}
+            whileHover={{ scale: 1.02, y: -5 }}
+            className="bg-white/80 backdrop-blur-lg rounded-2xl shadow-xl p-6 border border-gray-100 hover:shadow-2xl transition-all duration-300 cursor-pointer group"
+          >
+            <div className="flex items-center justify-between mb-4">
+              <div className="p-3 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-xl group-hover:scale-110 transition-transform duration-300">
+                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+              </div>
+              <div className="text-right">
+                <div className="text-2xl font-bold text-indigo-700 group-hover:text-indigo-800 transition-colors">{total}</div>
+                <div className="text-sm text-gray-500">Total</div>
+              </div>
+            </div>
+            <div className="text-sm font-semibold text-gray-700">Candidates</div>
+            <div className="mt-2 text-xs text-gray-400">Shortlisted for review</div>
+          </motion.div>
+
+          {/* Pending Communications */}
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.3 }}
+            whileHover={{ scale: 1.02, y: -5 }}
+            className="bg-white/80 backdrop-blur-lg rounded-2xl shadow-xl p-6 border border-gray-100 hover:shadow-2xl transition-all duration-300 cursor-pointer group"
+          >
+            <div className="flex items-center justify-between mb-4">
+              <div className="p-3 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl group-hover:scale-110 transition-transform duration-300">
+                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+              </div>
+              <div className="text-right">
+                <div className="text-2xl font-bold text-orange-600 group-hover:text-orange-700 transition-colors">{pending}</div>
+                <div className="text-sm text-gray-500">Pending</div>
+              </div>
+            </div>
+            <div className="text-sm font-semibold text-gray-700">Communications</div>
+            <div className="mt-2 text-xs text-gray-400">Awaiting response</div>
+          </motion.div>
+
+          {/* Assessments Completed */}
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.4 }}
+            whileHover={{ scale: 1.02, y: -5 }}
+            className="bg-white/80 backdrop-blur-lg rounded-2xl shadow-xl p-6 border border-gray-100 hover:shadow-2xl transition-all duration-300 cursor-pointer group"
+          >
+            <div className="flex items-center justify-between mb-4">
+              <div className="p-3 bg-gradient-to-br from-green-500 to-green-600 rounded-xl group-hover:scale-110 transition-transform duration-300">
+                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <div className="text-right">
+                <div className="text-2xl font-bold text-green-600 group-hover:text-green-700 transition-colors">{completed}</div>
+                <div className="text-sm text-gray-500">Completed</div>
+              </div>
+            </div>
+            <div className="text-sm font-semibold text-gray-700">Assessments</div>
+            <div className="mt-2 text-xs text-gray-400">Ready for review</div>
+          </motion.div>
+
+          {/* Progress */}
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.5 }}
+            whileHover={{ scale: 1.02, y: -5 }}
+            className="bg-white/80 backdrop-blur-lg rounded-2xl shadow-xl p-6 border border-gray-100 hover:shadow-2xl transition-all duration-300 cursor-pointer group"
+          >
+            <div className="flex items-center justify-between mb-4">
+              <div className="p-3 bg-gradient-to-br from-cyan-500 to-cyan-600 rounded-xl group-hover:scale-110 transition-transform duration-300">
+                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                </svg>
+              </div>
+              <div className="text-right">
+                <div className="text-2xl font-bold text-cyan-600 group-hover:text-cyan-700 transition-colors">{progress}%</div>
+                <div className="text-sm text-gray-500">Progress</div>
+              </div>
+            </div>
+            <div className="w-full bg-gray-200 rounded-full h-2 mb-2">
+              <div 
+                className="bg-gradient-to-r from-cyan-500 to-cyan-600 h-2 rounded-full transition-all duration-500"
+                style={{ width: `${progress}%` }}
+              ></div>
+            </div>
+            <div className="text-sm font-semibold text-gray-700">Pipeline</div>
+            <div className="mt-1 text-xs text-gray-400">Overall completion</div>
+          </motion.div>
+        </div>
+
+        {/* Candidate Management Section */}
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6 }}
+          className="bg-white/80 backdrop-blur-lg rounded-2xl shadow-xl p-8 border border-gray-100"
+        >
+          <div className="mb-6">
+            <h2 className="text-xl font-bold text-blue-800 mb-2">Candidate Management</h2>
+            <p className="text-gray-600">Filter and manage your shortlisted candidates</p>
+          </div>
+
+          {/* Search and Filters */}
+          <div className="flex flex-col md:flex-row gap-4 mb-6">
+            {/* Search Bar */}
+            <div className="relative flex-1">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </div>
+              <input
+                type="text"
+                placeholder="Search candidates..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-300 focus:border-indigo-300 transition-all"
+              />
+            </div>
+
+            {/* Category Filter */}
+            <select
+              value={filter.category}
+              onChange={(e) => setFilter({ ...filter, category: e.target.value })}
+              className="px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-300 focus:border-indigo-300 transition-all min-w-[160px]"
+            >
+              <option value="">All Categories</option>
+              {categories.map(cat => (
+                <option key={cat} value={cat}>{cat}</option>
+              ))}
+            </select>
+
+            {/* Status Filter */}
+            <select
+              value={filter.status}
+              onChange={(e) => setFilter({ ...filter, status: e.target.value })}
+              className="px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-300 focus:border-indigo-300 transition-all min-w-[160px]"
+            >
+              <option value="">All Statuses</option>
+              {statuses.map(st => (
+                <option key={st} value={st}>{st}</option>
+              ))}
+            </select>
+          </div>
+
+          {/* Candidates Table */}
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-gray-200">
+                  <th className="text-left py-4 px-4 font-semibold text-gray-700">Name</th>
+                  <th className="text-left py-4 px-4 font-semibold text-gray-700">Resume Score</th>
+                  <th className="text-left py-4 px-4 font-semibold text-gray-700">Category</th>
+                  <th className="text-left py-4 px-4 font-semibold text-gray-700">Contact Info</th>
+                  <th className="text-left py-4 px-4 font-semibold text-gray-700">Status</th>
+                  <th className="text-left py-4 px-4 font-semibold text-gray-700">Assessment Score</th>
+                  <th className="text-left py-4 px-4 font-semibold text-gray-700">Final Rank</th>
+                  <th className="text-left py-4 px-4 font-semibold text-gray-700">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
                 {filteredCandidates.length === 0 ? (
-                  <TableRow>
-                    <TableCell colSpan={8} align="center" sx={{ py: 6, color: 'text.secondary' }}>
-                      No candidates found. Please upload resumes to see shortlisted candidates here.
-                    </TableCell>
-                  </TableRow>
+                  <tr>
+                    <td colSpan={8} className="text-center py-12 text-gray-500">
+                      <div className="flex flex-col items-center">
+                        <svg className="w-16 h-16 text-gray-300 mb-4" fill="none" stroke="currentColor" strokeWidth="1" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+                        </svg>
+                        <p className="text-lg font-medium">No candidates found</p>
+                        <p className="text-sm">Please upload resumes to see shortlisted candidates here.</p>
+                      </div>
+                    </td>
+                  </tr>
                 ) : (
-                  filteredCandidates.map(c => (
-                    <TableRow key={c._id}>
-                      <TableCell sx={{ fontWeight: 600 }}>{c.name}</TableCell>
-                      <TableCell>
-                        {c.resumeScore ? <Box sx={{ fontWeight: 500, px: 1, py: 0.5, borderRadius: 2, background: '#f3f4f6', display: 'inline-block' }}>{c.resumeScore}/100</Box> : 'N/A'}
-                      </TableCell>
-                      <TableCell>
-                        <Box sx={{ px: 1.5, py: 0.5, borderRadius: 2, fontWeight: 600, fontSize: 13, background: getCategoryColor(c.category).bg, color: getCategoryColor(c.category).color, display: 'inline-block' }}>{c.category}</Box>
-                      </TableCell>
-                      <TableCell>
-                        <Box>{c.contactInfo?.email}</Box>
-                        <Box sx={{ color: 'text.secondary', fontSize: 13 }}>{c.contactInfo?.phone}</Box>
-                      </TableCell>
-                      <TableCell>
-                        <Box sx={{ px: 1.5, py: 0.5, borderRadius: 2, fontWeight: 600, fontSize: 13, background: getStatusColor(c.status).bg, color: getStatusColor(c.status).color, display: 'inline-block' }}>{c.status}</Box>
-                      </TableCell>
-                      <TableCell>
-                        {c.assessmentScore ? <Box sx={{ fontWeight: 500, px: 1, py: 0.5, borderRadius: 2, background: '#f3f4f6', display: 'inline-block' }}>{c.assessmentScore}/100</Box> : 'N/A'}
-                      </TableCell>
-                      <TableCell>
-                        {c.finalRank ? <Box sx={{ fontWeight: 500, px: 1, py: 0.5, borderRadius: 2, background: '#e0e7ff', color: '#3730a3', display: 'inline-block' }}>{c.finalRank}/100</Box> : 'N/A'}
-                      </TableCell>
-                      <TableCell>
-                        <Box sx={{ display: 'flex', gap: 1 }}>
-                          <Button variant="outlined" size="small" onClick={() => handleSendCommunication(c._id)} startIcon={<EmailIcon />}>Send</Button>
-                          <Button variant="outlined" size="small" onClick={() => handleAssignAssessment(c._id)} startIcon={<TrendingUpIcon />}>Assess</Button>
-                          <Button variant="outlined" size="small" onClick={() => handleViewAssessmentScore(c._id)} startIcon={<CheckCircleIcon />}>View</Button>
-                        </Box>
-                      </TableCell>
-                    </TableRow>
+                  filteredCandidates.map((candidate, index) => (
+                    <motion.tr 
+                      key={candidate._id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: index * 0.1 }}
+                      className="border-b border-gray-100 hover:bg-gray-50/50 transition-colors"
+                    >
+                      <td className="py-4 px-4">
+                        <div className="font-semibold text-gray-900">{candidate.name}</div>
+                      </td>
+                      <td className="py-4 px-4">
+                        <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800">
+                          {candidate.resumeScore ? `${(candidate.resumeScore * 100).toFixed(0)}/100` : 'N/A'}
+                        </span>
+                      </td>
+                      <td className="py-4 px-4">
+                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium border ${getCategoryColor(candidate.category).bg} ${getCategoryColor(candidate.category).text} ${getCategoryColor(candidate.category).border}`}>
+                          {candidate.category}
+                        </span>
+                      </td>
+                      <td className="py-4 px-4">
+                        <div className="text-sm">
+                          <div className="text-gray-900">{candidate.contactInfo?.email}</div>
+                          <div className="text-gray-500">{candidate.contactInfo?.phone}</div>
+                        </div>
+                      </td>
+                      <td className="py-4 px-4">
+                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium border ${getStatusColor(candidate.status).bg} ${getStatusColor(candidate.status).text} ${getStatusColor(candidate.status).border}`}>
+                          {candidate.status}
+                        </span>
+                      </td>
+                      <td className="py-4 px-4">
+                        <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800">
+                          {candidate.assessmentScore ? `${candidate.assessmentScore}/100` : 'N/A'}
+                        </span>
+                      </td>
+                      <td className="py-4 px-4">
+                        <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-indigo-100 text-indigo-700 border border-indigo-200">
+                          {candidate.finalRank ? `${candidate.finalRank}/100` : 'N/A'}
+                        </span>
+                      </td>
+                      <td className="py-4 px-4">
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() => handleSendCommunication(candidate._id)}
+                            className="inline-flex items-center px-3 py-2 rounded-lg text-sm font-medium bg-gradient-to-r from-indigo-600 to-blue-600 text-white hover:from-indigo-700 hover:to-blue-700 transition-all duration-200 shadow-sm hover:shadow-md"
+                          >
+                            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                            </svg>
+                            Send
+                          </button>
+                          <button
+                            onClick={() => handleAssignAssessment(candidate._id)}
+                            className="inline-flex items-center px-3 py-2 rounded-lg text-sm font-medium bg-gradient-to-r from-cyan-600 to-blue-600 text-white hover:from-cyan-700 hover:to-blue-700 transition-all duration-200 shadow-sm hover:shadow-md"
+                          >
+                            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                            </svg>
+                            Assess
+                          </button>
+                          <button
+                            onClick={() => handleViewAssessmentScore(candidate._id)}
+                            className="inline-flex items-center px-3 py-2 rounded-lg text-sm font-medium bg-gradient-to-r from-green-600 to-emerald-600 text-white hover:from-green-700 hover:to-emerald-700 transition-all duration-200 shadow-sm hover:shadow-md"
+                          >
+                            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            View
+                          </button>
+                        </div>
+                      </td>
+                    </motion.tr>
                   ))
                 )}
-              </TableBody>
-            </Table>
-          )}
-        </Paper>
-      </Box>
+              </tbody>
+            </table>
+          </div>
+        </motion.div>
+      </div>
     </DashboardLayout>
   );
 }
