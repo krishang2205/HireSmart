@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import DashboardLayout from '@/components/DashboardLayout';
+import { useToast } from '@/hooks/use-toast';
 
   // Statuses remain static
   const statuses = ['Pending Communication', 'Communication Sent', 'Assessment Assigned', 'Assessment Completed', 'Rejected'];
@@ -18,6 +19,7 @@ export default function NextSteps() {
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
   const [sendingBulk, setSendingBulk] = useState(false);
+  const { push } = useToast();
 
   // Fetch candidates from the database on component mount
   useEffect(() => {
@@ -107,26 +109,24 @@ export default function NextSteps() {
           )
         );
         
-        // Show success message (you can add a toast notification here)
-        alert(`Email sent successfully to ${result.candidate.name}`);
+        push({ variant: 'success', title: 'Email sent', description: `Email sent to ${result.candidate.name}` });
       } else {
-        // Show error message
-        alert(`Failed to send email: ${result.error}`);
+        push({ variant: 'destructive', title: 'Failed to send email', description: result.error || 'Please try again.' });
       }
     } catch (error) {
       console.error('Error sending email:', error);
-      alert('Failed to send email. Please try again.');
+      push({ variant: 'destructive', title: 'Failed to send email', description: 'Please try again.' });
     }
   };
 
   const handleSendBulkByCategory = async () => {
     if (!filter.category) {
-      alert('Please select a category first.');
+      push({ variant: 'destructive', title: 'Select a category', description: 'Choose a category to send emails.' });
       return;
     }
     const targets = candidates.filter(c => c.category === filter.category && c.status !== 'Communication Sent');
     if (targets.length === 0) {
-      alert('No candidates to send in this category.');
+      push({ variant: 'default', title: 'Nothing to send', description: 'All candidates in this category are already contacted.' });
       return;
     }
     setSendingBulk(true);
@@ -151,7 +151,7 @@ export default function NextSteps() {
       }
     }
     setSendingBulk(false);
-    alert(`Bulk send complete. Success: ${success}, Failed: ${failed}`);
+    push({ variant: failed ? 'default' : 'success', title: 'Bulk send complete', description: `Success: ${success}, Failed: ${failed}` });
   };
 
   const handleAssignAssessment = async (id) => {
