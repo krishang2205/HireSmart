@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Candidate = require('../models/Candidate');
-const sendEmail = require('../utils/email');
+const { sendCategoryEmail } = require('../utils/email');
 
 
 // POST /candidates (create candidate from resume)
@@ -39,13 +39,22 @@ router.get('/', async (req, res) => {
 
 // POST /send-communication
 router.post('/send-communication', async (req, res) => {
-  const { candidateId, templateType } = req.body;
+  const { candidateId } = req.body;
   try {
     const candidate = await Candidate.findById(candidateId);
-    await sendEmail(candidate.contactInfo.email, templateType, candidate.category);
+    if (!candidate) {
+      return res.status(404).json({ error: 'Candidate not found' });
+    }
+    
+    await sendCategoryEmail(
+      candidate.contactInfo.email,
+      candidate.name,
+      candidate.category
+    );
+    
     candidate.status = 'Communication Sent';
     await candidate.save();
-    res.json({ success: true });
+    res.json({ success: true, message: `Email sent to ${candidate.name}` });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

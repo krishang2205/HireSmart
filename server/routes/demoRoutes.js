@@ -2,6 +2,8 @@
 const express = require('express');
 const router = express.Router();
 const { getMatchResultsByJob, saveMatchResults, analyzeResumesWithGemini, getAllMatchResults } = require('../controllers/matchController');
+const { sendCategoryEmail } = require('../utils/email');
+const MatchResult = require('../models/MatchResult');
 
 // GET /api/match-results (all results)
 router.get('/match-results', async (req, res) => {
@@ -10,6 +12,59 @@ router.get('/match-results', async (req, res) => {
     res.json(results);
   } catch (err) {
     res.status(500).json({ error: 'Failed to fetch all match results' });
+  }
+});
+
+// POST /api/match-results/send-email - Send email using MatchResult data (MUST come before :jobId route)
+router.post('/match-results/send-email', async (req, res) => {
+  const { candidateId } = req.body;
+  try {
+    const matchResult = await MatchResult.findById(candidateId);
+    if (!matchResult) {
+      return res.status(404).json({ 
+        success: false, 
+        error: 'Candidate not found' 
+      });
+    }
+
+    // Check if email has already been sent
+    if (matchResult.status === 'Communication Sent') {
+      return res.status(400).json({ 
+        success: false, 
+        error: 'Email has already been sent to this candidate' 
+      });
+    }
+
+    // Send email based on category
+    await sendCategoryEmail(
+      matchResult.email,
+      matchResult.candidateName,
+      matchResult.prediction
+    );
+
+    // Update match result status
+    matchResult.status = 'Communication Sent';
+    await matchResult.save();
+
+    res.json({
+      success: true,
+      message: `Email sent successfully to ${matchResult.candidateName}`,
+      candidate: {
+        id: matchResult._id,
+        name: matchResult.candidateName,
+        email: matchResult.email,
+        category: matchResult.prediction,
+        status: matchResult.status
+      }
+    });
+
+  } catch (error) {
+    console.error('Error sending email to candidate:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: 'Failed to send email',
+      details: error.message 
+    });
   }
 });
 
