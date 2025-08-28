@@ -19,7 +19,8 @@ async function saveMatchResults(jobId, matchResults) {
     prediction: r.prediction,
     matchScore: typeof r.cosine_similarity_score === 'number' ? r.cosine_similarity_score : 0,
     matched_skills: Array.isArray(r.matched_skills) ? r.matched_skills : [],
-    explanation: r.explanation || ''
+    explanation: r.explanation || '',
+    jobRole: r.jobRole || ''
   }));
   
   console.log('matchController: Prepared docs for insert:', docs);
@@ -53,6 +54,7 @@ async function getGeminiMatchResult(resumeText, jobDescription, filename) {
     cosine_similarity_score: typeof geminiResult.cosine_similarity_score === 'number' ? geminiResult.cosine_similarity_score : 0,
     matched_skills: Array.isArray(geminiResult.matched_skills) ? geminiResult.matched_skills : [],
     explanation: geminiResult.explanation || '',
+    jobRole: geminiResult.jobRole || ''
   };
 }
 

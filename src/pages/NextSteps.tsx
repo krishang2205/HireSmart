@@ -15,7 +15,7 @@ import { useToast } from '@/hooks/use-toast';
 
 export default function NextSteps() {
   const [candidates, setCandidates] = useState([]);
-  const [filter, setFilter] = useState({ category: '', status: '' });
+  const [filter, setFilter] = useState({ category: '', status: '', jobRole: '' });
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
   const [sendingBulk, setSendingBulk] = useState(false);
@@ -42,7 +42,8 @@ export default function NextSteps() {
             status: candidate.status || 'Pending Communication',
             assessmentScore: null,
             finalRank: null,
-            filename: candidate.filename || 'Unknown file'
+            filename: candidate.filename || 'Unknown file',
+            jobRole: candidate.jobRole || ''
           }));
           setCandidates(transformedCandidates);
         } else {
@@ -56,6 +57,8 @@ export default function NextSteps() {
     };
     fetchCandidates();
   }, []);
+
+  const availableJobRoles = Array.from(new Set(candidates.map(c => c.jobRole).filter(Boolean))).sort();
 
   // Analytics
   const total = candidates.length;
@@ -83,7 +86,8 @@ export default function NextSteps() {
   // Filtering logic
   const filteredCandidates = candidates.filter(c =>
     (!filter.category || c.category === filter.category) &&
-    (!filter.status || c.status === c.status) &&
+    (!filter.status || c.status === filter.status) &&
+    (!filter.jobRole || c.jobRole === filter.jobRole) &&
     (search === '' || c.name.toLowerCase().includes(search.toLowerCase()))
   );
 
@@ -363,6 +367,18 @@ export default function NextSteps() {
               />
             </div>
 
+            {/* Job Role Filter */}
+            <select
+              value={filter.jobRole}
+              onChange={(e) => setFilter({ ...filter, jobRole: e.target.value })}
+              className="px-3 py-2 rounded-lg border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-300 focus:border-indigo-300 transition-all min-w-[160px] text-sm"
+            >
+              <option value="">All Roles</option>
+              {availableJobRoles.map(role => (
+                <option key={role} value={role}>{role}</option>
+              ))}
+            </select>
+
             {/* Category Filter */}
             <select
               value={filter.category}
@@ -402,6 +418,12 @@ export default function NextSteps() {
           </div>
 
           {/* Candidates Table */}
+          {/* Active Role Title */}
+          <div className="mb-2 px-1">
+            <h3 className="text-sm font-semibold text-indigo-700">
+              {filter.jobRole ? `Role: ${filter.jobRole}` : 'All Roles'}
+            </h3>
+          </div>
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>

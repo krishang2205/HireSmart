@@ -21,6 +21,7 @@ Steps:
   - Identify and normalize all *required* and *preferred* skills.
   - Break down phrasing like "Strong proficiency in Excel and SQL" into ["Excel", "SQL"].
   - Normalize synonyms (e.g., "MS Excel" → "Excel", "Structured Query Language" → "SQL").
+  - Identify the most likely job role/title this JD corresponds to (e.g., "Data Analyst", "Frontend Developer"). Return a concise normalized role string in American English.
 
 2. From the Resume:
   - Extract all mentioned skills, tools, programming languages, frameworks, certifications, and relevant technologies.
@@ -52,7 +53,8 @@ Steps:
   "prediction": "<prediction_based_on_score>",
   "cosine_similarity_score": <final_score>,
   "matched_skills": [array of normalized matched skills],
-  "explanation": "A brief overview of why this candidate received this score and match."
+  "explanation": "A brief overview of why this candidate received this score and match.",
+  "jobRole": "<normalized_role_from_jd>"
 }
 
 Job Description:
