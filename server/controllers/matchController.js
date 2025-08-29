@@ -1,12 +1,21 @@
 const MatchResult = require('../models/MatchResult');
+const Job = require('../models/Job');
 const { analyzeResumeWithGemini } = require('../services/geminiService');
 // ...existing code...
 
 // Insert match results for a job
 // matchResults: [{ candidateId, matchScore }, ...], jobId: ObjectId or String
-async function saveMatchResults(jobId, matchResults) {
+async function saveMatchResults(jobId, matchResults, jobDescription) {
   console.log('matchController: saveMatchResults called with jobId:', jobId);
   console.log('matchController: matchResults:', matchResults);
+  if (jobDescription) {
+    console.log('matchController: upserting job description for jobId:', jobId);
+    await Job.findOneAndUpdate(
+      { jobId },
+      { jobId, jobDescription, updatedAt: new Date() },
+      { upsert: true, new: true, setDefaultsOnInsert: true }
+    );
+  }
   
   // Prepare documents for bulk insert
   const docs = matchResults.map(r => ({

@@ -84,10 +84,11 @@ router.post('/match-results/:jobId', async (req, res) => {
   try {
     const jobId = req.params.jobId;
     const matchResults = req.body.matchResults;
+    const jobDescription = req.body.jobDescription;
     if (!Array.isArray(matchResults)) {
       return res.status(400).json({ error: 'matchResults must be an array' });
     }
-    const saved = await saveMatchResults(jobId, matchResults);
+    const saved = await saveMatchResults(jobId, matchResults, jobDescription);
     res.json({ success: true, saved });
   } catch (err) {
     res.status(500).json({ error: 'Failed to save match results' });

@@ -18,19 +18,18 @@ const ResumeScreener = ({ jobId }) => {
     }
   }, [effectiveJobId]);
 
-  // Fetch persisted results on mount if jobId is present
+  // Fetch all historical match results on mount so previous screenings remain visible
   React.useEffect(() => {
-    if (effectiveJobId) {
-      fetch(`/api/match-results/${effectiveJobId}`)
-        .then(res => res.ok ? res.json() : [])
-        .then(data => {
-          if (Array.isArray(data) && data.length > 0) {
-            setResult(data);
-          }
-        })
-        .catch(() => {});
-    }
-  }, [effectiveJobId]);
+    fetch('/api/match-results')
+      .then(res => res.ok ? res.json() : [])
+      .then(data => {
+        const normalized = normalizeResults(data);
+        if (normalized) {
+          setResult(normalized);
+        }
+      })
+      .catch(() => {});
+  }, []);
   const [resumeFile, setResumeFile] = useState<FileList | null>(null);
   const [jobDescription, setJobDescription] = useState(() => localStorage.getItem('jobDescription') || '');
   const normalizeResults = (data) => {
@@ -201,10 +200,13 @@ const ResumeScreener = ({ jobId }) => {
         const saveRes = await fetch(`/api/match-results/${effectiveJobId}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ matchResults: geminiResults.map((r, idx) => ({
-            candidateId: `candidate-${idx+1}`,
-            ...r
-          })) })
+          body: JSON.stringify({
+            jobDescription,
+            matchResults: geminiResults.map((r, idx) => ({
+              candidateId: `candidate-${idx+1}`,
+              ...r
+            }))
+          })
         });
         console.log('ResumeScreener: Save response status:', saveRes.status);
         if (saveRes.ok) {
@@ -213,6 +215,18 @@ const ResumeScreener = ({ jobId }) => {
           // Persist jobId to localStorage only after successful save
           localStorage.setItem('jobId', effectiveJobId);
           console.log('ResumeScreener: Saved jobId to localStorage:', effectiveJobId);
+          // Re-fetch all results so cumulative history remains visible
+          try {
+            const refetchAll = await fetch('/api/match-results');
+            if (refetchAll.ok) {
+              const all = await refetchAll.json();
+              const normalizedAll = normalizeResults(all);
+              if (normalizedAll) {
+                setResult(normalizedAll);
+                sessionStorage.setItem('screeningResults', JSON.stringify(normalizedAll));
+              }
+            }
+          } catch {}
         } else {
           console.error('ResumeScreener: Failed to save results:', saveRes.statusText);
         }

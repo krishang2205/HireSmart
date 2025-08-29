@@ -18,9 +18,18 @@ const getColorByPrediction = (prediction) => {
 const MatchResults = ({ results }) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState('');
+  const [selectedJobRole, setSelectedJobRole] = useState('');
   const [showNextStepMessage, setShowNextStepMessage] = useState(() => {
     return sessionStorage.getItem('showNextStepMessage') === 'true';
   });
+
+  // Get unique job roles from results
+  const availableJobRoles = Array.from(new Set(results.map(r => r.jobRole).filter(Boolean))).sort();
+  
+  // Filter results by selected job role
+  const filteredResults = selectedJobRole 
+    ? results.filter(r => r.jobRole === selectedJobRole)
+    : results;
 
   if (showNextStepMessage) {
     return (
@@ -96,6 +105,29 @@ const MatchResults = ({ results }) => {
         </svg>
       </button>
       <h2 className="text-2xl font-semibold text-indigo-700 mb-6">Screening Results</h2>
+      
+      {/* Job Role Filter */}
+      {availableJobRoles.length > 0 && (
+        <div className="mb-4 flex items-center gap-3">
+          <label className="text-sm font-medium text-gray-700">Filter by Role:</label>
+          <select
+            value={selectedJobRole}
+            onChange={(e) => setSelectedJobRole(e.target.value)}
+            className="px-3 py-2 rounded-lg border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-300 focus:border-indigo-300 transition-all text-sm"
+          >
+            <option value="">All Roles</option>
+            {availableJobRoles.map(role => (
+              <option key={role} value={role}>{role}</option>
+            ))}
+          </select>
+          {selectedJobRole && (
+            <span className="text-sm text-gray-600">
+              Showing {filteredResults.length} of {results.length} candidates
+            </span>
+          )}
+        </div>
+      )}
+      
       <div>
         <table className="w-full border border-gray-200 rounded-xl overflow-hidden shadow-sm text-sm table-auto">
           <thead className="bg-gray-50">
@@ -110,7 +142,7 @@ const MatchResults = ({ results }) => {
             </tr>
           </thead>
           <tbody>
-            {results.map((res, idx) => (
+            {filteredResults.map((res, idx) => (
               <tr key={idx} className="border-t transition-all hover:bg-blue-50">
                   <td className="px-4 py-2 align-middle break-words">{res.candidateName || res.filename}</td>
                 <td className="px-4 py-2 align-middle whitespace-nowrap">
