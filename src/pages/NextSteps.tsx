@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import DashboardLayout from '@/components/DashboardLayout';
 import { useToast } from '@/hooks/use-toast';
+import AssessmentButton from '@/components/AssessmentButton';
 
   // Statuses remain static
   const statuses = ['Pending Communication', 'Communication Sent', 'Assessment Assigned', 'Assessment Completed', 'Rejected'];
@@ -403,6 +404,20 @@ export default function NextSteps() {
             >
               {sendingBulk ? 'Sending…' : `Send All in ${filter.category || 'Category'}`}
             </button>
+
+            {/* Assessment Button */}
+            <AssessmentButton
+              variant="secondary"
+              size="md"
+              onAssessmentCreated={() => {
+                push({
+                  title: "Assessment Created",
+                  description: "Assessment has been created successfully!",
+                });
+              }}
+            >
+              Create Assessment
+            </AssessmentButton>
 
             {/* Status Filter */}
             <select

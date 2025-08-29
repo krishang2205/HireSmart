@@ -43,6 +43,7 @@ app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api', require('./routes/demoRoutes'));
 app.use('/api/candidates', require('./routes/candidateRoutes'));
 app.use('/api/email', require('./routes/emailRoutes'));
+app.use('/api/assessments', require('./routes/assessmentRoutes'));
 
 app.get('/api/health', (req, res) => {
 	res.json({ status: 'ok', timestamp: Date.now() });

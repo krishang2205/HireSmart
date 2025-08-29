@@ -10,9 +10,11 @@ async function saveMatchResults(jobId, matchResults, jobDescription) {
   console.log('matchController: matchResults:', matchResults);
   if (jobDescription) {
     console.log('matchController: upserting job description for jobId:', jobId);
+    // Extract jobRole from the first match result if available
+    const jobRole = matchResults.length > 0 ? matchResults[0].jobRole || '' : '';
     await Job.findOneAndUpdate(
       { jobId },
-      { jobId, jobDescription, updatedAt: new Date() },
+      { jobId, jobDescription, jobRole, updatedAt: new Date() },
       { upsert: true, new: true, setDefaultsOnInsert: true }
     );
   }

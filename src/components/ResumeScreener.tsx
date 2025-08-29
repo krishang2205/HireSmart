@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { extractNameFromResume } from './utils';
 import MatchResults from './MatchResults';
+import AssessmentButton from './AssessmentButton';
 import * as pdfjsLib from 'pdfjs-dist/build/pdf';
 pdfjsLib.GlobalWorkerOptions.workerSrc = '/pdf.worker.js';
 import mammoth from 'mammoth';
@@ -276,6 +277,20 @@ const ResumeScreener = ({ jobId }) => {
         >
           Analyze Match
         </button>
+      </div>
+
+      {/* Assessment Button */}
+      <div className="w-full flex justify-center mt-4">
+        <AssessmentButton
+          variant="outline"
+          size="lg"
+          onAssessmentCreated={() => {
+            // Optionally refresh results or show success message
+            console.log('Assessment created successfully');
+          }}
+        >
+          Create Assessment
+        </AssessmentButton>
       </div>
       {error && <p className="text-red-500 mt-4">{error}</p>}
       <div className="mt-6 w-full flex justify-center">
