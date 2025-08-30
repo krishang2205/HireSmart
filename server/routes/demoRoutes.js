@@ -79,6 +79,20 @@ router.get('/match-results/:jobId', async (req, res) => {
   }
 });
 
+// GET /api/match-results/role/:jobRole - fetch candidates by job role (case-insensitive)
+router.get('/match-results/role/:jobRole', async (req, res) => {
+  try {
+    const jobRole = req.params.jobRole || '';
+    // Use case-insensitive regex to match jobRole field
+    const regex = new RegExp(`^${jobRole.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'i');
+    const results = await MatchResult.find({ jobRole: regex }).sort({ matchScore: -1 });
+    res.json(results);
+  } catch (err) {
+    console.error('Failed to fetch match results by role:', err);
+    res.status(500).json({ error: 'Failed to fetch match results by role' });
+  }
+});
+
 // POST /api/match-results/:jobId
 router.post('/match-results/:jobId', async (req, res) => {
   try {

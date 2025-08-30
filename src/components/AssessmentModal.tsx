@@ -46,17 +46,16 @@ const AssessmentModal: React.FC<AssessmentModalProps> = ({
       if (selectedRole) {
         setJobDescription(selectedRole.jobDescription);
       }
-      // Fetch all match-results and filter by jobRole client-side
+      // Fetch candidates for this job role using backend endpoint
       (async () => {
         try {
-          const res = await fetch('/api/match-results');
+          const roleParam = encodeURIComponent(selectedRole.jobRole || '');
+          const res = await fetch(`/api/match-results/role/${roleParam}`);
           if (res.ok) {
-            const all = await res.json();
-            const filtered = Array.isArray(all) ? all.filter((c: any) => (c.jobRole || '').toLowerCase() === (selectedRole.jobRole || '').toLowerCase()) : [];
-            setCandidatesForRole(filtered);
-            // reset selection
+            const filtered = await res.json();
+            setCandidatesForRole(Array.isArray(filtered) ? filtered : []);
             const map: Record<string, boolean> = {};
-            filtered.forEach((c: any) => { map[c._id || c.candidateId || c.filename] = false; });
+            (Array.isArray(filtered) ? filtered : []).forEach((c: any) => { map[c._id || c.candidateId || c.filename] = false; });
             setSelectedCandidates(map);
             setSelectAll(false);
           }
