@@ -169,28 +169,30 @@ const AssessmentModal: React.FC<AssessmentModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold text-gray-800">Create Assessment</h2>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+      <div className="bg-white rounded-2xl shadow-2xl p-6 md:p-8 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto ring-1 ring-black/5">
+        <div className="flex items-start justify-between gap-4 mb-4">
+          <div>
+            <h2 className="text-2xl font-extrabold text-indigo-700">Create Assessment</h2>
+            <p className="text-sm text-gray-500 mt-1">Configure the assessment and choose candidates to invite.</p>
+          </div>
           <button
             onClick={onClose}
-            className="text-gray-500 hover:text-gray-700 text-2xl font-bold focus:outline-none"
+            className="text-gray-400 hover:text-gray-600 text-2xl font-bold leading-none focus:outline-none"
+            aria-label="Close dialog"
           >
             ×
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+  <form onSubmit={handleSubmit} className="space-y-6">
           {/* Job Role Selection */}
-          <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
-              Job Role *
-            </label>
+          <div className="space-y-2">
+            <label className="block text-sm font-semibold text-gray-700">Job Role *</label>
             <select
               value={selectedJobRole}
               onChange={(e) => setSelectedJobRole(e.target.value)}
-              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              className="w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-300 focus:outline-none bg-white"
               required
             >
               <option value="">Select a job role</option>
@@ -204,26 +206,22 @@ const AssessmentModal: React.FC<AssessmentModalProps> = ({
 
           {/* Job Description */}
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
-              Job Description
-            </label>
+            <label className="block text-sm font-semibold text-gray-700">Job Description</label>
             <textarea
               value={jobDescription}
               onChange={(e) => setJobDescription(e.target.value)}
-              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none h-32 resize-none"
+              className="w-full p-3 border border-gray-100 rounded-lg focus:ring-2 focus:ring-indigo-300 focus:outline-none h-28 resize-none bg-gray-50"
               placeholder="Job description will be auto-filled based on selected role"
             />
           </div>
 
           {/* Difficulty Level */}
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
-              Difficulty Level *
-            </label>
+            <label className="block text-sm font-semibold text-gray-700">Difficulty Level *</label>
             <select
               value={difficultyLevel}
               onChange={(e) => setDifficultyLevel(e.target.value)}
-              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              className="w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-300 focus:outline-none bg-white"
               required
             >
               {difficultyOptions.map((level) => (
@@ -235,18 +233,18 @@ const AssessmentModal: React.FC<AssessmentModalProps> = ({
           </div>
 
           {/* Number of Questions split into three parts */}
-          <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-3 gap-4">
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">Aptitude Questions</label>
-              <input type="number" min={0} value={aptitudeQuestions} onChange={e => setAptitudeQuestions(Number(e.target.value))} className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none" />
+        <input type="number" min={0} value={aptitudeQuestions} onChange={e => setAptitudeQuestions(Number(e.target.value))} className="w-full p-3 border border-gray-100 rounded-lg focus:ring-2 focus:ring-indigo-300 focus:outline-none bg-white" />
             </div>
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">Job Role Questions</label>
-              <input type="number" min={0} value={jobRoleQuestions} onChange={e => setJobRoleQuestions(Number(e.target.value))} className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none" />
+        <input type="number" min={0} value={jobRoleQuestions} onChange={e => setJobRoleQuestions(Number(e.target.value))} className="w-full p-3 border border-gray-100 rounded-lg focus:ring-2 focus:ring-indigo-300 focus:outline-none bg-white" />
             </div>
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">Coding Questions</label>
-              <input type="number" min={0} value={codingQuestions} onChange={e => setCodingQuestions(Number(e.target.value))} className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none" />
+        <input type="number" min={0} value={codingQuestions} onChange={e => setCodingQuestions(Number(e.target.value))} className="w-full p-3 border border-gray-100 rounded-lg focus:ring-2 focus:ring-indigo-300 focus:outline-none bg-white" />
             </div>
           </div>
 
@@ -270,25 +268,25 @@ const AssessmentModal: React.FC<AssessmentModalProps> = ({
               </select>
             </div>
 
-            <div className="flex flex-col justify-center p-3 bg-gray-50 rounded-lg">
-              <div className="text-sm text-gray-600">Total Questions</div>
-              <div className="text-2xl font-bold text-gray-800">{aptitudeQuestions + jobRoleQuestions + codingQuestions}</div>
-              <div className="mt-2 text-sm text-gray-500">Tests to generate: {Object.values(selectedCandidates).filter(Boolean).length}</div>
+            <div className="flex flex-col justify-center p-3 bg-indigo-50 rounded-lg border border-indigo-100">
+              <div className="text-sm text-indigo-700">Total Questions</div>
+              <div className="text-2xl font-extrabold text-indigo-700">{aptitudeQuestions + jobRoleQuestions + codingQuestions}</div>
+              <div className="mt-2 text-sm text-indigo-600">Tests to generate: <span className="font-semibold text-indigo-700">{Object.values(selectedCandidates).filter(Boolean).length}</span></div>
             </div>
           </div>
 
           {/* Candidates list for selected job role */}
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-2">Select Candidates</label>
-            <div className="border rounded-lg p-3 max-h-40 overflow-y-auto bg-gray-50">
-              <div className="flex items-center justify-between mb-2">
-                <div className="text-sm text-gray-600">Total: {candidatesForRole.length}</div>
-                <div className="flex items-center gap-3">
-                  <label className="flex items-center gap-2 cursor-pointer">
-                    <input type="checkbox" checked={selectAll} onChange={toggleSelectAll} className="w-4 h-4" />
-                    <span className="text-sm text-gray-700">Select all</span>
+            <div className="border rounded-lg p-3 max-h-44 overflow-y-auto bg-white">
+              <div className="flex items-center justify-between mb-3">
+                <div className="text-sm text-gray-600">Total: <span className="font-semibold text-gray-800">{candidatesForRole.length}</span></div>
+                <div className="flex items-center gap-4">
+                  <label className="flex items-center gap-2 cursor-pointer text-sm text-gray-700">
+                    <input type="checkbox" checked={selectAll} onChange={toggleSelectAll} className="w-4 h-4 text-indigo-600 border-gray-200 rounded" />
+                    <span className="select-none">Select all</span>
                   </label>
-                  <div className="text-sm text-gray-700">Selected: {Object.values(selectedCandidates).filter(Boolean).length}</div>
+                  <div className="text-sm text-gray-700">Selected: <span className="font-semibold">{Object.values(selectedCandidates).filter(Boolean).length}</span></div>
                 </div>
               </div>
               {candidatesForRole.length === 0 ? (
@@ -296,16 +294,17 @@ const AssessmentModal: React.FC<AssessmentModalProps> = ({
               ) : (
                 candidatesForRole.map((c: any) => {
                   const id = c._id || c.candidateId || c.filename;
+                  const selected = !!selectedCandidates[id];
                   return (
-                    <label key={id} className="flex items-center justify-between gap-4 py-2 px-2 rounded hover:bg-white">
+                    <label key={id} className={`flex items-center justify-between gap-4 py-2 px-3 rounded-lg mb-1 transition-colors ${selected ? 'bg-indigo-50 border border-indigo-100' : 'hover:bg-gray-50'}`}>
                       <div className="flex items-center gap-3">
-                        <input type="checkbox" checked={!!selectedCandidates[id]} onChange={() => toggleCandidate(id)} className="w-4 h-4" />
+                        <input type="checkbox" checked={selected} onChange={() => toggleCandidate(id)} className="w-4 h-4 text-indigo-600 border-gray-200 rounded" />
                         <div>
                           <div className="text-sm font-semibold text-gray-800">{c.candidateName || c.filename || 'Unnamed'}</div>
                           <div className="text-xs text-gray-500">{c.email || c.contactNumber || ''}</div>
                         </div>
                       </div>
-                      <div className="text-sm text-gray-500">Score: {(c.matchScore ?? c.cosine_similarity_score ?? 0).toFixed ? (Number(c.matchScore ?? c.cosine_similarity_score ?? 0).toFixed(2)) : (c.matchScore ?? c.cosine_similarity_score ?? 0)}</div>
+                      <div className="text-sm text-gray-500">Score: <span className="font-medium text-gray-800">{(c.matchScore ?? c.cosine_similarity_score ?? 0).toFixed ? (Number(c.matchScore ?? c.cosine_similarity_score ?? 0).toFixed(2)) : (c.matchScore ?? c.cosine_similarity_score ?? 0)}</span></div>
                     </label>
                   );
                 })
