@@ -4,7 +4,14 @@ const Job = require('../models/Job');
 // Create a new assessment
 async function createAssessment(assessmentData) {
   try {
-    const assessment = new Assessment(assessmentData);
+    // Calculate total questions per test
+    const totalQuestions = assessmentData.aptitudeQuestions + assessmentData.jobRoleQuestions + assessmentData.codingQuestions;
+    
+    const assessment = new Assessment({
+      ...assessmentData,
+      totalQuestions
+    });
+    
     const savedAssessment = await assessment.save();
     return savedAssessment;
   } catch (error) {
@@ -59,9 +66,36 @@ async function deleteAssessment(assessmentId) {
 // Get all unique job roles from jobs collection
 async function getAvailableJobRoles() {
   try {
-    const jobs = await Job.find({}, 'jobRole jobDescription');
-    return jobs;
+    console.log('assessmentController: Fetching job roles from jobs collection...');
+    
+    // Get all jobs with their jobRole and jobDescription
+    const allJobs = await Job.find({}, 'jobRole jobDescription originalJobId');
+    console.log('assessmentController: Found all jobs:', allJobs);
+    
+    // Group by jobRole to get unique roles with their descriptions
+    const uniqueJobRoles = [];
+    const roleMap = new Map();
+    
+    allJobs.forEach(job => {
+      if (job.jobRole && job.jobRole !== 'Unknown Role') {
+        if (!roleMap.has(job.jobRole)) {
+          roleMap.set(job.jobRole, {
+            _id: job._id,
+            jobRole: job.jobRole,
+            jobDescription: job.jobDescription,
+            originalJobId: job.originalJobId
+          });
+        }
+      }
+    });
+    
+    const result = Array.from(roleMap.values());
+    console.log('assessmentController: Unique job roles extracted:', result);
+    console.log('assessmentController: Job roles count:', result.length);
+    
+    return result;
   } catch (error) {
+    console.error('assessmentController: Error fetching job roles:', error);
     throw new Error(`Failed to fetch job roles: ${error.message}`);
   }
 }

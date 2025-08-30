@@ -4,6 +4,7 @@ const router = express.Router();
 const { getMatchResultsByJob, saveMatchResults, analyzeResumesWithGemini, getAllMatchResults } = require('../controllers/matchController');
 const { sendCategoryEmail } = require('../utils/email');
 const MatchResult = require('../models/MatchResult');
+const Job = require('../models/Job');
 
 // GET /api/match-results (all results)
 router.get('/match-results', async (req, res) => {
@@ -84,9 +85,28 @@ router.get('/match-results/role/:jobRole', async (req, res) => {
   try {
     const jobRole = req.params.jobRole || '';
     // Use case-insensitive regex to match jobRole field
-    const regex = new RegExp(`^${jobRole.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'i');
-    const results = await MatchResult.find({ jobRole: regex }).sort({ matchScore: -1 });
-    res.json(results);
+    const safe = jobRole.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const regex = new RegExp(`^${safe}$`, 'i');
+
+    // First match MatchResult.jobRole
+    const directMatches = await MatchResult.find({ jobRole: regex }).sort({ matchScore: -1 });
+
+    // Also find Job documents with this role and fetch MatchResults by jobId
+    const jobs = await Job.find({ jobRole: regex }, 'jobId');
+    const jobIds = jobs.map(j => j.jobId).filter(Boolean);
+    let byJobIdMatches = [];
+    if (jobIds.length > 0) {
+      byJobIdMatches = await MatchResult.find({ jobId: { $in: jobIds } }).sort({ matchScore: -1 });
+    }
+
+    // Combine unique results by _id or candidateId
+    const map = new Map();
+    directMatches.concat(byJobIdMatches).forEach(r => {
+      const key = r._id ? String(r._id) : (r.candidateId || r.filename || JSON.stringify(r));
+      if (!map.has(key)) map.set(key, r);
+    });
+
+    res.json(Array.from(map.values()));
   } catch (err) {
     console.error('Failed to fetch match results by role:', err);
     res.status(500).json({ error: 'Failed to fetch match results by role' });

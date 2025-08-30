@@ -6,6 +6,16 @@ interface JobRole {
   jobDescription: string;
 }
 
+interface Candidate {
+  _id: string;
+  candidateName: string;
+  email: string;
+  contactNumber: string;
+  prediction: string;
+  matchScore: number;
+  jobRole: string;
+}
+
 interface AssessmentModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -18,16 +28,16 @@ const AssessmentModal: React.FC<AssessmentModalProps> = ({
   onAssessmentCreated 
 }) => {
   const [jobRoles, setJobRoles] = useState<JobRole[]>([]);
+  const [allCandidates, setAllCandidates] = useState<Candidate[]>([]);
+  const [filteredCandidates, setFilteredCandidates] = useState<Candidate[]>([]);
   const [selectedJobRole, setSelectedJobRole] = useState<string>('');
   const [jobDescription, setJobDescription] = useState<string>('');
   const [difficultyLevel, setDifficultyLevel] = useState<string>('Intermediate');
+  const [aptitudeQuestions, setAptitudeQuestions] = useState<number>(10);
+  const [jobRoleQuestions, setJobRoleQuestions] = useState<number>(10);
+  const [codingQuestions, setCodingQuestions] = useState<number>(10);
   const [testDuration, setTestDuration] = useState<number>(45);
-  const [aptitudeQuestions, setAptitudeQuestions] = useState<number>(0);
-  const [jobRoleQuestions, setJobRoleQuestions] = useState<number>(0);
-  const [codingQuestions, setCodingQuestions] = useState<number>(0);
-  const [candidatesForRole, setCandidatesForRole] = useState<any[]>([]);
-  const [selectedCandidates, setSelectedCandidates] = useState<Record<string, boolean>>({});
-  const [selectAll, setSelectAll] = useState(false);
+  const [selectedCandidates, setSelectedCandidates] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string>('');
 
@@ -37,6 +47,7 @@ const AssessmentModal: React.FC<AssessmentModalProps> = ({
   useEffect(() => {
     if (isOpen) {
       fetchJobRoles();
+      fetchAllCandidates();
     }
   }, [isOpen]);
 
@@ -45,31 +56,20 @@ const AssessmentModal: React.FC<AssessmentModalProps> = ({
       const selectedRole = jobRoles.find(role => role._id === selectedJobRole);
       if (selectedRole) {
         setJobDescription(selectedRole.jobDescription);
+        console.log('AssessmentModal: Selected role:', selectedRole);
+        console.log('AssessmentModal: All candidates:', allCandidates);
+        
+        // Filter candidates by selected job role
+        const filtered = allCandidates.filter(c => c.jobRole === selectedRole.jobRole);
+        console.log('AssessmentModal: Filtered candidates for role:', selectedRole.jobRole, 'Count:', filtered.length);
+        setFilteredCandidates(filtered);
+        setSelectedCandidates([]); // Reset selection when role changes
       }
-      // Fetch candidates for this job role using backend endpoint
-      (async () => {
-        try {
-          const roleParam = encodeURIComponent(selectedRole.jobRole || '');
-          const res = await fetch(`/api/match-results/role/${roleParam}`);
-          if (res.ok) {
-            const filtered = await res.json();
-            setCandidatesForRole(Array.isArray(filtered) ? filtered : []);
-            const map: Record<string, boolean> = {};
-            (Array.isArray(filtered) ? filtered : []).forEach((c: any) => { map[c._id || c.candidateId || c.filename] = false; });
-            setSelectedCandidates(map);
-            setSelectAll(false);
-          }
-        } catch (err) {
-          console.error('Failed to fetch candidates for role:', err);
-          setCandidatesForRole([]);
-        }
-      })();
     } else {
-      setCandidatesForRole([]);
-      setSelectedCandidates({});
-      setSelectAll(false);
+      setFilteredCandidates([]);
+      setSelectedCandidates([]);
     }
-  }, [selectedJobRole, jobRoles]);
+  }, [selectedJobRole, jobRoles, allCandidates]);
 
   const fetchJobRoles = async () => {
     try {
@@ -83,34 +83,44 @@ const AssessmentModal: React.FC<AssessmentModalProps> = ({
     }
   };
 
-  const toggleCandidate = (id: string) => {
-    setSelectedCandidates(prev => {
-      const next = { ...prev, [id]: !prev[id] };
-      const allSelected = Object.values(next).every(Boolean) && Object.keys(next).length > 0;
-      setSelectAll(allSelected);
-      return next;
-    });
+  const fetchAllCandidates = async () => {
+    try {
+      const response = await fetch('/api/match-results');
+      if (response.ok) {
+        const data = await response.json();
+        setAllCandidates(data);
+      }
+    } catch (error) {
+      console.error('Failed to fetch candidates:', error);
+    }
   };
 
-  const toggleSelectAll = () => {
-    setSelectAll(prev => {
-      const next = !prev;
-      const nextMap: Record<string, boolean> = {};
-      candidatesForRole.forEach(c => { nextMap[c._id || c.candidateId || c.filename] = next; });
-      setSelectedCandidates(nextMap);
-      return next;
-    });
+  const handleSelectAllCandidates = () => {
+    if (selectedCandidates.length === filteredCandidates.length) {
+      setSelectedCandidates([]);
+    } else {
+      setSelectedCandidates(filteredCandidates.map(c => c._id));
+    }
+  };
+
+  const handleCandidateSelection = (candidateId: string) => {
+    setSelectedCandidates(prev => 
+      prev.includes(candidateId)
+        ? prev.filter(id => id !== candidateId)
+        : [...prev, candidateId]
+    );
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!selectedJobRole) {
-      setError('Please select a job role');
+    if (!selectedJobRole || selectedCandidates.length === 0) {
+      setError('Please select a job role and at least one candidate');
       return;
     }
-    const selectedCount = Object.values(selectedCandidates).filter(Boolean).length;
-    if (selectedCount === 0) {
-      setError('Please select at least one candidate from the chosen job role');
+
+    const totalQuestions = aptitudeQuestions + jobRoleQuestions + codingQuestions;
+    if (totalQuestions === 0) {
+      setError('Please set at least one question type');
       return;
     }
 
@@ -122,13 +132,13 @@ const AssessmentModal: React.FC<AssessmentModalProps> = ({
         jobRole: jobRoles.find(role => role._id === selectedJobRole)?.jobRole || '',
         jobDescription,
         difficultyLevel,
+        aptitudeQuestions,
+        jobRoleQuestions,
+        codingQuestions,
+        totalQuestions,
         testDuration,
-        questions: {
-          aptitude: aptitudeQuestions,
-          jobRole: jobRoleQuestions,
-          coding: codingQuestions
-        },
-        selectedCandidateIds: Object.keys(selectedCandidates).filter(id => selectedCandidates[id])
+        selectedCandidates: selectedCandidates.length,
+        candidateIds: selectedCandidates
       };
 
       const response = await fetch('/api/assessments', {
@@ -153,51 +163,55 @@ const AssessmentModal: React.FC<AssessmentModalProps> = ({
   };
 
   const resetForm = () => {
-  setSelectedJobRole('');
-  setJobDescription('');
-  setDifficultyLevel('Intermediate');
-  setTestDuration(45);
-  setAptitudeQuestions(0);
-  setJobRoleQuestions(0);
-  setCodingQuestions(0);
-  setCandidatesForRole([]);
-  setSelectedCandidates({});
-  setSelectAll(false);
+    setSelectedJobRole('');
+    setJobDescription('');
+    setDifficultyLevel('Intermediate');
+    setAptitudeQuestions(10);
+    setJobRoleQuestions(10);
+    setCodingQuestions(10);
+    setTestDuration(45);
+    setSelectedCandidates([]);
+    setFilteredCandidates([]);
     setError('');
   };
+
+  const getTotalQuestions = () => aptitudeQuestions + jobRoleQuestions + codingQuestions;
 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
-      <div className="bg-white rounded-2xl shadow-2xl p-6 md:p-8 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto ring-1 ring-black/5">
-        <div className="flex items-start justify-between gap-4 mb-4">
-          <div>
-            <h2 className="text-2xl font-extrabold text-indigo-700">Create Assessment</h2>
-            <p className="text-sm text-gray-500 mt-1">Configure the assessment and choose candidates to invite.</p>
-          </div>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+      <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-2xl font-bold text-gray-800">Create Assessment</h2>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 text-2xl font-bold leading-none focus:outline-none"
-            aria-label="Close dialog"
+            className="text-gray-500 hover:text-gray-700 text-2xl font-bold focus:outline-none"
           >
             ×
           </button>
         </div>
 
-  <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-6">
           {/* Job Role Selection */}
-          <div className="space-y-2">
-            <label className="block text-sm font-semibold text-gray-700">Job Role *</label>
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              Job Role *
+            </label>
             <select
               value={selectedJobRole}
               onChange={(e) => setSelectedJobRole(e.target.value)}
-              className="w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-300 focus:outline-none bg-white"
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none text-gray-900 bg-white"
               required
+              style={{ color: '#111827', backgroundColor: '#ffffff' }}
             >
-              <option value="">Select a job role</option>
+              <option value="" style={{ color: '#6b7280', backgroundColor: '#ffffff' }}>Select a job role</option>
               {jobRoles.map((role) => (
-                <option key={role._id} value={role._id}>
+                <option 
+                  key={role._id} 
+                  value={role._id} 
+                  style={{ color: '#111827', backgroundColor: '#ffffff' }}
+                >
                   {role.jobRole}
                 </option>
               ))}
@@ -206,50 +220,90 @@ const AssessmentModal: React.FC<AssessmentModalProps> = ({
 
           {/* Job Description */}
           <div>
-            <label className="block text-sm font-semibold text-gray-700">Job Description</label>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              Job Description
+            </label>
             <textarea
               value={jobDescription}
               onChange={(e) => setJobDescription(e.target.value)}
-              className="w-full p-3 border border-gray-100 rounded-lg focus:ring-2 focus:ring-indigo-300 focus:outline-none h-28 resize-none bg-gray-50"
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none h-32 resize-none text-gray-900 bg-white"
               placeholder="Job description will be auto-filled based on selected role"
             />
           </div>
 
-          {/* Difficulty Level */}
-          <div>
-            <label className="block text-sm font-semibold text-gray-700">Difficulty Level *</label>
-            <select
-              value={difficultyLevel}
-              onChange={(e) => setDifficultyLevel(e.target.value)}
-              className="w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-300 focus:outline-none bg-white"
-              required
-            >
-              {difficultyOptions.map((level) => (
-                <option key={level} value={level}>
-                  {level}
-                </option>
-              ))}
-            </select>
-          </div>
+          {/* Candidate Selection */}
+          {selectedJobRole && filteredCandidates.length > 0 && (
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                Select Candidates ({selectedCandidates.length} selected)
+              </label>
+              <div className="border border-gray-200 rounded-lg p-4 bg-gray-50">
+                <div className="flex items-center mb-3">
+                  <label className="flex items-center space-x-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={selectedCandidates.length === filteredCandidates.length && filteredCandidates.length > 0}
+                      onChange={handleSelectAllCandidates}
+                      className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                    />
+                    <span className="text-sm font-medium text-gray-700">Select All ({filteredCandidates.length})</span>
+                  </label>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-40 overflow-y-auto">
+                  {filteredCandidates.map((candidate) => (
+                    <label key={candidate._id} className="flex items-center space-x-2 cursor-pointer p-2 hover:bg-gray-100 rounded">
+                      <input
+                        type="checkbox"
+                        checked={selectedCandidates.includes(candidate._id)}
+                        onChange={() => handleCandidateSelection(candidate._id)}
+                        className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                      />
+                      <div className="text-sm text-gray-700">
+                        <div className="font-medium">{candidate.candidateName}</div>
+                        <div className="text-xs text-gray-500">{candidate.email}</div>
+                      </div>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
 
-          {/* Number of Questions split into three parts */}
-      <div className="grid grid-cols-3 gap-4">
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">Aptitude Questions</label>
-        <input type="number" min={0} value={aptitudeQuestions} onChange={e => setAptitudeQuestions(Number(e.target.value))} className="w-full p-3 border border-gray-100 rounded-lg focus:ring-2 focus:ring-indigo-300 focus:outline-none bg-white" />
+          {/* Show message if no candidates found for selected role */}
+          {selectedJobRole && filteredCandidates.length === 0 && (
+            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+              <div className="flex items-center">
+                <svg className="w-5 h-5 text-yellow-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                </svg>
+                <span className="text-yellow-800">No candidates found for the selected job role. Please check if candidates have been screened for this role.</span>
+              </div>
             </div>
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">Job Role Questions</label>
-        <input type="number" min={0} value={jobRoleQuestions} onChange={e => setJobRoleQuestions(Number(e.target.value))} className="w-full p-3 border border-gray-100 rounded-lg focus:ring-2 focus:ring-indigo-300 focus:outline-none bg-white" />
-            </div>
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">Coding Questions</label>
-        <input type="number" min={0} value={codingQuestions} onChange={e => setCodingQuestions(Number(e.target.value))} className="w-full p-3 border border-gray-100 rounded-lg focus:ring-2 focus:ring-indigo-300 focus:outline-none bg-white" />
-            </div>
-          </div>
+          )}
 
-          {/* Test Duration */}
-          <div className="grid grid-cols-2 gap-4">
+          {/* Assessment Configuration */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Difficulty Level */}
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                Difficulty Level *
+              </label>
+              <select
+                value={difficultyLevel}
+                onChange={(e) => setDifficultyLevel(e.target.value)}
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none text-gray-900 bg-white"
+                required
+                style={{ color: '#111827', backgroundColor: '#ffffff' }}
+              >
+                {difficultyOptions.map((level) => (
+                  <option key={level} value={level} style={{ color: '#111827', backgroundColor: '#ffffff' }}>
+                    {level}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Test Duration */}
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
                 Test Duration (minutes) *
@@ -257,60 +311,86 @@ const AssessmentModal: React.FC<AssessmentModalProps> = ({
               <select
                 value={testDuration}
                 onChange={(e) => setTestDuration(Number(e.target.value))}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none text-gray-900 bg-white"
                 required
+                style={{ color: '#111827', backgroundColor: '#ffffff' }}
               >
                 {durationOptions.map((duration) => (
-                  <option key={duration} value={duration}>
+                  <option key={duration} value={duration} style={{ color: '#111827', backgroundColor: '#ffffff' }}>
                     {duration} min
                   </option>
                 ))}
               </select>
             </div>
+          </div>
 
-            <div className="flex flex-col justify-center p-3 bg-indigo-50 rounded-lg border border-indigo-100">
-              <div className="text-sm text-indigo-700">Total Questions</div>
-              <div className="text-2xl font-extrabold text-indigo-700">{aptitudeQuestions + jobRoleQuestions + codingQuestions}</div>
-              <div className="mt-2 text-sm text-indigo-600">Tests to generate: <span className="font-semibold text-indigo-700">{Object.values(selectedCandidates).filter(Boolean).length}</span></div>
+          {/* Number of Questions - Split into 3 parts */}
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-3">
+              Number of Questions *
+            </label>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-600 mb-2">
+                  Aptitude Questions
+                </label>
+                <input
+                  type="number"
+                  value={aptitudeQuestions}
+                  onChange={(e) => setAptitudeQuestions(Number(e.target.value))}
+                  min="0"
+                  max="50"
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none text-gray-900 bg-white"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-600 mb-2">
+                  Job Role Questions
+                </label>
+                <input
+                  type="number"
+                  value={jobRoleQuestions}
+                  onChange={(e) => setJobRoleQuestions(Number(e.target.value))}
+                  min="0"
+                  max="50"
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none text-gray-900 bg-white"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-600 mb-2">
+                  Coding Questions
+                </label>
+                <input
+                  type="number"
+                  value={codingQuestions}
+                  onChange={(e) => setCodingQuestions(Number(e.target.value))}
+                  min="0"
+                  max="50"
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none text-gray-900 bg-white"
+                />
+              </div>
             </div>
           </div>
 
-          {/* Candidates list for selected job role */}
-          <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">Select Candidates</label>
-            <div className="border rounded-lg p-3 max-h-44 overflow-y-auto bg-white">
-              <div className="flex items-center justify-between mb-3">
-                <div className="text-sm text-gray-600">Total: <span className="font-semibold text-gray-800">{candidatesForRole.length}</span></div>
-                <div className="flex items-center gap-4">
-                  <label className="flex items-center gap-2 cursor-pointer text-sm text-gray-700">
-                    <input type="checkbox" checked={selectAll} onChange={toggleSelectAll} className="w-4 h-4 text-indigo-600 border-gray-200 rounded" />
-                    <span className="select-none">Select all</span>
-                  </label>
-                  <div className="text-sm text-gray-700">Selected: <span className="font-semibold">{Object.values(selectedCandidates).filter(Boolean).length}</span></div>
+          {/* Summary */}
+          {selectedCandidates.length > 0 && (
+            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-6">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
+                <div className="bg-white rounded-lg p-4 border border-blue-100">
+                  <div className="text-2xl font-bold text-blue-600">{selectedCandidates.length}</div>
+                  <div className="text-sm text-blue-700 font-medium">Tests to Generate</div>
+                </div>
+                <div className="bg-white rounded-lg p-4 border border-blue-100">
+                  <div className="text-2xl font-bold text-indigo-600">{getTotalQuestions()}</div>
+                  <div className="text-sm text-indigo-700 font-medium">Questions per Test</div>
+                </div>
+                <div className="bg-white rounded-lg p-4 border border-blue-100">
+                  <div className="text-2xl font-bold text-purple-600">{selectedCandidates.length * getTotalQuestions()}</div>
+                  <div className="text-sm text-purple-700 font-medium">Total Questions</div>
                 </div>
               </div>
-              {candidatesForRole.length === 0 ? (
-                <div className="text-sm text-gray-500">No candidates for this role</div>
-              ) : (
-                candidatesForRole.map((c: any) => {
-                  const id = c._id || c.candidateId || c.filename;
-                  const selected = !!selectedCandidates[id];
-                  return (
-                    <label key={id} className={`flex items-center justify-between gap-4 py-2 px-3 rounded-lg mb-1 transition-colors ${selected ? 'bg-indigo-50 border border-indigo-100' : 'hover:bg-gray-50'}`}>
-                      <div className="flex items-center gap-3">
-                        <input type="checkbox" checked={selected} onChange={() => toggleCandidate(id)} className="w-4 h-4 text-indigo-600 border-gray-200 rounded" />
-                        <div>
-                          <div className="text-sm font-semibold text-gray-800">{c.candidateName || c.filename || 'Unnamed'}</div>
-                          <div className="text-xs text-gray-500">{c.email || c.contactNumber || ''}</div>
-                        </div>
-                      </div>
-                      <div className="text-sm text-gray-500">Score: <span className="font-medium text-gray-800">{(c.matchScore ?? c.cosine_similarity_score ?? 0).toFixed ? (Number(c.matchScore ?? c.cosine_similarity_score ?? 0).toFixed(2)) : (c.matchScore ?? c.cosine_similarity_score ?? 0)}</span></div>
-                    </label>
-                  );
-                })
-              )}
             </div>
-          </div>
+          )}
 
           {/* Error Message */}
           {error && (
@@ -324,16 +404,16 @@ const AssessmentModal: React.FC<AssessmentModalProps> = ({
             <button
               type="button"
               onClick={onClose}
-              className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+              className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
             >
               Cancel
             </button>
             <button
               type="submit"
-              disabled={loading}
-              className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              disabled={loading || selectedCandidates.length === 0 || getTotalQuestions() === 0}
+              className="px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:from-blue-700 hover:to-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 font-medium shadow-sm hover:shadow-md"
             >
-              {loading ? 'Creating...' : 'Create Assessment'}
+              {loading ? 'Creating...' : `Create ${selectedCandidates.length} Assessment(s)`}
             </button>
           </div>
         </form>

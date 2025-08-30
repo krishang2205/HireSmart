@@ -80,11 +80,18 @@ ${resumeText}
       let parsed;
       try {
         parsed = JSON.parse(response);
+        console.log('GeminiService: Parsed response:', parsed);
+        console.log('GeminiService: jobRole from response:', parsed.jobRole);
       } catch (e) {
         lastError = e;
         continue; // retry
       }
       if (!parsed.explanation) parsed.explanation = '';
+      if (!parsed.jobRole) {
+        console.log('GeminiService: No jobRole found, setting default');
+        parsed.jobRole = 'Unknown Role';
+      }
+      console.log('GeminiService: Final parsed result:', parsed);
       return parsed;
     } catch (err) {
       lastError = err;
@@ -101,7 +108,8 @@ ${resumeText}
     prediction: 'Parsing Failed',
     cosine_similarity_score: 0,
     matched_skills: [],
-    explanation: ''
+    explanation: '',
+    jobRole: 'Unknown Role'
   };
 }
 

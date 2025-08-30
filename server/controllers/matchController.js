@@ -12,11 +12,30 @@ async function saveMatchResults(jobId, matchResults, jobDescription) {
     console.log('matchController: upserting job description for jobId:', jobId);
     // Extract jobRole from the first match result if available
     const jobRole = matchResults.length > 0 ? matchResults[0].jobRole || '' : '';
-    await Job.findOneAndUpdate(
-      { jobId },
-      { jobId, jobDescription, jobRole, updatedAt: new Date() },
+    console.log('matchController: Extracted jobRole:', jobRole);
+    console.log('matchController: First match result jobRole:', matchResults[0]?.jobRole);
+    console.log('matchController: First match result full object:', matchResults[0]);
+    
+    // Create a unique identifier combining jobId and jobRole to avoid overwriting
+    const uniqueJobIdentifier = `${jobId}_${jobRole}`;
+    console.log('matchController: Using unique identifier:', uniqueJobIdentifier);
+    
+    const jobData = { 
+      jobId: uniqueJobIdentifier, 
+      originalJobId: jobId,
+      jobDescription, 
+      jobRole, 
+      updatedAt: new Date() 
+    };
+    console.log('matchController: Saving job data:', jobData);
+    
+    const savedJob = await Job.findOneAndUpdate(
+      { jobId: uniqueJobIdentifier },
+      jobData,
       { upsert: true, new: true, setDefaultsOnInsert: true }
     );
+    console.log('matchController: Job saved successfully:', savedJob);
+    console.log('matchController: Saved job jobRole:', savedJob.jobRole);
   }
   
   // Prepare documents for bulk insert
