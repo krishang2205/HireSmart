@@ -4,6 +4,7 @@ interface JobRole {
   _id: string;
   jobRole: string;
   jobDescription: string;
+  experienceLevel: string;
 }
 
 interface Candidate {
@@ -32,7 +33,7 @@ const AssessmentModal: React.FC<AssessmentModalProps> = ({
   const [filteredCandidates, setFilteredCandidates] = useState<Candidate[]>([]);
   const [selectedJobRole, setSelectedJobRole] = useState<string>('');
   const [jobDescription, setJobDescription] = useState<string>('');
-  const [difficultyLevel, setDifficultyLevel] = useState<string>('Intermediate');
+  const [experienceLevel, setExperienceLevel] = useState<string>('Junior');
   const [aptitudeQuestions, setAptitudeQuestions] = useState<number>(10);
   const [jobRoleQuestions, setJobRoleQuestions] = useState<number>(10);
   const [codingQuestions, setCodingQuestions] = useState<number>(10);
@@ -41,7 +42,7 @@ const AssessmentModal: React.FC<AssessmentModalProps> = ({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string>('');
 
-  const difficultyOptions = ['Beginner', 'Intermediate', 'Advanced'];
+  const experienceLevelOptions = ['Fresher', 'Junior', 'Mid-level', 'Senior', 'Expert'];
   const durationOptions = [30, 45, 60, 90, 120, 180];
 
   useEffect(() => {
@@ -131,7 +132,7 @@ const AssessmentModal: React.FC<AssessmentModalProps> = ({
       const assessmentData = {
         jobRole: jobRoles.find(role => role._id === selectedJobRole)?.jobRole || '',
         jobDescription,
-        difficultyLevel,
+        experienceLevel,
         aptitudeQuestions,
         jobRoleQuestions,
         codingQuestions,
@@ -165,7 +166,7 @@ const AssessmentModal: React.FC<AssessmentModalProps> = ({
   const resetForm = () => {
     setSelectedJobRole('');
     setJobDescription('');
-    setDifficultyLevel('Intermediate');
+    setExperienceLevel('Junior');
     setAptitudeQuestions(10);
     setJobRoleQuestions(10);
     setCodingQuestions(10);
@@ -201,7 +202,7 @@ const AssessmentModal: React.FC<AssessmentModalProps> = ({
             <select
               value={selectedJobRole}
               onChange={(e) => setSelectedJobRole(e.target.value)}
-              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none text-gray-900 bg-white"
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none text-gray-900 bg-white shadow-sm"
               required
               style={{ color: '#111827', backgroundColor: '#ffffff' }}
             >
@@ -232,39 +233,47 @@ const AssessmentModal: React.FC<AssessmentModalProps> = ({
           </div>
 
           {/* Candidate Selection */}
-          {selectedJobRole && filteredCandidates.length > 0 && (
+          {selectedJobRole && (
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
                 Select Candidates ({selectedCandidates.length} selected)
               </label>
               <div className="border border-gray-200 rounded-lg p-4 bg-gray-50">
-                <div className="flex items-center mb-3">
-                  <label className="flex items-center space-x-2 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={selectedCandidates.length === filteredCandidates.length && filteredCandidates.length > 0}
-                      onChange={handleSelectAllCandidates}
-                      className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                    />
-                    <span className="text-sm font-medium text-gray-700">Select All ({filteredCandidates.length})</span>
-                  </label>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-40 overflow-y-auto">
-                  {filteredCandidates.map((candidate) => (
-                    <label key={candidate._id} className="flex items-center space-x-2 cursor-pointer p-2 hover:bg-gray-100 rounded">
-                      <input
-                        type="checkbox"
-                        checked={selectedCandidates.includes(candidate._id)}
-                        onChange={() => handleCandidateSelection(candidate._id)}
-                        className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                      />
-                      <div className="text-sm text-gray-700">
-                        <div className="font-medium">{candidate.candidateName}</div>
-                        <div className="text-xs text-gray-500">{candidate.email}</div>
-                      </div>
-                    </label>
-                  ))}
-                </div>
+                {loading ? (
+                  <div className="text-sm text-gray-500">Loading candidates...</div>
+                ) : filteredCandidates.length > 0 ? (
+                  <>
+                    <div className="flex items-center mb-3">
+                      <label className="flex items-center space-x-2 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={selectedCandidates.length === filteredCandidates.length && filteredCandidates.length > 0}
+                          onChange={handleSelectAllCandidates}
+                          className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                        />
+                        <span className="text-sm font-medium text-gray-700">Select All ({filteredCandidates.length})</span>
+                      </label>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-40 overflow-y-auto">
+                      {filteredCandidates.map((candidate) => (
+                        <label key={candidate._id} className="flex items-center space-x-2 cursor-pointer p-2 hover:bg-gray-100 rounded">
+                          <input
+                            type="checkbox"
+                            checked={selectedCandidates.includes(candidate._id)}
+                            onChange={() => handleCandidateSelection(candidate._id)}
+                            className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                          />
+                          <div className="text-sm text-gray-700">
+                            <div className="font-medium">{candidate.candidateName}</div>
+                            <div className="text-xs text-gray-500">{candidate.email}</div>
+                          </div>
+                        </label>
+                      ))}
+                    </div>
+                  </>
+                ) : (
+                  <div className="text-sm text-gray-500">No candidates for this role</div>
+                )}
               </div>
             </div>
           )}
@@ -283,19 +292,19 @@ const AssessmentModal: React.FC<AssessmentModalProps> = ({
 
           {/* Assessment Configuration */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Difficulty Level */}
+            {/* Experience Level */}
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
-                Difficulty Level *
+                Experience Level *
               </label>
               <select
-                value={difficultyLevel}
-                onChange={(e) => setDifficultyLevel(e.target.value)}
+                value={experienceLevel}
+                onChange={(e) => setExperienceLevel(e.target.value)}
                 className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none text-gray-900 bg-white"
                 required
                 style={{ color: '#111827', backgroundColor: '#ffffff' }}
               >
-                {difficultyOptions.map((level) => (
+                {experienceLevelOptions.map((level) => (
                   <option key={level} value={level} style={{ color: '#111827', backgroundColor: '#ffffff' }}>
                     {level}
                   </option>

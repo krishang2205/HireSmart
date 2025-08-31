@@ -1,6 +1,45 @@
 const MatchResult = require('../models/MatchResult');
 const Job = require('../models/Job');
 const { analyzeResumeWithGemini } = require('../services/geminiService');
+
+// Function to determine experience level based on job role
+function determineExperienceLevel(jobRole) {
+  const role = jobRole.toLowerCase();
+  
+  // Entry-level roles (0-1 years)
+  if (role.includes('intern') || role.includes('trainee') || role.includes('entry') || 
+      role.includes('fresher') || role.includes('graduate') || role.includes('student')) {
+    return 'Fresher';
+  }
+  
+  // Junior roles (1-3 years)
+  if (role.includes('junior') || role.includes('associate') || role.includes('assistant') ||
+      role.includes('level 1') || role.includes('entry level')) {
+    return 'Junior';
+  }
+  
+  // Mid-level roles (3-5 years)
+  if (role.includes('mid') || role.includes('intermediate') || role.includes('level 2') ||
+      role.includes('specialist') || role.includes('analyst')) {
+    return 'Mid-level';
+  }
+  
+  // Senior roles (5-8 years)
+  if (role.includes('senior') || role.includes('lead') || role.includes('level 3') ||
+      role.includes('principal') || role.includes('team lead')) {
+    return 'Senior';
+  }
+  
+  // Expert roles (8+ years)
+  if (role.includes('expert') || role.includes('architect') || role.includes('director') ||
+      role.includes('manager') || role.includes('head') || role.includes('chief') ||
+      role.includes('vp') || role.includes('cto') || role.includes('ceo')) {
+    return 'Expert';
+  }
+  
+  // Default to Junior if no clear indicators
+  return 'Junior';
+}
 // ...existing code...
 
 // Insert match results for a job
@@ -20,11 +59,15 @@ async function saveMatchResults(jobId, matchResults, jobDescription) {
     const uniqueJobIdentifier = `${jobId}_${jobRole}`;
     console.log('matchController: Using unique identifier:', uniqueJobIdentifier);
     
+    // Determine experience level based on job role
+    const experienceLevel = determineExperienceLevel(jobRole);
+    
     const jobData = { 
       jobId: uniqueJobIdentifier, 
       originalJobId: jobId,
       jobDescription, 
-      jobRole, 
+      jobRole,
+      experienceLevel,
       updatedAt: new Date() 
     };
     console.log('matchController: Saving job data:', jobData);

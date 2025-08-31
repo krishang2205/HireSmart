@@ -68,8 +68,8 @@ async function getAvailableJobRoles() {
   try {
     console.log('assessmentController: Fetching job roles from jobs collection...');
     
-    // Get all jobs with their jobRole and jobDescription
-    const allJobs = await Job.find({}, 'jobRole jobDescription originalJobId');
+    // Get all jobs with their jobRole, jobDescription, and experienceLevel
+    const allJobs = await Job.find({}, 'jobRole jobDescription originalJobId experienceLevel');
     console.log('assessmentController: Found all jobs:', allJobs);
     
     // Group by jobRole to get unique roles with their descriptions
@@ -83,7 +83,8 @@ async function getAvailableJobRoles() {
             _id: job._id,
             jobRole: job.jobRole,
             jobDescription: job.jobDescription,
-            originalJobId: job.originalJobId
+            originalJobId: job.originalJobId,
+            experienceLevel: job.experienceLevel
           });
         }
       }

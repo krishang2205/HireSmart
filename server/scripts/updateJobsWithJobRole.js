@@ -4,6 +4,45 @@ require('dotenv').config();
 const Job = require('../models/Job');
 const MatchResult = require('../models/MatchResult');
 
+// Function to determine experience level based on job role
+function determineExperienceLevel(jobRole) {
+  const role = jobRole.toLowerCase();
+  
+  // Entry-level roles (0-1 years)
+  if (role.includes('intern') || role.includes('trainee') || role.includes('entry') || 
+      role.includes('fresher') || role.includes('graduate') || role.includes('student')) {
+    return 'Fresher';
+  }
+  
+  // Junior roles (1-3 years)
+  if (role.includes('junior') || role.includes('associate') || role.includes('assistant') ||
+      role.includes('level 1') || role.includes('entry level')) {
+    return 'Junior';
+  }
+  
+  // Mid-level roles (3-5 years)
+  if (role.includes('mid') || role.includes('intermediate') || role.includes('level 2') ||
+      role.includes('specialist') || role.includes('analyst')) {
+    return 'Mid-level';
+  }
+  
+  // Senior roles (5-8 years)
+  if (role.includes('senior') || role.includes('lead') || role.includes('level 3') ||
+      role.includes('principal') || role.includes('team lead')) {
+    return 'Senior';
+  }
+  
+  // Expert roles (8+ years)
+  if (role.includes('expert') || role.includes('architect') || role.includes('director') ||
+      role.includes('manager') || role.includes('head') || role.includes('chief') ||
+      role.includes('vp') || role.includes('cto') || role.includes('ceo')) {
+    return 'Expert';
+  }
+  
+  // Default to Junior if no clear indicators
+  return 'Junior';
+}
+
 async function updateJobsWithJobRole() {
   try {
     // Connect to MongoDB
@@ -60,12 +99,16 @@ async function updateJobsWithJobRole() {
         continue;
       }
       
+      // Determine experience level based on job role
+      const experienceLevel = determineExperienceLevel(jobData.jobRole);
+      
       // Create new job document
       const newJob = new Job({
         jobId: uniqueJobIdentifier,
         originalJobId: jobId,
         jobRole: jobData.jobRole,
-        jobDescription: `Job description for ${jobData.jobRole} role`,
+        experienceLevel: experienceLevel,
+        jobDescription: `Job description for ${jobData.jobRole} role (${experienceLevel} level)`,
         createdAt: new Date(),
         updatedAt: new Date()
       });
@@ -74,11 +117,23 @@ async function updateJobsWithJobRole() {
       console.log(`Created new job: ${uniqueJobIdentifier} with role: ${jobData.jobRole}`);
     }
 
-    // Verify all jobs now have jobRole
+    // Verify all jobs now have jobRole and experienceLevel
     const finalJobs = await Job.find({});
     console.log('\nFinal verification:');
     finalJobs.forEach(job => {
-      console.log(`Job ${job.jobId}: jobRole = "${job.jobRole}", originalJobId = "${job.originalJobId}"`);
+      console.log(`Job ${job.jobId}: jobRole = "${job.jobRole}", experienceLevel = "${job.experienceLevel}", originalJobId = "${job.originalJobId}"`);
+    });
+
+    // Show experience level distribution
+    const experienceLevelCounts = {};
+    finalJobs.forEach(job => {
+      const level = job.experienceLevel || 'Unknown';
+      experienceLevelCounts[level] = (experienceLevelCounts[level] || 0) + 1;
+    });
+    
+    console.log('\nExperience Level Distribution:');
+    Object.entries(experienceLevelCounts).forEach(([level, count]) => {
+      console.log(`  ${level}: ${count} jobs`);
     });
 
     console.log('\nUpdate completed successfully!');
