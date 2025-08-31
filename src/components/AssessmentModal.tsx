@@ -304,7 +304,13 @@ const AssessmentModal: React.FC<AssessmentModalProps> = ({
                 required
                 style={{ color: '#111827', backgroundColor: '#ffffff' }}
               >
-                {experienceLevelOptions.map((level) => (
+                {[
+                  'Fresher (0-1 years)',
+                  'Junior (1-3 years)',
+                  'Mid-level (3-5 years)',
+                  'Senior (5-8 years)',
+                  'Expert (8+ years)'
+                ].map((level) => (
                   <option key={level} value={level} style={{ color: '#111827', backgroundColor: '#ffffff' }}>
                     {level}
                   </option>
