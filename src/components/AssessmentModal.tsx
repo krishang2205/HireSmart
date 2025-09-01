@@ -294,8 +294,17 @@ const AssessmentModal: React.FC<AssessmentModalProps> = ({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Experience Level */}
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
                 Experience Level *
+                <span className="relative group">
+                  <svg className="w-4 h-4 text-gray-400 hover:text-gray-600 cursor-pointer" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10" strokeWidth="2" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 16v-4m0-4h.01" />
+                  </svg>
+                  <span className="absolute left-6 top-1 z-10 hidden group-hover:block bg-gray-800 text-white text-xs rounded px-2 py-1 whitespace-nowrap shadow-lg">
+                    Select the candidate's experience range for targeted assessment difficulty.
+                  </span>
+                </span>
               </label>
               <select
                 value={experienceLevel}
