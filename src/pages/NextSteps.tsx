@@ -21,6 +21,8 @@ export default function NextSteps() {
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
   const [sendingBulk, setSendingBulk] = useState(false);
+  const [lastUpdated, setLastUpdated] = useState<number | null>(null); // timestamp in ms when data last successfully fetched
+  const [now, setNow] = useState(Date.now()); // ticking time reference for relative display
   const { push } = useToast();
 
   // Fetch candidates from the database on component mount
@@ -48,6 +50,7 @@ export default function NextSteps() {
           jobRole: candidate.jobRole || ''
         }));
         setCandidates(transformedCandidates);
+  setLastUpdated(Date.now());
       } else {
         setCandidates([]);
       }
@@ -61,6 +64,25 @@ export default function NextSteps() {
   useEffect(() => {
     fetchCandidates();
   }, []);
+
+  // Tick every 60s to update relative time string
+  useEffect(() => {
+    const interval = setInterval(() => setNow(Date.now()), 60000);
+    return () => clearInterval(interval);
+  }, []);
+
+  // Helper to format relative time
+  const formatTimeAgo = (ts: number) => {
+    const diff = now - ts; // ms
+    const sec = Math.max(0, Math.floor(diff / 1000));
+    if (sec < 60) return `${sec}s`;
+    const min = Math.floor(sec / 60);
+    if (min < 60) return `${min}m`;
+    const hr = Math.floor(min / 60);
+    if (hr < 24) return `${hr}h ${min % 60}m`;
+    const days = Math.floor(hr / 24);
+    return `${days}d`;
+  };
 
   const availableJobRoles = Array.from(new Set(candidates.map(c => c.jobRole).filter(Boolean))).sort();
 
@@ -353,7 +375,14 @@ export default function NextSteps() {
                 <h2 className="text-lg font-bold text-blue-800 mb-1">Candidate Management</h2>
                 <p className="text-sm text-gray-600">Filter and manage your shortlisted candidates</p>
               </div>
-              <RefreshButton onClick={fetchCandidates} loading={loading} size={60} />
+              <div className="flex flex-col items-center ml-2">
+                <RefreshButton onClick={fetchCandidates} loading={loading} size={60} />
+                {lastUpdated && (
+                  <span className="mt-1 text-[11px] text-gray-500 whitespace-nowrap" title={new Date(lastUpdated).toLocaleString()}>
+                    Updated {formatTimeAgo(lastUpdated)} ago
+                  </span>
+                )}
+              </div>
             </div>
           </div>
 
