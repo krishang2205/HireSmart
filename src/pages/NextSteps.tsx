@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import DashboardLayout from '@/components/DashboardLayout';
 import { useToast } from '@/hooks/use-toast';
 import AssessmentButton from '@/components/AssessmentButton';
+import RefreshButton from '@/components/RefreshButton';
 
   // Statuses remain static
   const statuses = ['Pending Communication', 'Communication Sent', 'Assessment Assigned', 'Assessment Completed', 'Rejected'];
@@ -23,39 +24,41 @@ export default function NextSteps() {
   const { push } = useToast();
 
   // Fetch candidates from the database on component mount
-  useEffect(() => {
-    const fetchCandidates = async () => {
-      try {
-        setLoading(true);
-        // Always fetch all candidates
-        const response = await fetch('/api/match-results');
-        if (response.ok) {
-          const data = await response.json();
-          const transformedCandidates = data.map((candidate, index) => ({
-            _id: candidate._id || `candidate-${index + 1}`,
-            name: candidate.candidateName || 'Name not found',
-            resumeScore: candidate.matchScore || 0,
-            category: candidate.prediction || 'Not categorized',
-            contactInfo: { 
-              email: candidate.email || 'Email not found', 
-              phone: candidate.contactNumber || 'Phone not found' 
-            },
-            status: candidate.status || 'Pending Communication',
-            assessmentScore: null,
-            finalRank: null,
-            filename: candidate.filename || 'Unknown file',
-            jobRole: candidate.jobRole || ''
-          }));
-          setCandidates(transformedCandidates);
-        } else {
-          setCandidates([]);
-        }
-      } catch (error) {
+  // Fetch candidates from the database
+  const fetchCandidates = async () => {
+    try {
+      setLoading(true);
+      // Always fetch all candidates
+      const response = await fetch('/api/match-results');
+      if (response.ok) {
+        const data = await response.json();
+        const transformedCandidates = data.map((candidate, index) => ({
+          _id: candidate._id || `candidate-${index + 1}`,
+          name: candidate.candidateName || 'Name not found',
+          resumeScore: candidate.matchScore || 0,
+          category: candidate.prediction || 'Not categorized',
+          contactInfo: { 
+            email: candidate.email || 'Email not found', 
+            phone: candidate.contactNumber || 'Phone not found' 
+          },
+          status: candidate.status || 'Pending Communication',
+          assessmentScore: null,
+          finalRank: null,
+          filename: candidate.filename || 'Unknown file',
+          jobRole: candidate.jobRole || ''
+        }));
+        setCandidates(transformedCandidates);
+      } else {
         setCandidates([]);
-      } finally {
-        setLoading(false);
       }
-    };
+    } catch (error) {
+      setCandidates([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchCandidates();
   }, []);
 
@@ -210,8 +213,8 @@ export default function NextSteps() {
                 Manage shortlisted candidates through the hiring process
               </motion.p>
             </div>
+            {/* (Removed old header refresh button) */}
           </div>
-          
           {/* Progress Bar */}
           <div className="w-full bg-gray-200 rounded-full h-2 mb-3">
             <div 
@@ -219,7 +222,6 @@ export default function NextSteps() {
               style={{ width: `${Math.min(progress + 20, 100)}%` }}
             ></div>
           </div>
-          
           {/* Quick Stats */}
           <div className="flex items-center gap-4 text-xs text-gray-600">
             <div className="flex items-center gap-1">
@@ -346,8 +348,13 @@ export default function NextSteps() {
           className="bg-white/80 backdrop-blur-lg rounded-xl shadow-lg p-6 border border-gray-100"
         >
           <div className="mb-4">
-            <h2 className="text-lg font-bold text-blue-800 mb-1">Candidate Management</h2>
-            <p className="text-sm text-gray-600">Filter and manage your shortlisted candidates</p>
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-lg font-bold text-blue-800 mb-1">Candidate Management</h2>
+                <p className="text-sm text-gray-600">Filter and manage your shortlisted candidates</p>
+              </div>
+              <RefreshButton onClick={fetchCandidates} loading={loading} size={60} />
+            </div>
           </div>
 
           {/* Search and Filters */}
