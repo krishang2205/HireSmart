@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useToast } from '@/hooks/use-toast';
 
 interface JobRole {
   _id: string;
@@ -28,12 +29,13 @@ const AssessmentModal: React.FC<AssessmentModalProps> = ({
   onClose, 
   onAssessmentCreated 
 }) => {
+  const { push } = useToast();
   const [jobRoles, setJobRoles] = useState<JobRole[]>([]);
   const [allCandidates, setAllCandidates] = useState<Candidate[]>([]);
   const [filteredCandidates, setFilteredCandidates] = useState<Candidate[]>([]);
   const [selectedJobRole, setSelectedJobRole] = useState<string>('');
   const [jobDescription, setJobDescription] = useState<string>('');
-  const [experienceLevel, setExperienceLevel] = useState<string>('Junior');
+  const [experienceLevel, setExperienceLevel] = useState<string>('Junior (1-3 years)');
   const [aptitudeQuestions, setAptitudeQuestions] = useState<number>(10);
   const [jobRoleQuestions, setJobRoleQuestions] = useState<number>(10);
   const [codingQuestions, setCodingQuestions] = useState<number>(10);
@@ -41,6 +43,10 @@ const AssessmentModal: React.FC<AssessmentModalProps> = ({
   const [selectedCandidates, setSelectedCandidates] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string>('');
+  const [forwardStatus, setForwardStatus] = useState<'idle'|'sending'|'sent'|'error'>('idle');
+  const [receivedLinks, setReceivedLinks] = useState<string[]>([]);
+  const [forwardMessage, setForwardMessage] = useState<string>('');
+  const [pollingInterval, setPollingInterval] = useState<NodeJS.Timeout | null>(null);
 
   const experienceLevelOptions = ['Fresher', 'Junior', 'Mid-level', 'Senior', 'Expert'];
   const durationOptions = [30, 45, 60, 90, 120, 180];
@@ -127,12 +133,18 @@ const AssessmentModal: React.FC<AssessmentModalProps> = ({
 
     setLoading(true);
     setError('');
+    setForwardStatus('idle');
+    setForwardMessage('');
+    setReceivedLinks([]);
 
     try {
+      // Extract the experience level from the formatted string (e.g., "Junior (1-3 years)" -> "Junior")
+      const cleanExperienceLevel = experienceLevel.split(' ')[0];
+      
       const assessmentData = {
         jobRole: jobRoles.find(role => role._id === selectedJobRole)?.jobRole || '',
         jobDescription,
-        experienceLevel,
+        experienceLevel: cleanExperienceLevel,
         aptitudeQuestions,
         jobRoleQuestions,
         codingQuestions,
@@ -142,6 +154,20 @@ const AssessmentModal: React.FC<AssessmentModalProps> = ({
         candidateIds: selectedCandidates
       };
 
+      // Build payload to forward to external web app
+      const externalPayload = {
+        jobRole: assessmentData.jobRole,
+        jobDescription: assessmentData.jobDescription,
+        experienceLevel: cleanExperienceLevel,
+        testDuration: assessmentData.testDuration,
+        questionsPerSection: {
+          aptitude: assessmentData.aptitudeQuestions,
+          jobRole: assessmentData.jobRoleQuestions,
+          coding: assessmentData.codingQuestions
+        },
+        numberOfTests: selectedCandidates.length
+      };
+
       const response = await fetch('/api/assessments', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -149,9 +175,70 @@ const AssessmentModal: React.FC<AssessmentModalProps> = ({
       });
 
       if (response.ok) {
+        // Optionally forward form data to an external app if URL is configured
+        const forwardUrl = (
+          (window as any)?.ASSESSMENT_FORWARD_URL ||
+          (typeof localStorage !== 'undefined' ? localStorage.getItem('ASSESSMENT_FORWARD_URL') : null) ||
+          (import.meta as any)?.env?.VITE_ASSESSMENT_FORWARD_URL
+        )?.toString().trim();
+        if (forwardUrl) {
+          try {
+            setForwardStatus('sending');
+            setForwardMessage('Generating tests…');
+            await fetch(forwardUrl, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(externalPayload)
+            }).then(async (r) => {
+              // Try to parse links from response
+              try {
+                const data = await r.json().catch(() => null);
+                const links: string[] = Array.isArray(data?.links)
+                  ? data.links
+                  : Array.isArray(data)
+                    ? data
+                    : data?.testLinks || data?.urls || [];
+                if (Array.isArray(links) && links.length > 0) {
+                  setReceivedLinks(links);
+                }
+              } catch (_) {
+                // ignore parse issues
+              }
+            });
+            push({
+              title: 'Forwarded to external app',
+              description: 'Assessment details sent successfully.',
+              variant: 'success'
+            });
+            setForwardStatus('sent');
+            setForwardMessage('Tests generated.');
+            if (receivedLinks.length > 0) {
+              push({ title: 'Links received', description: `${receivedLinks.length} link(s) returned.`, variant: 'success' });
+            }
+            // Start polling for external links if none received immediately
+            if (receivedLinks.length === 0) {
+              startPollingForLinks();
+            }
+          } catch (forwardErr) {
+            // Do not block local success on forward failure
+            console.warn('Forwarding assessment data failed:', forwardErr);
+            push({
+              title: 'Forward failed',
+              description: 'Could not send assessment details to external app.',
+              variant: 'destructive'
+            });
+            setForwardStatus('error');
+            setForwardMessage('Failed to generate tests.');
+          }
+        } else {
+          console.debug('VITE_ASSESSMENT_FORWARD_URL is not set or empty.');
+          push({
+            title: 'Forwarding skipped',
+            description: 'Set VITE_ASSESSMENT_FORWARD_URL to enable sending to external app.'
+          });
+        }
+        // Keep the modal open and show inline statuses/links
         onAssessmentCreated();
-        onClose();
-        resetForm();
       } else {
         const errorData = await response.json();
         setError(errorData.error || 'Failed to create assessment');
@@ -174,9 +261,50 @@ const AssessmentModal: React.FC<AssessmentModalProps> = ({
     setSelectedCandidates([]);
     setFilteredCandidates([]);
     setError('');
+    setForwardStatus('idle');
+    setForwardMessage('');
+    setReceivedLinks([]);
+    if (pollingInterval) {
+      clearInterval(pollingInterval);
+      setPollingInterval(null);
+    }
   };
 
   const getTotalQuestions = () => aptitudeQuestions + jobRoleQuestions + codingQuestions;
+
+  // Poll for external links every 5 seconds after successful submission
+  const startPollingForLinks = () => {
+    if (pollingInterval) return; // already polling
+    
+    const interval = setInterval(async () => {
+      try {
+        const response = await fetch('/api/assessments/external/assessment-links');
+        if (response.ok) {
+          const data = await response.json();
+          if (Array.isArray(data?.links) && data.links.length > 0) {
+            setReceivedLinks(data.links);
+            setForwardMessage('Tests generated.');
+            push({ title: 'Links received', description: `${data.links.length} link(s) received.`, variant: 'success' });
+            clearInterval(interval);
+            setPollingInterval(null);
+          }
+        }
+      } catch (err) {
+        console.warn('Failed to poll for external links:', err);
+      }
+    }, 5000);
+    
+    setPollingInterval(interval);
+  };
+
+  // Cleanup polling on unmount
+  useEffect(() => {
+    return () => {
+      if (pollingInterval) {
+        clearInterval(pollingInterval);
+      }
+    };
+  }, [pollingInterval]);
 
   if (!isOpen) return null;
 
@@ -420,6 +548,23 @@ const AssessmentModal: React.FC<AssessmentModalProps> = ({
           {error && (
             <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
               {error}
+            </div>
+          )}
+
+          {/* Forwarding Status and Links */}
+          {(forwardStatus === 'sending' || forwardStatus === 'sent' || forwardStatus === 'error') && (
+            <div className={`rounded-lg px-4 py-3 border ${forwardStatus === 'error' ? 'bg-red-50 border-red-200 text-red-700' : 'bg-blue-50 border-blue-200 text-blue-800'}`}>
+              <div className="font-medium mb-1">{forwardMessage || (forwardStatus === 'sending' ? 'Generating tests…' : forwardStatus === 'sent' ? 'Tests generated.' : 'Failed to generate tests.')}</div>
+              {receivedLinks.length > 0 && (
+                <div className="mt-2 space-y-2">
+                  {receivedLinks.map((lnk, idx) => (
+                    <div key={idx} className="flex items-center justify-between bg-white border border-blue-100 rounded p-2">
+                      <a href={lnk} target="_blank" rel="noreferrer" className="text-blue-600 hover:underline truncate mr-2">{lnk}</a>
+                      <button type="button" onClick={() => navigator.clipboard.writeText(lnk)} className="text-xs px-2 py-1 border rounded hover:bg-gray-50">Copy</button>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           )}
 

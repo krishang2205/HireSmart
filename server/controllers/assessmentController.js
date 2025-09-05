@@ -4,17 +4,25 @@ const Job = require('../models/Job');
 // Create a new assessment
 async function createAssessment(assessmentData) {
   try {
+    console.log('createAssessment: Received data:', JSON.stringify(assessmentData, null, 2));
+    
     // Calculate total questions per test
     const totalQuestions = assessmentData.aptitudeQuestions + assessmentData.jobRoleQuestions + assessmentData.codingQuestions;
+    console.log('createAssessment: Calculated totalQuestions:', totalQuestions);
     
     const assessment = new Assessment({
       ...assessmentData,
       totalQuestions
     });
+    console.log('createAssessment: Created assessment object:', assessment);
     
     const savedAssessment = await assessment.save();
+    console.log('createAssessment: Successfully saved assessment:', savedAssessment);
     return savedAssessment;
   } catch (error) {
+    console.error('createAssessment: Error details:', error);
+    console.error('createAssessment: Error message:', error.message);
+    console.error('createAssessment: Error stack:', error.stack);
     throw new Error(`Failed to create assessment: ${error.message}`);
   }
 }
