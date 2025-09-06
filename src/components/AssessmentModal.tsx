@@ -507,55 +507,6 @@ const AssessmentModal: React.FC<AssessmentModalProps> = ({
             </div>
           )}
 
-          {/* Candidate Status Summary */}
-          {selectedJobRole && filteredCandidates.length > 0 && (
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-              <div className="flex items-center mb-2">
-                <svg className="w-5 h-5 text-blue-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <span className="text-blue-800 font-medium">Candidate Status Summary</span>
-              </div>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
-                <div className="flex items-center space-x-2 relative group">
-                  <span className="w-3 h-3 bg-green-500 rounded-full"></span>
-                  <span className="text-gray-700">
-                    Ready: {filteredCandidates.filter(c => c.status === 'Communication Sent').length}
-                  </span>
-                  <div className="absolute left-0 top-6 z-10 hidden group-hover:block bg-gray-800 text-white text-xs rounded px-2 py-1 whitespace-nowrap shadow-lg">
-                    Candidates ready for assessment selection
-                  </div>
-                </div>
-                <div className="flex items-center space-x-2 relative group">
-                  <span className="w-3 h-3 bg-yellow-500 rounded-full"></span>
-                  <span className="text-gray-700">
-                    Pending: {filteredCandidates.filter(c => c.status === 'Pending Communication').length}
-                  </span>
-                  <div className="absolute left-0 top-6 z-10 hidden group-hover:block bg-gray-800 text-white text-xs rounded px-2 py-1 whitespace-nowrap shadow-lg">
-                    Need to send communication email first
-                  </div>
-                </div>
-                <div className="flex items-center space-x-2 relative group">
-                  <span className="w-3 h-3 bg-blue-500 rounded-full"></span>
-                  <span className="text-gray-700">
-                    Assigned: {filteredCandidates.filter(c => c.status === 'Assessment Assigned').length}
-                  </span>
-                  <div className="absolute left-0 top-6 z-10 hidden group-hover:block bg-gray-800 text-white text-xs rounded px-2 py-1 whitespace-nowrap shadow-lg">
-                    Assessment already assigned to candidate
-                  </div>
-                </div>
-                <div className="flex items-center space-x-2 relative group">
-                  <span className="w-3 h-3 bg-purple-500 rounded-full"></span>
-                  <span className="text-gray-700">
-                    Completed: {filteredCandidates.filter(c => c.status === 'Assessment Completed').length}
-                  </span>
-                  <div className="absolute left-0 top-6 z-10 hidden group-hover:block bg-gray-800 text-white text-xs rounded px-2 py-1 whitespace-nowrap shadow-lg">
-                    Assessment completed by candidate
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
 
           {/* Show message if no candidates found for selected role */}
           {selectedJobRole && filteredCandidates.length === 0 && (
