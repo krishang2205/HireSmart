@@ -49,6 +49,7 @@ const AssessmentModal: React.FC<AssessmentModalProps> = ({
   const [forwardMessage, setForwardMessage] = useState<string>('');
   const [pollingInterval, setPollingInterval] = useState<NodeJS.Timeout | null>(null);
   const [candidateSearch, setCandidateSearch] = useState<string>('');
+  const [sendingAssessment, setSendingAssessment] = useState<boolean>(false);
 
   const experienceLevelOptions = ['Fresher', 'Junior', 'Mid-level', 'Senior', 'Expert'];
   const durationOptions = [30, 45, 60, 90, 120, 180];
@@ -294,6 +295,73 @@ const AssessmentModal: React.FC<AssessmentModalProps> = ({
   };
 
   const getTotalQuestions = () => aptitudeQuestions + jobRoleQuestions + codingQuestions;
+
+  const handleSendAssessment = async () => {
+    if (receivedLinks.length === 0 || selectedCandidates.length === 0) {
+      push({ 
+        title: 'Cannot send assessment', 
+        description: 'No assessment links or candidates selected', 
+        variant: 'destructive' 
+      });
+      return;
+    }
+
+    setSendingAssessment(true);
+    try {
+      const response = await fetch('/api/assessments/send-to-candidates', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          candidateIds: selectedCandidates,
+          assessmentLinks: receivedLinks,
+          jobRole: selectedJobRole,
+          companyName: 'HireSmart' // This could be made dynamic later
+        })
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        push({
+          title: 'Assessment sent successfully',
+          description: `Assessment links sent to ${result.sentCount} candidates`,
+          variant: 'success'
+        });
+        // Update candidate statuses locally
+        setAllCandidates(prev => 
+          prev.map(candidate => 
+            selectedCandidates.includes(candidate._id)
+              ? { ...candidate, status: 'Assessment Sent' }
+              : candidate
+          )
+        );
+        setFilteredCandidates(prev => 
+          prev.map(candidate => 
+            selectedCandidates.includes(candidate._id)
+              ? { ...candidate, status: 'Assessment Sent' }
+              : candidate
+          )
+        );
+      } else {
+        push({
+          title: 'Failed to send assessment',
+          description: result.error || 'Please try again',
+          variant: 'destructive'
+        });
+      }
+    } catch (error) {
+      console.error('Error sending assessment:', error);
+      push({
+        title: 'Failed to send assessment',
+        description: 'Please try again',
+        variant: 'destructive'
+      });
+    } finally {
+      setSendingAssessment(false);
+    }
+  };
 
   // Poll for external links every 5 seconds after successful submission
   const startPollingForLinks = () => {
@@ -705,6 +773,28 @@ const AssessmentModal: React.FC<AssessmentModalProps> = ({
                   ))}
                 </div>
               )}
+            </div>
+          )}
+
+          {/* Send Assessment Button - Only show when links are received and candidates are selected */}
+          {forwardStatus === 'sent' && receivedLinks.length > 0 && selectedCandidates.length > 0 && (
+            <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-lg font-semibold text-green-800 mb-1">Assessment Ready!</h3>
+                  <p className="text-green-700 text-sm">
+                    {receivedLinks.length} assessment link(s) generated. Ready to send to {selectedCandidates.length} selected candidate(s).
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={handleSendAssessment}
+                  disabled={sendingAssessment}
+                  className="px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-lg hover:from-green-700 hover:to-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 font-medium shadow-sm hover:shadow-md"
+                >
+                  {sendingAssessment ? 'Sending...' : 'Send Assessment'}
+                </button>
+              </div>
             </div>
           )}
 
