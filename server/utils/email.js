@@ -174,9 +174,72 @@ async function sendBulkCategoryEmails(candidates) {
 	return results;
 }
 
+// Function to send assessment email to candidates
+async function sendAssessmentEmail(candidateEmail, candidateName, assessmentLink, jobRole, companyName) {
+	const subject = `Technical Assessment Invitation - ${companyName}`;
+	
+	const html = `
+		<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; line-height: 1.6; color: #333;">
+			<div style="text-align: center; margin-bottom: 30px;">
+				<h1 style="color: #2563eb; margin: 0;">${companyName}</h1>
+				<p style="color: #6b7280; margin: 5px 0 0 0;">Technical Assessment Portal</p>
+			</div>
+			
+			<p>Dear ${candidateName},</p>
+			
+			<p>Thank you for your interest in joining our team at <strong>${companyName}</strong>! We're excited to move forward with your application for the <strong>${jobRole}</strong> position.</p>
+			
+			<p>As part of our selection process, we'd like you to complete a comprehensive technical assessment that will help us better understand your skills and capabilities. This assessment is designed to evaluate your technical knowledge and problem-solving abilities relevant to the role.</p>
+			
+			<div style="background-color: #f8fafc; border-left: 4px solid #2563eb; padding: 20px; margin: 20px 0; border-radius: 4px;">
+				<h3 style="color: #2563eb; margin-top: 0;">Assessment Details:</h3>
+				<ul style="margin: 10px 0; padding-left: 20px;">
+					<li><strong>Position:</strong> ${jobRole}</li>
+					<li><strong>Duration:</strong> Approximately 45-60 minutes</li>
+					<li><strong>Format:</strong> Online technical assessment</li>
+					<li><strong>Deadline:</strong> Please complete within 48 hours</li>
+				</ul>
+			</div>
+			
+			<div style="text-align: center; margin: 30px 0;">
+				<a href="${assessmentLink}" 
+				   style="display: inline-block; background: linear-gradient(135deg, #2563eb, #1d4ed8); color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px; box-shadow: 0 4px 6px rgba(37, 99, 235, 0.3);">
+					Start Assessment
+				</a>
+			</div>
+			
+			<div style="background-color: #fef3c7; border: 1px solid #f59e0b; padding: 15px; border-radius: 6px; margin: 20px 0;">
+				<p style="margin: 0; color: #92400e;"><strong>Important Instructions:</strong></p>
+				<ul style="margin: 10px 0 0 0; padding-left: 20px; color: #92400e;">
+					<li>Ensure you have a stable internet connection</li>
+					<li>Use a desktop or laptop computer for the best experience</li>
+					<li>Allow pop-ups for the assessment platform</li>
+					<li>Complete the assessment in one sitting</li>
+				</ul>
+			</div>
+			
+			<p>If you encounter any technical issues or have questions about the assessment, please don't hesitate to reach out to us. We're here to help ensure you have a smooth experience.</p>
+			
+			<p>We look forward to reviewing your assessment results and potentially moving forward with your application!</p>
+			
+			<p>Best regards,<br>
+			<strong>The ${companyName} Hiring Team</strong></p>
+			
+			<hr style="border: none; border-top: 1px solid #e5e7eb; margin: 30px 0;">
+			<p style="font-size: 12px; color: #6b7280; text-align: center;">
+				If the button above doesn't work, you can copy and paste this link into your browser:<br>
+				<a href="${assessmentLink}" style="color: #2563eb;">${assessmentLink}</a>
+			</p>
+		</div>
+	`;
+	
+	return sendEmail(candidateEmail, subject, `Technical Assessment Invitation for ${jobRole} position at ${companyName}`, html);
+}
+
 module.exports = { 
 	sendEmail, 
 	sendCategoryEmail, 
 	sendBulkCategoryEmails,
+	sendAssessmentEmail,
 	emailTemplates 
 };

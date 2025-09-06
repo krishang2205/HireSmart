@@ -6,7 +6,8 @@ const {
   getAssessmentById,
   updateAssessment,
   deleteAssessment,
-  getAvailableJobRoles
+  getAvailableJobRoles,
+  sendAssessmentToCandidates
 } = require('../controllers/assessmentController');
 
 // In-memory store for latest links received from external app
@@ -91,6 +92,25 @@ router.get('/external/assessment-links', async (req, res) => {
     return res.json({ links: latestExternalLinks });
   } catch (err) {
     return res.status(500).json({ error: 'Failed to fetch external assessment links' });
+  }
+});
+
+// POST /api/assessments/send-to-candidates
+// Send assessment links to selected candidates
+router.post('/send-to-candidates', async (req, res) => {
+  try {
+    console.log('POST /api/assessments/send-to-candidates: Request received');
+    console.log('POST /api/assessments/send-to-candidates: Request body:', JSON.stringify(req.body, null, 2));
+    
+    const result = await sendAssessmentToCandidates(req.body);
+    res.json(result);
+  } catch (err) {
+    console.error('POST /api/assessments/send-to-candidates: Error occurred:', err);
+    res.status(500).json({ 
+      success: false, 
+      error: 'Failed to send assessment to candidates', 
+      details: err.message 
+    });
   }
 });
 

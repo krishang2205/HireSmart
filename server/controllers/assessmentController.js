@@ -1,5 +1,7 @@
 const Assessment = require('../models/Assessment');
 const Job = require('../models/Job');
+const Candidate = require('../models/Candidate');
+const { sendAssessmentEmail } = require('../utils/email');
 
 // Create a new assessment
 async function createAssessment(assessmentData) {
@@ -109,11 +111,103 @@ async function getAvailableJobRoles() {
   }
 }
 
+// Send assessment links to selected candidates
+async function sendAssessmentToCandidates(data) {
+  try {
+    const { candidateIds, assessmentLinks, jobRole, companyName } = data;
+    
+    console.log('sendAssessmentToCandidates: Received data:', JSON.stringify(data, null, 2));
+    
+    // Validate required fields
+    if (!candidateIds || !Array.isArray(candidateIds) || candidateIds.length === 0) {
+      throw new Error('Candidate IDs are required and must be a non-empty array');
+    }
+    
+    if (!assessmentLinks || !Array.isArray(assessmentLinks) || assessmentLinks.length === 0) {
+      throw new Error('Assessment links are required and must be a non-empty array');
+    }
+    
+    // Find all candidates
+    const candidates = await Candidate.find({ _id: { $in: candidateIds } });
+    
+    if (candidates.length === 0) {
+      throw new Error('No candidates found with the provided IDs');
+    }
+    
+    console.log(`sendAssessmentToCandidates: Found ${candidates.length} candidates to send assessment to`);
+    
+    const results = [];
+    let successCount = 0;
+    let failureCount = 0;
+    
+    // Send assessment email to each candidate
+    for (const candidate of candidates) {
+      try {
+        // Send assessment email with the first available link
+        const assessmentLink = assessmentLinks[0]; // Use first link for now, could be enhanced to distribute links
+        
+        await sendAssessmentEmail(
+          candidate.contactInfo.email,
+          candidate.name,
+          assessmentLink,
+          jobRole || 'Technical Assessment',
+          companyName || 'HireSmart'
+        );
+        
+        // Update candidate status
+        candidate.status = 'Assessment Sent';
+        await candidate.save();
+        
+        results.push({
+          candidateId: candidate._id,
+          candidateName: candidate.name,
+          email: candidate.contactInfo.email,
+          status: 'sent',
+          success: true
+        });
+        
+        successCount++;
+        console.log(`sendAssessmentToCandidates: Successfully sent assessment to ${candidate.name} (${candidate.contactInfo.email})`);
+        
+      } catch (error) {
+        console.error(`sendAssessmentToCandidates: Failed to send assessment to ${candidate.name}:`, error);
+        
+        results.push({
+          candidateId: candidate._id,
+          candidateName: candidate.name,
+          email: candidate.contactInfo.email,
+          status: 'failed',
+          success: false,
+          error: error.message
+        });
+        
+        failureCount++;
+      }
+    }
+    
+    console.log(`sendAssessmentToCandidates: Completed - ${successCount} successful, ${failureCount} failed`);
+    
+    return {
+      success: true,
+      message: `Assessment sent: ${successCount} successful, ${failureCount} failed`,
+      sentCount: successCount,
+      failedCount: failureCount,
+      totalCandidates: candidates.length,
+      results: results
+    };
+    
+  } catch (error) {
+    console.error('sendAssessmentToCandidates: Error details:', error);
+    throw new Error(`Failed to send assessment to candidates: ${error.message}`);
+  }
+}
+
 module.exports = {
   createAssessment,
   getAllAssessments,
   getAssessmentById,
   updateAssessment,
   deleteAssessment,
-  getAvailableJobRoles
+  getAvailableJobRoles,
+  sendAssessmentToCandidates
 };
