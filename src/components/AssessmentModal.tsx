@@ -48,6 +48,7 @@ const AssessmentModal: React.FC<AssessmentModalProps> = ({
   const [receivedLinks, setReceivedLinks] = useState<string[]>([]);
   const [forwardMessage, setForwardMessage] = useState<string>('');
   const [pollingInterval, setPollingInterval] = useState<NodeJS.Timeout | null>(null);
+  const [candidateSearch, setCandidateSearch] = useState<string>('');
 
   const experienceLevelOptions = ['Fresher', 'Junior', 'Mid-level', 'Senior', 'Expert'];
   const durationOptions = [30, 45, 60, 90, 120, 180];
@@ -67,8 +68,18 @@ const AssessmentModal: React.FC<AssessmentModalProps> = ({
         console.log('AssessmentModal: Selected role:', selectedRole);
         console.log('AssessmentModal: All candidates:', allCandidates);
         
-        // Filter candidates by selected job role
-        const filtered = allCandidates.filter(c => c.jobRole === selectedRole.jobRole);
+        // Filter candidates by selected job role and search term
+        let filtered = allCandidates.filter(c => c.jobRole === selectedRole.jobRole);
+        
+        // Apply search filter if search term exists
+        if (candidateSearch.trim()) {
+          const searchTerm = candidateSearch.toLowerCase();
+          filtered = filtered.filter(c => 
+            c.candidateName.toLowerCase().includes(searchTerm) ||
+            c.email.toLowerCase().includes(searchTerm)
+          );
+        }
+        
         console.log('AssessmentModal: Filtered candidates for role:', selectedRole.jobRole, 'Count:', filtered.length);
         setFilteredCandidates(filtered);
         setSelectedCandidates([]); // Reset selection when role changes
@@ -77,7 +88,7 @@ const AssessmentModal: React.FC<AssessmentModalProps> = ({
       setFilteredCandidates([]);
       setSelectedCandidates([]);
     }
-  }, [selectedJobRole, jobRoles, allCandidates]);
+  }, [selectedJobRole, jobRoles, allCandidates, candidateSearch]);
 
   const fetchJobRoles = async () => {
     try {
@@ -378,6 +389,28 @@ const AssessmentModal: React.FC<AssessmentModalProps> = ({
               <label className="block text-sm font-semibold text-gray-700 mb-2">
                 Select Candidates ({selectedCandidates.length} selected)
               </label>
+              
+              {/* Search Candidates */}
+              <div className="mb-3">
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <svg className="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                  </div>
+                  <input
+                    type="text"
+                    placeholder="Search candidates by name or email..."
+                    value={candidateSearch}
+                    onChange={(e) => setCandidateSearch(e.target.value)}
+                    className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+                  />
+                </div>
+                <div className="text-xs text-gray-500 mt-1">
+                  Showing {filteredCandidates.length} candidates
+                </div>
+              </div>
+              
               <div className="border border-gray-200 rounded-lg p-4 bg-gray-50">
                 {loading ? (
                   <div className="text-sm text-gray-500">Loading candidates...</div>
@@ -428,59 +461,64 @@ const AssessmentModal: React.FC<AssessmentModalProps> = ({
                         </div>
                       </label>
                     </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-40 overflow-y-auto">
-                      {filteredCandidates.map((candidate) => {
-                        const isSelectable = candidate.status === 'Communication Sent';
-                        return (
-                          <label 
-                            key={candidate._id} 
-                            className={`flex items-center space-x-3 p-3 rounded-lg border ${
-                              isSelectable 
-                                ? 'cursor-pointer hover:bg-green-50 border-green-200 bg-green-25' 
-                                : 'cursor-not-allowed opacity-60 border-red-200 bg-red-25'
-                            }`}
-                          >
-                            <input
-                              type="checkbox"
-                              checked={selectedCandidates.includes(candidate._id)}
-                              onChange={() => handleCandidateSelection(candidate._id)}
-                              disabled={!isSelectable}
-                              className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 disabled:cursor-not-allowed"
-                            />
-                            <div className="flex-1">
-                              <div className="flex items-center space-x-2">
-                                <div className="font-medium text-gray-900">{candidate.candidateName}</div>
-                                {isSelectable ? (
-                                  <svg className="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                                  </svg>
-                                ) : (
-                                  <svg className="w-4 h-4 text-red-500" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                                  </svg>
-                                )}
-                              </div>
-                              <div className="text-xs text-gray-500 mt-1">{candidate.email}</div>
-                              <div className={`text-xs font-medium mt-1 flex items-center space-x-1 ${
-                                isSelectable ? 'text-green-700' : 'text-red-700'
-                              }`}>
-                                <div className="relative group">
-                                  <span className={`w-2 h-2 rounded-full ${
-                                    isSelectable ? 'bg-green-500' : 'bg-red-500'
-                                  }`}></span>
-                                  <div className="absolute left-4 top-0 z-10 hidden group-hover:block bg-gray-800 text-white text-xs rounded px-2 py-1 whitespace-nowrap shadow-lg">
-                                    {candidate.status === 'Communication Sent' && 'Ready for assessment - can be selected'}
-                                    {candidate.status === 'Pending Communication' && 'Send communication email first'}
-                                    {candidate.status === 'Assessment Assigned' && 'Assessment already assigned'}
-                                    {candidate.status === 'Assessment Completed' && 'Assessment completed'}
+                    <div className="border border-gray-200 rounded-lg max-h-60 overflow-y-auto">
+                      <div className="divide-y divide-gray-200">
+                        {filteredCandidates.map((candidate) => {
+                          const isSelectable = candidate.status === 'Communication Sent';
+                          return (
+                            <label 
+                              key={candidate._id} 
+                              className={`flex items-center space-x-3 p-3 hover:bg-gray-50 ${
+                                isSelectable 
+                                  ? 'cursor-pointer' 
+                                  : 'cursor-not-allowed opacity-60'
+                              }`}
+                            >
+                          <input
+                            type="checkbox"
+                            checked={selectedCandidates.includes(candidate._id)}
+                            onChange={() => handleCandidateSelection(candidate._id)}
+                                disabled={!isSelectable}
+                                className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 disabled:cursor-not-allowed"
+                              />
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-center justify-between">
+                                  <div className="flex items-center space-x-2 min-w-0 flex-1">
+                                    <div className="font-medium text-gray-900 truncate">{candidate.candidateName}</div>
+                                    <div className="relative group">
+                                      {isSelectable ? (
+                                        <svg className="w-4 h-4 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                                        </svg>
+                                      ) : (
+                                        <svg className="w-4 h-4 text-red-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                                        </svg>
+                                      )}
+                                      <div className="absolute left-4 top-0 z-10 hidden group-hover:block bg-gray-800 text-white text-xs rounded px-2 py-1 whitespace-nowrap shadow-lg">
+                                        {candidate.status === 'Communication Sent' && 'Ready for assessment - can be selected'}
+                                        {candidate.status === 'Pending Communication' && 'Send communication email first'}
+                                        {candidate.status === 'Assessment Assigned' && 'Assessment already assigned'}
+                                        {candidate.status === 'Assessment Completed' && 'Assessment completed'}
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div className="flex items-center space-x-2 flex-shrink-0">
+                                    <div className={`text-xs font-medium px-2 py-1 rounded-full ${
+                                      isSelectable 
+                                        ? 'bg-green-100 text-green-800' 
+                                        : 'bg-red-100 text-red-800'
+                                    }`}>
+                                      {candidate.status}
+                                    </div>
                                   </div>
                                 </div>
-                                <span>{candidate.status}</span>
-                              </div>
-                            </div>
-                          </label>
-                        );
-                      })}
+                                <div className="text-xs text-gray-500 mt-1 truncate">{candidate.email}</div>
+                          </div>
+                        </label>
+                          );
+                        })}
+                      </div>
                     </div>
                     
                     {/* Show message if no selectable candidates */}
