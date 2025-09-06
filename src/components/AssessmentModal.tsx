@@ -50,6 +50,7 @@ const AssessmentModal: React.FC<AssessmentModalProps> = ({
   const [pollingInterval, setPollingInterval] = useState<NodeJS.Timeout | null>(null);
   const [candidateSearch, setCandidateSearch] = useState<string>('');
   const [sendingAssessment, setSendingAssessment] = useState<boolean>(false);
+  const [assessmentSent, setAssessmentSent] = useState<boolean>(false);
 
   const experienceLevelOptions = ['Fresher', 'Junior', 'Mid-level', 'Senior', 'Expert'];
   const durationOptions = [30, 45, 60, 90, 120, 180];
@@ -288,6 +289,8 @@ const AssessmentModal: React.FC<AssessmentModalProps> = ({
     setForwardStatus('idle');
     setForwardMessage('');
     setReceivedLinks([]);
+    setSendingAssessment(false);
+    setAssessmentSent(false);
     if (pollingInterval) {
       clearInterval(pollingInterval);
       setPollingInterval(null);
@@ -297,10 +300,29 @@ const AssessmentModal: React.FC<AssessmentModalProps> = ({
   const getTotalQuestions = () => aptitudeQuestions + jobRoleQuestions + codingQuestions;
 
   const handleSendAssessment = async () => {
-    if (receivedLinks.length === 0 || selectedCandidates.length === 0) {
+    // Enhanced validation
+    if (receivedLinks.length === 0) {
       push({ 
-        title: 'Cannot send assessment', 
-        description: 'No assessment links or candidates selected', 
+        title: 'No assessment links available', 
+        description: 'Please wait for assessment links to be generated', 
+        variant: 'destructive' 
+      });
+      return;
+    }
+    
+    if (selectedCandidates.length === 0) {
+      push({ 
+        title: 'No candidates selected', 
+        description: 'Please select at least one candidate to send the assessment to', 
+        variant: 'destructive' 
+      });
+      return;
+    }
+    
+    if (!selectedJobRole) {
+      push({ 
+        title: 'Job role not selected', 
+        description: 'Please select a job role before sending assessments', 
         variant: 'destructive' 
       });
       return;
@@ -324,26 +346,45 @@ const AssessmentModal: React.FC<AssessmentModalProps> = ({
       const result = await response.json();
 
       if (result.success) {
-        push({
-          title: 'Assessment sent successfully',
-          description: `Assessment links sent to ${result.sentCount} candidates`,
-          variant: 'success'
-        });
-        // Update candidate statuses locally
+        // Show detailed success message
+        if (result.failedCount > 0) {
+          push({
+            title: 'Assessment partially sent',
+            description: `Successfully sent to ${result.sentCount} candidates, ${result.failedCount} failed`,
+            variant: 'default'
+          });
+        } else {
+          push({
+            title: 'Assessment sent successfully!',
+            description: `Assessment links sent to all ${result.sentCount} candidates`,
+            variant: 'success'
+          });
+        }
+        
+        // Update candidate statuses locally for successful sends only
+        const successfulCandidates = result.results
+          .filter(r => r.success)
+          .map(r => r.candidateId);
+          
         setAllCandidates(prev => 
           prev.map(candidate => 
-            selectedCandidates.includes(candidate._id)
+            successfulCandidates.includes(candidate._id)
               ? { ...candidate, status: 'Assessment Sent' }
               : candidate
           )
         );
         setFilteredCandidates(prev => 
           prev.map(candidate => 
-            selectedCandidates.includes(candidate._id)
+            successfulCandidates.includes(candidate._id)
               ? { ...candidate, status: 'Assessment Sent' }
               : candidate
           )
         );
+        
+        // Clear selected candidates after successful send
+        setSelectedCandidates([]);
+        setAssessmentSent(true);
+        
       } else {
         push({
           title: 'Failed to send assessment',
@@ -353,9 +394,18 @@ const AssessmentModal: React.FC<AssessmentModalProps> = ({
       }
     } catch (error) {
       console.error('Error sending assessment:', error);
+      
+      // Provide more specific error messages based on error type
+      let errorMessage = 'Please try again';
+      if (error instanceof TypeError && error.message.includes('fetch')) {
+        errorMessage = 'Network error. Please check your connection and try again.';
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+      
       push({
         title: 'Failed to send assessment',
-        description: 'Please try again',
+        description: errorMessage,
         variant: 'destructive'
       });
     } finally {
@@ -777,7 +827,7 @@ const AssessmentModal: React.FC<AssessmentModalProps> = ({
           )}
 
           {/* Send Assessment Button - Only show when links are received and candidates are selected */}
-          {forwardStatus === 'sent' && receivedLinks.length > 0 && selectedCandidates.length > 0 && (
+          {forwardStatus === 'sent' && receivedLinks.length > 0 && selectedCandidates.length > 0 && !assessmentSent && (
             <div className="bg-green-50 border border-green-200 rounded-lg p-4">
               <div className="flex items-center justify-between">
                 <div>
@@ -792,8 +842,37 @@ const AssessmentModal: React.FC<AssessmentModalProps> = ({
                   disabled={sendingAssessment}
                   className="px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-lg hover:from-green-700 hover:to-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 font-medium shadow-sm hover:shadow-md"
                 >
-                  {sendingAssessment ? 'Sending...' : 'Send Assessment'}
+                  {sendingAssessment ? (
+                    <div className="flex items-center">
+                      <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      Sending...
+                    </div>
+                  ) : (
+                    'Send Assessment'
+                  )}
                 </button>
+              </div>
+            </div>
+          )}
+
+          {/* Assessment Sent Success State */}
+          {assessmentSent && (
+            <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-4">
+              <div className="flex items-center">
+                <div className="flex-shrink-0">
+                  <svg className="h-8 w-8 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <div className="ml-3">
+                  <h3 className="text-lg font-semibold text-emerald-800">Assessment Sent Successfully!</h3>
+                  <p className="text-emerald-700 text-sm mt-1">
+                    Assessment links have been sent to the selected candidates. They will receive professional emails with instructions to complete the assessment.
+                  </p>
+                </div>
               </div>
             </div>
           )}
