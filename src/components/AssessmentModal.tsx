@@ -397,6 +397,9 @@ const AssessmentModal: React.FC<AssessmentModalProps> = ({
                         <span className="text-sm font-medium text-gray-700">
                           Select All ({filteredCandidates.filter(c => c.status === 'Communication Sent').length} selectable)
                         </span>
+                        <div className="text-xs text-gray-500 ml-2">
+                          Only candidates with "Communication Sent" status can be selected
+                        </div>
                       </label>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-40 overflow-y-auto">
@@ -405,10 +408,10 @@ const AssessmentModal: React.FC<AssessmentModalProps> = ({
                         return (
                           <label 
                             key={candidate._id} 
-                            className={`flex items-center space-x-2 p-2 rounded ${
+                            className={`flex items-center space-x-3 p-3 rounded-lg border ${
                               isSelectable 
-                                ? 'cursor-pointer hover:bg-gray-100' 
-                                : 'cursor-not-allowed opacity-60'
+                                ? 'cursor-pointer hover:bg-green-50 border-green-200 bg-green-25' 
+                                : 'cursor-not-allowed opacity-60 border-red-200 bg-red-25'
                             }`}
                           >
                             <input
@@ -418,11 +421,27 @@ const AssessmentModal: React.FC<AssessmentModalProps> = ({
                               disabled={!isSelectable}
                               className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 disabled:cursor-not-allowed"
                             />
-                            <div className="text-sm text-gray-700">
-                              <div className="font-medium">{candidate.candidateName}</div>
-                              <div className="text-xs text-gray-500">{candidate.email}</div>
-                              <div className={`text-xs ${isSelectable ? 'text-green-600' : 'text-red-600'}`}>
-                                {candidate.status}
+                            <div className="flex-1">
+                              <div className="flex items-center space-x-2">
+                                <div className="font-medium text-gray-900">{candidate.candidateName}</div>
+                                {isSelectable ? (
+                                  <svg className="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                                  </svg>
+                                ) : (
+                                  <svg className="w-4 h-4 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                                  </svg>
+                                )}
+                              </div>
+                              <div className="text-xs text-gray-500 mt-1">{candidate.email}</div>
+                              <div className={`text-xs font-medium mt-1 flex items-center space-x-1 ${
+                                isSelectable ? 'text-green-700' : 'text-red-700'
+                              }`}>
+                                <span className={`w-2 h-2 rounded-full ${
+                                  isSelectable ? 'bg-green-500' : 'bg-red-500'
+                                }`}></span>
+                                <span>{candidate.status}</span>
                               </div>
                             </div>
                           </label>
@@ -433,6 +452,44 @@ const AssessmentModal: React.FC<AssessmentModalProps> = ({
                 ) : (
                   <div className="text-sm text-gray-500">No candidates for this role</div>
                 )}
+              </div>
+            </div>
+          )}
+
+          {/* Candidate Status Summary */}
+          {selectedJobRole && filteredCandidates.length > 0 && (
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+              <div className="flex items-center mb-2">
+                <svg className="w-5 h-5 text-blue-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span className="text-blue-800 font-medium">Candidate Status Summary</span>
+              </div>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
+                <div className="flex items-center space-x-2">
+                  <span className="w-3 h-3 bg-green-500 rounded-full"></span>
+                  <span className="text-gray-700">
+                    Ready: {filteredCandidates.filter(c => c.status === 'Communication Sent').length}
+                  </span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <span className="w-3 h-3 bg-yellow-500 rounded-full"></span>
+                  <span className="text-gray-700">
+                    Pending: {filteredCandidates.filter(c => c.status === 'Pending Communication').length}
+                  </span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <span className="w-3 h-3 bg-blue-500 rounded-full"></span>
+                  <span className="text-gray-700">
+                    Assigned: {filteredCandidates.filter(c => c.status === 'Assessment Assigned').length}
+                  </span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <span className="w-3 h-3 bg-purple-500 rounded-full"></span>
+                  <span className="text-gray-700">
+                    Completed: {filteredCandidates.filter(c => c.status === 'Assessment Completed').length}
+                  </span>
+                </div>
               </div>
             </div>
           )}
