@@ -16,6 +16,7 @@ interface Candidate {
   prediction: string;
   matchScore: number;
   jobRole: string;
+  status: string;
 }
 
 interface AssessmentModalProps {
@@ -103,14 +104,25 @@ const AssessmentModal: React.FC<AssessmentModalProps> = ({
   };
 
   const handleSelectAllCandidates = () => {
-    if (selectedCandidates.length === filteredCandidates.length) {
+    // Only select candidates with "Communication Sent" status
+    const selectableCandidates = filteredCandidates.filter(c => c.status === 'Communication Sent');
+    const selectableIds = selectableCandidates.map(c => c._id);
+    
+    if (selectedCandidates.length === selectableIds.length && 
+        selectableIds.every(id => selectedCandidates.includes(id))) {
       setSelectedCandidates([]);
     } else {
-      setSelectedCandidates(filteredCandidates.map(c => c._id));
+      setSelectedCandidates(selectableIds);
     }
   };
 
   const handleCandidateSelection = (candidateId: string) => {
+    // Only allow selection if candidate has "Communication Sent" status
+    const candidate = filteredCandidates.find(c => c._id === candidateId);
+    if (candidate && candidate.status !== 'Communication Sent') {
+      return; // Don't allow selection
+    }
+    
     setSelectedCandidates(prev => 
       prev.includes(candidateId)
         ? prev.filter(id => id !== candidateId)
@@ -375,28 +387,47 @@ const AssessmentModal: React.FC<AssessmentModalProps> = ({
                       <label className="flex items-center space-x-2 cursor-pointer">
                         <input
                           type="checkbox"
-                          checked={selectedCandidates.length === filteredCandidates.length && filteredCandidates.length > 0}
+                          checked={(() => {
+                            const selectableCandidates = filteredCandidates.filter(c => c.status === 'Communication Sent');
+                            return selectedCandidates.length === selectableCandidates.length && selectableCandidates.length > 0;
+                          })()}
                           onChange={handleSelectAllCandidates}
                           className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
                         />
-                        <span className="text-sm font-medium text-gray-700">Select All ({filteredCandidates.length})</span>
+                        <span className="text-sm font-medium text-gray-700">
+                          Select All ({filteredCandidates.filter(c => c.status === 'Communication Sent').length} selectable)
+                        </span>
                       </label>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-40 overflow-y-auto">
-                      {filteredCandidates.map((candidate) => (
-                        <label key={candidate._id} className="flex items-center space-x-2 cursor-pointer p-2 hover:bg-gray-100 rounded">
-                          <input
-                            type="checkbox"
-                            checked={selectedCandidates.includes(candidate._id)}
-                            onChange={() => handleCandidateSelection(candidate._id)}
-                            className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                          />
-                          <div className="text-sm text-gray-700">
-                            <div className="font-medium">{candidate.candidateName}</div>
-                            <div className="text-xs text-gray-500">{candidate.email}</div>
-                          </div>
-                        </label>
-                      ))}
+                      {filteredCandidates.map((candidate) => {
+                        const isSelectable = candidate.status === 'Communication Sent';
+                        return (
+                          <label 
+                            key={candidate._id} 
+                            className={`flex items-center space-x-2 p-2 rounded ${
+                              isSelectable 
+                                ? 'cursor-pointer hover:bg-gray-100' 
+                                : 'cursor-not-allowed opacity-60'
+                            }`}
+                          >
+                            <input
+                              type="checkbox"
+                              checked={selectedCandidates.includes(candidate._id)}
+                              onChange={() => handleCandidateSelection(candidate._id)}
+                              disabled={!isSelectable}
+                              className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 disabled:cursor-not-allowed"
+                            />
+                            <div className="text-sm text-gray-700">
+                              <div className="font-medium">{candidate.candidateName}</div>
+                              <div className="text-xs text-gray-500">{candidate.email}</div>
+                              <div className={`text-xs ${isSelectable ? 'text-green-600' : 'text-red-600'}`}>
+                                {candidate.status}
+                              </div>
+                            </div>
+                          </label>
+                        );
+                      })}
                     </div>
                   </>
                 ) : (
