@@ -400,6 +400,32 @@ const AssessmentModal: React.FC<AssessmentModalProps> = ({
                         <div className="text-xs text-gray-500 ml-2">
                           Only candidates with "Communication Sent" status can be selected
                         </div>
+                        <div className="relative group ml-2">
+                          <svg className="w-4 h-4 text-gray-400 hover:text-gray-600 cursor-help" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                          <div className="absolute left-6 top-0 z-10 hidden group-hover:block bg-gray-800 text-white text-xs rounded-lg px-3 py-2 whitespace-nowrap shadow-lg max-w-xs">
+                            <div className="font-medium mb-1">Communication Status Guide:</div>
+                            <div className="space-y-1">
+                              <div className="flex items-center space-x-2">
+                                <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+                                <span>Communication Sent - Ready for assessment</span>
+                              </div>
+                              <div className="flex items-center space-x-2">
+                                <span className="w-2 h-2 bg-yellow-500 rounded-full"></span>
+                                <span>Pending Communication - Send email first</span>
+                              </div>
+                              <div className="flex items-center space-x-2">
+                                <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
+                                <span>Assessment Assigned - Already has test</span>
+                              </div>
+                              <div className="flex items-center space-x-2">
+                                <span className="w-2 h-2 bg-purple-500 rounded-full"></span>
+                                <span>Assessment Completed - Test finished</span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
                       </label>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-40 overflow-y-auto">
@@ -438,9 +464,17 @@ const AssessmentModal: React.FC<AssessmentModalProps> = ({
                               <div className={`text-xs font-medium mt-1 flex items-center space-x-1 ${
                                 isSelectable ? 'text-green-700' : 'text-red-700'
                               }`}>
-                                <span className={`w-2 h-2 rounded-full ${
-                                  isSelectable ? 'bg-green-500' : 'bg-red-500'
-                                }`}></span>
+                                <div className="relative group">
+                                  <span className={`w-2 h-2 rounded-full ${
+                                    isSelectable ? 'bg-green-500' : 'bg-red-500'
+                                  }`}></span>
+                                  <div className="absolute left-4 top-0 z-10 hidden group-hover:block bg-gray-800 text-white text-xs rounded px-2 py-1 whitespace-nowrap shadow-lg">
+                                    {candidate.status === 'Communication Sent' && 'Ready for assessment - can be selected'}
+                                    {candidate.status === 'Pending Communication' && 'Send communication email first'}
+                                    {candidate.status === 'Assessment Assigned' && 'Assessment already assigned'}
+                                    {candidate.status === 'Assessment Completed' && 'Assessment completed'}
+                                  </div>
+                                </div>
                                 <span>{candidate.status}</span>
                               </div>
                             </div>
@@ -448,6 +482,23 @@ const AssessmentModal: React.FC<AssessmentModalProps> = ({
                         );
                       })}
                     </div>
+                    
+                    {/* Show message if no selectable candidates */}
+                    {filteredCandidates.filter(c => c.status === 'Communication Sent').length === 0 && (
+                      <div className="mt-4 bg-amber-50 border border-amber-200 rounded-lg p-4">
+                        <div className="flex items-center">
+                          <svg className="w-5 h-5 text-amber-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                          </svg>
+                          <div>
+                            <div className="text-amber-800 font-medium">No candidates ready for assessment</div>
+                            <div className="text-amber-700 text-sm mt-1">
+                              All candidates need communication to be sent first. Go to the Next Steps page to send emails to candidates.
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
                   </>
                 ) : (
                   <div className="text-sm text-gray-500">No candidates for this role</div>
@@ -466,29 +517,41 @@ const AssessmentModal: React.FC<AssessmentModalProps> = ({
                 <span className="text-blue-800 font-medium">Candidate Status Summary</span>
               </div>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center space-x-2 relative group">
                   <span className="w-3 h-3 bg-green-500 rounded-full"></span>
                   <span className="text-gray-700">
                     Ready: {filteredCandidates.filter(c => c.status === 'Communication Sent').length}
                   </span>
+                  <div className="absolute left-0 top-6 z-10 hidden group-hover:block bg-gray-800 text-white text-xs rounded px-2 py-1 whitespace-nowrap shadow-lg">
+                    Candidates ready for assessment selection
+                  </div>
                 </div>
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center space-x-2 relative group">
                   <span className="w-3 h-3 bg-yellow-500 rounded-full"></span>
                   <span className="text-gray-700">
                     Pending: {filteredCandidates.filter(c => c.status === 'Pending Communication').length}
                   </span>
+                  <div className="absolute left-0 top-6 z-10 hidden group-hover:block bg-gray-800 text-white text-xs rounded px-2 py-1 whitespace-nowrap shadow-lg">
+                    Need to send communication email first
+                  </div>
                 </div>
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center space-x-2 relative group">
                   <span className="w-3 h-3 bg-blue-500 rounded-full"></span>
                   <span className="text-gray-700">
                     Assigned: {filteredCandidates.filter(c => c.status === 'Assessment Assigned').length}
                   </span>
+                  <div className="absolute left-0 top-6 z-10 hidden group-hover:block bg-gray-800 text-white text-xs rounded px-2 py-1 whitespace-nowrap shadow-lg">
+                    Assessment already assigned to candidate
+                  </div>
                 </div>
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center space-x-2 relative group">
                   <span className="w-3 h-3 bg-purple-500 rounded-full"></span>
                   <span className="text-gray-700">
                     Completed: {filteredCandidates.filter(c => c.status === 'Assessment Completed').length}
                   </span>
+                  <div className="absolute left-0 top-6 z-10 hidden group-hover:block bg-gray-800 text-white text-xs rounded px-2 py-1 whitespace-nowrap shadow-lg">
+                    Assessment completed by candidate
+                  </div>
                 </div>
               </div>
             </div>
