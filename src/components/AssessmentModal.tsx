@@ -83,6 +83,8 @@ const AssessmentModal: React.FC<AssessmentModalProps> = ({
         }
         
         console.log('AssessmentModal: Filtered candidates for role:', selectedRole.jobRole, 'Count:', filtered.length);
+        console.log('AssessmentModal: Filtered candidates:', filtered);
+        console.log('AssessmentModal: Candidates with Communication Sent status:', filtered.filter(c => c.status === 'Communication Sent'));
         setFilteredCandidates(filtered);
         setSelectedCandidates([]); // Reset selection when role changes
       }
@@ -109,6 +111,9 @@ const AssessmentModal: React.FC<AssessmentModalProps> = ({
       const response = await fetch('/api/match-results');
       if (response.ok) {
         const data = await response.json();
+        console.log('AssessmentModal: Fetched candidates:', data);
+        console.log('AssessmentModal: Candidates count:', data.length);
+        console.log('AssessmentModal: Sample candidate:', data[0]);
         setAllCandidates(data);
       }
     } catch (error) {
@@ -117,8 +122,9 @@ const AssessmentModal: React.FC<AssessmentModalProps> = ({
   };
 
   const handleSelectAllCandidates = () => {
-    // Only select candidates with "Communication Sent" status
-    const selectableCandidates = filteredCandidates.filter(c => c.status === 'Communication Sent');
+    // Allow selection of all candidates regardless of status for now
+    // TODO: Later we can restrict to only "Communication Sent" status
+    const selectableCandidates = filteredCandidates; // .filter(c => c.status === 'Communication Sent');
     const selectableIds = selectableCandidates.map(c => c._id);
     
     if (selectedCandidates.length === selectableIds.length && 
@@ -130,11 +136,12 @@ const AssessmentModal: React.FC<AssessmentModalProps> = ({
   };
 
   const handleCandidateSelection = (candidateId: string) => {
-    // Only allow selection if candidate has "Communication Sent" status
-    const candidate = filteredCandidates.find(c => c._id === candidateId);
-    if (candidate && candidate.status !== 'Communication Sent') {
-      return; // Don't allow selection
-    }
+    // Allow selection of all candidates for now
+    // TODO: Later we can restrict to only "Communication Sent" status
+    // const candidate = filteredCandidates.find(c => c._id === candidateId);
+    // if (candidate && candidate.status !== 'Communication Sent') {
+    //   return; // Don't allow selection
+    // }
     
     setSelectedCandidates(prev => 
       prev.includes(candidateId)
@@ -539,17 +546,17 @@ const AssessmentModal: React.FC<AssessmentModalProps> = ({
                         <input
                           type="checkbox"
                           checked={(() => {
-                            const selectableCandidates = filteredCandidates.filter(c => c.status === 'Communication Sent');
+                            const selectableCandidates = filteredCandidates; // Allow all candidates
                             return selectedCandidates.length === selectableCandidates.length && selectableCandidates.length > 0;
                           })()}
                           onChange={handleSelectAllCandidates}
                           className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
                         />
                         <span className="text-sm font-medium text-gray-700">
-                          Select All ({filteredCandidates.filter(c => c.status === 'Communication Sent').length} selectable)
+                          Select All ({filteredCandidates.length} candidates)
                         </span>
                         <div className="text-xs text-gray-500 ml-2">
-                          Only candidates with "Communication Sent" status can be selected
+                          All candidates can be selected for assessment
                         </div>
                         <div className="relative group ml-2">
                           <svg className="w-4 h-4 text-gray-400 hover:text-gray-600 cursor-help" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -582,7 +589,7 @@ const AssessmentModal: React.FC<AssessmentModalProps> = ({
                     <div className="border border-gray-200 rounded-lg max-h-60 overflow-y-auto">
                       <div className="divide-y divide-gray-200">
                         {filteredCandidates.map((candidate) => {
-                          const isSelectable = candidate.status === 'Communication Sent';
+                          const isSelectable = true; // Allow all candidates for now
                           return (
                             <label 
                               key={candidate._id} 
@@ -615,9 +622,10 @@ const AssessmentModal: React.FC<AssessmentModalProps> = ({
                                       )}
                                       <div className="absolute left-4 top-0 z-10 hidden group-hover:block bg-gray-800 text-white text-xs rounded px-2 py-1 whitespace-nowrap shadow-lg">
                                         {candidate.status === 'Communication Sent' && 'Ready for assessment - can be selected'}
-                                        {candidate.status === 'Pending Communication' && 'Send communication email first'}
+                                        {candidate.status === 'Pending Communication' && 'Can be selected for assessment'}
                                         {candidate.status === 'Assessment Assigned' && 'Assessment already assigned'}
                                         {candidate.status === 'Assessment Completed' && 'Assessment completed'}
+                                        {candidate.status === 'Assessment Sent' && 'Assessment sent'}
                                       </div>
                                     </div>
                                   </div>
@@ -640,16 +648,16 @@ const AssessmentModal: React.FC<AssessmentModalProps> = ({
                     </div>
                     
                     {/* Show message if no selectable candidates */}
-                    {filteredCandidates.filter(c => c.status === 'Communication Sent').length === 0 && (
+                    {filteredCandidates.length === 0 && (
                       <div className="mt-4 bg-amber-50 border border-amber-200 rounded-lg p-4">
                         <div className="flex items-center">
                           <svg className="w-5 h-5 text-amber-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
                           </svg>
                           <div>
-                            <div className="text-amber-800 font-medium">No candidates ready for assessment</div>
+                            <div className="text-amber-800 font-medium">No candidates found</div>
                             <div className="text-amber-700 text-sm mt-1">
-                              All candidates need communication to be sent first. Go to the Next Steps page to send emails to candidates.
+                              No candidates found for the selected job role. Please try a different job role or check if candidates have been uploaded.
                             </div>
                           </div>
                         </div>

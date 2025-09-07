@@ -1,6 +1,6 @@
 const Assessment = require('../models/Assessment');
 const Job = require('../models/Job');
-const Candidate = require('../models/Candidate');
+const MatchResult = require('../models/MatchResult');
 const { sendAssessmentEmail } = require('../utils/email');
 
 // Create a new assessment
@@ -127,8 +127,11 @@ async function sendAssessmentToCandidates(data) {
       throw new Error('Assessment links are required and must be a non-empty array');
     }
     
-    // Find all candidates
-    const candidates = await Candidate.find({ _id: { $in: candidateIds } });
+    // Find all candidates from MatchResult collection
+    const candidates = await MatchResult.find({ _id: { $in: candidateIds } });
+    
+    console.log('sendAssessmentToCandidates: Looking for candidates with IDs:', candidateIds);
+    console.log('sendAssessmentToCandidates: Found candidates:', candidates);
     
     if (candidates.length === 0) {
       throw new Error('No candidates found with the provided IDs');
@@ -147,8 +150,8 @@ async function sendAssessmentToCandidates(data) {
         const assessmentLink = assessmentLinks[0]; // Use first link for now, could be enhanced to distribute links
         
         await sendAssessmentEmail(
-          candidate.contactInfo.email,
-          candidate.name,
+          candidate.email,
+          candidate.candidateName,
           assessmentLink,
           jobRole || 'Technical Assessment',
           companyName || 'HireSmart'
@@ -160,22 +163,22 @@ async function sendAssessmentToCandidates(data) {
         
         results.push({
           candidateId: candidate._id,
-          candidateName: candidate.name,
-          email: candidate.contactInfo.email,
+          candidateName: candidate.candidateName,
+          email: candidate.email,
           status: 'sent',
           success: true
         });
         
         successCount++;
-        console.log(`sendAssessmentToCandidates: Successfully sent assessment to ${candidate.name} (${candidate.contactInfo.email})`);
+        console.log(`sendAssessmentToCandidates: Successfully sent assessment to ${candidate.candidateName} (${candidate.email})`);
         
       } catch (error) {
-        console.error(`sendAssessmentToCandidates: Failed to send assessment to ${candidate.name}:`, error);
+        console.error(`sendAssessmentToCandidates: Failed to send assessment to ${candidate.candidateName}:`, error);
         
         results.push({
           candidateId: candidate._id,
-          candidateName: candidate.name,
-          email: candidate.contactInfo.email,
+          candidateName: candidate.candidateName,
+          email: candidate.email,
           status: 'failed',
           success: false,
           error: error.message
