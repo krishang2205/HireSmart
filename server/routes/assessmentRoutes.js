@@ -7,7 +7,8 @@ const {
   updateAssessment,
   deleteAssessment,
   getAvailableJobRoles,
-  sendAssessmentToCandidates
+  sendAssessmentToCandidates,
+  submitAssessmentResults
 } = require('../controllers/assessmentController');
 
 // In-memory store for latest links received from external app
@@ -52,7 +53,7 @@ router.post('/', async (req, res) => {
     console.log('POST /api/assessments: Request received');
     console.log('POST /api/assessments: Request body:', JSON.stringify(req.body, null, 2));
     console.log('POST /api/assessments: Request headers:', req.headers);
-    
+
     const assessment = await createAssessment(req.body);
     console.log('POST /api/assessments: Assessment created successfully');
     res.status(201).json(assessment);
@@ -101,15 +102,15 @@ router.post('/send-to-candidates', async (req, res) => {
   try {
     console.log('POST /api/assessments/send-to-candidates: Request received');
     console.log('POST /api/assessments/send-to-candidates: Request body:', JSON.stringify(req.body, null, 2));
-    
+
     const result = await sendAssessmentToCandidates(req.body);
     res.json(result);
   } catch (err) {
     console.error('POST /api/assessments/send-to-candidates: Error occurred:', err);
-    res.status(500).json({ 
-      success: false, 
-      error: 'Failed to send assessment to candidates', 
-      details: err.message 
+    res.status(500).json({
+      success: false,
+      error: 'Failed to send assessment to candidates',
+      details: err.message
     });
   }
 });
@@ -137,6 +138,36 @@ router.delete('/:id', async (req, res) => {
     res.json({ message: 'Assessment deleted successfully' });
   } catch (err) {
     res.status(500).json({ error: 'Failed to delete assessment' });
+  }
+});
+
+// POST /api/assessments/submit-results
+// Submit assessment results from external app
+router.post('/submit-results', async (req, res) => {
+  try {
+    const result = await submitAssessmentResults(req.body);
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      error: 'Failed to submit assessment results',
+      details: err.message
+    });
+  }
+});
+
+// POST /api/assessments/external/results
+// Alias for submit-results to match external app expectation
+router.post('/external/results', async (req, res) => {
+  try {
+    const result = await submitAssessmentResults(req.body);
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      error: 'Failed to submit assessment results',
+      details: err.message
+    });
   }
 });
 

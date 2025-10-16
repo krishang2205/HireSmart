@@ -1,5 +1,5 @@
-    // Clear results and message state on manual refresh
-    
+// Clear results and message state on manual refresh
+
 import React, { useState } from 'react';
 import { extractNameFromResume } from './utils';
 import MatchResults from './MatchResults';
@@ -28,7 +28,7 @@ const ResumeScreener = ({ jobId }) => {
           setResult(normalized);
         }
       })
-      .catch(() => {});
+      .catch(() => { });
   }, []);
   const [resumeFile, setResumeFile] = useState<FileList | null>(null);
   const [jobDescription, setJobDescription] = useState(() => localStorage.getItem('jobDescription') || '');
@@ -38,7 +38,7 @@ const ResumeScreener = ({ jobId }) => {
         ...r,
         cosine_similarity_score:
           r.cosine_similarity_score != null ? Number(r.cosine_similarity_score)
-          : (r.matchScore != null ? Number(r.matchScore) : null)
+            : (r.matchScore != null ? Number(r.matchScore) : null)
       }));
     }
     if (data && Array.isArray(data.results)) {
@@ -46,7 +46,7 @@ const ResumeScreener = ({ jobId }) => {
         ...r,
         cosine_similarity_score:
           r.cosine_similarity_score != null ? Number(r.cosine_similarity_score)
-          : (r.matchScore != null ? Number(r.matchScore) : null)
+            : (r.matchScore != null ? Number(r.matchScore) : null)
       }));
     }
     if (data && typeof data === 'object') {
@@ -54,7 +54,7 @@ const ResumeScreener = ({ jobId }) => {
         ...data,
         cosine_similarity_score:
           data.cosine_similarity_score != null ? Number(data.cosine_similarity_score)
-          : (data.matchScore != null ? Number(data.matchScore) : null)
+            : (data.matchScore != null ? Number(data.matchScore) : null)
       }];
     }
     return null;
@@ -66,7 +66,7 @@ const ResumeScreener = ({ jobId }) => {
   });
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
-  
+
   React.useEffect(() => {
     if (performance && performance.navigation && performance.navigation.type === 1) {
       // Type 1 means reload (manual refresh)
@@ -189,9 +189,9 @@ const ResumeScreener = ({ jobId }) => {
         return;
       }
       const geminiResults = await response.json();
-  // Use candidateName from Gemini response only
-  setResult(geminiResults);
-  setError(null);
+      // Use candidateName from Gemini response only
+      setResult(geminiResults);
+      setError(null);
 
       // Save results to MongoDB using provided jobId
       if (effectiveJobId) {
@@ -203,7 +203,7 @@ const ResumeScreener = ({ jobId }) => {
           body: JSON.stringify({
             jobDescription,
             matchResults: geminiResults.map((r, idx) => ({
-              candidateId: `candidate-${idx+1}`,
+              candidateId: `candidate-${idx + 1}`,
               ...r
             }))
           })
@@ -226,7 +226,7 @@ const ResumeScreener = ({ jobId }) => {
                 sessionStorage.setItem('screeningResults', JSON.stringify(normalizedAll));
               }
             }
-          } catch {}
+          } catch { }
         } else {
           console.error('ResumeScreener: Failed to save results:', saveRes.statusText);
         }
@@ -288,7 +288,16 @@ const ResumeScreener = ({ jobId }) => {
             <span className="text-indigo-600 font-semibold">Screening resumes, please wait...</span>
           </div>
         ) : result && Array.isArray(result) && result.length > 0 ? (
-          <MatchResults key={JSON.stringify(result)} results={result} />
+          <MatchResults
+            key={JSON.stringify(result)}
+            results={result}
+            onClearResults={() => {
+              setResult(null);
+              sessionStorage.removeItem('screeningResults');
+              // Also clear local storage related to the current job/screening session if desired
+              // keeping jobId might be useful, but clearing specific results is key
+            }}
+          />
         ) : (
           <p className="text-gray-500 mt-4">No results to display.</p>
         )}

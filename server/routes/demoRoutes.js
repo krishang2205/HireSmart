@@ -22,17 +22,17 @@ router.post('/match-results/send-email', async (req, res) => {
   try {
     const matchResult = await MatchResult.findById(candidateId);
     if (!matchResult) {
-      return res.status(404).json({ 
-        success: false, 
-        error: 'Candidate not found' 
+      return res.status(404).json({
+        success: false,
+        error: 'Candidate not found'
       });
     }
 
     // Check if email has already been sent
     if (matchResult.status === 'Communication Sent') {
-      return res.status(400).json({ 
-        success: false, 
-        error: 'Email has already been sent to this candidate' 
+      return res.status(400).json({
+        success: false,
+        error: 'Email has already been sent to this candidate'
       });
     }
 
@@ -61,10 +61,10 @@ router.post('/match-results/send-email', async (req, res) => {
 
   } catch (error) {
     console.error('Error sending email to candidate:', error);
-    res.status(500).json({ 
-      success: false, 
+    res.status(500).json({
+      success: false,
       error: 'Failed to send email',
-      details: error.message 
+      details: error.message
     });
   }
 });
@@ -144,6 +144,21 @@ router.post('/gemini-match', async (req, res) => {
   } catch (err) {
     console.error('Error in /api/gemini-match:', err);
     res.status(500).json({ error: 'Gemini match failed', details: err.message });
+  }
+});
+
+// DELETE /api/match-results/:id - Delete a match result
+router.delete('/match-results/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deleted = await MatchResult.findByIdAndDelete(id);
+    if (!deleted) {
+      return res.status(404).json({ success: false, error: 'Candidate match result not found' });
+    }
+    res.json({ success: true, message: 'Candidate deleted successfully' });
+  } catch (err) {
+    console.error('Error deleting match result:', err);
+    res.status(500).json({ success: false, error: 'Failed to delete candidate' });
   }
 });
 

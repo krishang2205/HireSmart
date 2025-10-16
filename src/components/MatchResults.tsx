@@ -15,7 +15,7 @@ const getColorByPrediction = (prediction) => {
   return { bar: 'bg-red-500', badge: 'bg-red-500 text-white' };
 };
 
-const MatchResults = ({ results }) => {
+const MatchResults = ({ results, onClearResults }) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState('');
   const [selectedJobRole, setSelectedJobRole] = useState('');
@@ -24,10 +24,10 @@ const MatchResults = ({ results }) => {
   });
 
   // Get unique job roles from results
-  const availableJobRoles = Array.from(new Set(results.map(r => r.jobRole).filter(Boolean))).sort();
-  
+  const availableJobRoles = Array.from(new Set(results.map((r: any) => r.jobRole).filter(Boolean))).sort() as string[];
+
   // Filter results by selected job role
-  const filteredResults = selectedJobRole 
+  const filteredResults = selectedJobRole
     ? results.filter(r => r.jobRole === selectedJobRole)
     : results;
 
@@ -76,7 +76,7 @@ const MatchResults = ({ results }) => {
   const handleExportExcel = async () => {
     const XLSX = await import('xlsx');
     const data = results.map(res => ({
-          Name: res.candidateName,
+      Name: res.candidateName,
       Type: res.filename?.toLowerCase().endsWith('.pdf') ? 'PDF' : 'DOCX',
       Score: `${(res.cosine_similarity_score * 100).toFixed(1)}%`,
       Skills: Array.isArray(res.matched_skills) ? res.matched_skills.join(', ') : '',
@@ -91,21 +91,36 @@ const MatchResults = ({ results }) => {
     XLSX.writeFile(workbook, 'screening_results.xlsx');
   };
 
+
+  /* Reverted: Modal state removed */
+
   return (
     <div className="bg-white p-4 rounded-xl shadow-lg max-w-5xl mx-auto relative">
-      <button
-        className="absolute top-4 right-4 z-10 flex items-center justify-center w-10 h-10 rounded-full border-2 border-gray-400 bg-white hover:bg-blue-50 transition shadow"
-        title="Export to Excel"
-        onClick={handleExportExcel}
-        aria-label="Export"
-      >
-        <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M14 8v8M14 8l-4 4M14 8l4 4" stroke="#333" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-          <rect x="9" y="18" width="10" height="2" rx="1" fill="#333" />
-        </svg>
-      </button>
+      <div className="absolute top-4 right-4 z-10 flex items-center gap-2">
+        {onClearResults && (
+          <button
+            className="flex items-center justify-center px-3 py-2 rounded-lg border border-gray-300 bg-white text-gray-600 hover:bg-gray-50 hover:text-red-600 transition shadow text-sm font-medium"
+            onClick={onClearResults}
+            title="Clear all results"
+            aria-label="Clear Results"
+          >
+            Clear Results
+          </button>
+        )}
+        <button
+          className="flex items-center justify-center w-10 h-10 rounded-full border-2 border-gray-400 bg-white hover:bg-blue-50 transition shadow"
+          title="Export to Excel"
+          onClick={handleExportExcel}
+          aria-label="Export"
+        >
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M14 8v8M14 8l-4 4M14 8l4 4" stroke="#333" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            <rect x="9" y="18" width="10" height="2" rx="1" fill="#333" />
+          </svg>
+        </button>
+      </div>
       <h2 className="text-2xl font-semibold text-indigo-700 mb-6">Screening Results</h2>
-      
+
       {/* Job Role Filter */}
       {availableJobRoles.length > 0 && (
         <div className="mb-4 flex items-center gap-3">
@@ -127,7 +142,7 @@ const MatchResults = ({ results }) => {
           )}
         </div>
       )}
-      
+
       <div>
         <table className="w-full border border-gray-200 rounded-xl overflow-hidden shadow-sm text-sm table-auto">
           <thead className="bg-gray-50">
@@ -144,7 +159,7 @@ const MatchResults = ({ results }) => {
           <tbody>
             {filteredResults.map((res, idx) => (
               <tr key={idx} className="border-t transition-all hover:bg-blue-50">
-                  <td className="px-4 py-2 align-middle break-words">{res.candidateName || res.filename}</td>
+                <td className="px-4 py-2 align-middle break-words">{res.candidateName || res.filename}</td>
                 <td className="px-4 py-2 align-middle whitespace-nowrap">
                   {res.filename?.toLowerCase().endsWith('.pdf') ? 'PDF' : 'DOCX'}
                 </td>
@@ -200,47 +215,48 @@ const MatchResults = ({ results }) => {
                     <span className="text-gray-400 italic text-xs">No overview</span>
                   )}
                 </td>
-      {modalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
-          <div className="bg-white rounded-xl shadow-2xl p-6 max-w-lg w-full relative">
-            <button
-              className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 text-lg font-bold focus:outline-none"
-              onClick={closeModal}
-            >
-              &times;
-            </button>
-            <h3 className="text-lg font-bold mb-2 text-indigo-700">AI Overview</h3>
-            <div className="text-gray-800 text-sm whitespace-pre-line">{modalContent}</div>
-          </div>
-        </div>
-      )}
+                {modalOpen && (
+                  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+                    <div className="bg-white rounded-xl shadow-2xl p-6 max-w-lg w-full relative">
+                      <button
+                        className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 text-lg font-bold focus:outline-none"
+                        onClick={closeModal}
+                      >
+                        &times;
+                      </button>
+                      <h3 className="text-lg font-bold mb-2 text-indigo-700">AI Overview</h3>
+                      <div className="text-gray-800 text-sm whitespace-pre-line">{modalContent}</div>
+                    </div>
+                  </div>
+                )}
               </tr>
             ))}
           </tbody>
         </table>
       </div>
-        {/* Next Step Button */}
-        <div style={{ marginTop: '2rem', textAlign: 'right' }}>
-          <button
-            className="next-step-btn"
-            style={{
-              padding: '0.75rem 2rem',
-              background: '#2563eb',
-              color: '#fff',
-              border: 'none',
-              borderRadius: '0.5rem',
-              fontWeight: 'bold',
-              cursor: 'pointer',
-              fontSize: '1rem',
-            }}
-            onClick={() => {
-              setShowNextStepMessage(true);
-              sessionStorage.setItem('showNextStepMessage', 'true');
-            }}
-          >
-            Push to Next Step
-          </button>
-        </div>
+
+      {/* Next Step Button */}
+      <div style={{ marginTop: '2rem', textAlign: 'right' }}>
+        <button
+          className="next-step-btn"
+          style={{
+            padding: '0.75rem 2rem',
+            background: '#2563eb',
+            color: '#fff',
+            border: 'none',
+            borderRadius: '0.5rem',
+            fontWeight: 'bold',
+            cursor: 'pointer',
+            fontSize: '1rem',
+          }}
+          onClick={() => {
+            setShowNextStepMessage(true);
+            sessionStorage.setItem('showNextStepMessage', 'true');
+          }}
+        >
+          Push to Next Step
+        </button>
+      </div>
     </div>
   );
 };

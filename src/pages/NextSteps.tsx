@@ -5,15 +5,15 @@ import { useToast } from '@/hooks/use-toast';
 import AssessmentButton from '@/components/AssessmentButton';
 import RefreshButton from '@/components/RefreshButton';
 
-  // Statuses remain static
-  const statuses = ['Pending Communication', 'Communication Sent', 'Assessment Assigned', 'Assessment Completed', 'Rejected'];
-  // Gemini categories (fixed)
-  const categories = [
-    'Best Match',
-    'Can consider for interview',
-    'Not Good Candidate',
-    'Consider with Caution'
-  ];
+// Statuses remain static
+const statuses = ['Pending Communication', 'Communication Sent', 'Assessment Assigned', 'Assessment Completed', 'Rejected'];
+// Gemini categories (fixed)
+const categories = [
+  'Best Match',
+  'Can consider for interview',
+  'Not Good Candidate',
+  'Consider with Caution'
+];
 
 export default function NextSteps() {
   const [candidates, setCandidates] = useState([]);
@@ -39,9 +39,9 @@ export default function NextSteps() {
           name: candidate.candidateName || 'Name not found',
           resumeScore: candidate.matchScore || 0,
           category: candidate.prediction || 'Not categorized',
-          contactInfo: { 
-            email: candidate.email || 'Email not found', 
-            phone: candidate.contactNumber || 'Phone not found' 
+          contactInfo: {
+            email: candidate.email || 'Email not found',
+            phone: candidate.contactNumber || 'Phone not found'
           },
           status: candidate.status || 'Pending Communication',
           assessmentScore: null,
@@ -50,7 +50,7 @@ export default function NextSteps() {
           jobRole: candidate.jobRole || ''
         }));
         setCandidates(transformedCandidates);
-  setLastUpdated(Date.now());
+        setLastUpdated(Date.now());
       } else {
         setCandidates([]);
       }
@@ -131,14 +131,14 @@ export default function NextSteps() {
 
       if (result.success) {
         // Update the candidate status in the local state
-        setCandidates(prevCandidates => 
-          prevCandidates.map(candidate => 
-            candidate._id === id 
+        setCandidates(prevCandidates =>
+          prevCandidates.map(candidate =>
+            candidate._id === id
               ? { ...candidate, status: 'Communication Sent' }
               : candidate
           )
         );
-        
+
         push({ variant: 'success', title: 'Email sent', description: `Email sent to ${result.candidate.name}` });
       } else {
         push({ variant: 'destructive', title: 'Failed to send email', description: result.error || 'Please try again.' });
@@ -189,9 +189,63 @@ export default function NextSteps() {
     console.log('Assigning assessment to:', id);
   };
 
+  const handleDeleteCandidate = async (id, name) => {
+    if (!window.confirm(`Are you sure you want to delete candidate ${name}?`)) return;
+    try {
+      const response = await fetch(`/api/match-results/${id}`, {
+        method: 'DELETE'
+      });
+      const result = await response.json();
+      if (response.ok && result.success) {
+        push({ variant: 'success', title: 'Candidate Deleted', description: `Successfully removed ${name}` });
+        setCandidates(prev => prev.filter(c => c._id !== id));
+      } else {
+        push({ variant: 'destructive', title: 'Delete Failed', description: result.error || 'Could not delete candidate' });
+      }
+    } catch (error) {
+      console.error('Delete error:', error);
+      push({ variant: 'destructive', title: 'Error', description: 'Failed to delete candidate' });
+    }
+  };
+
+  /* Assessment Modal State */
+  const [assessmentModalOpen, setAssessmentModalOpen] = useState(false);
+  const [currentAssessment, setCurrentAssessment] = useState<any>(null);
+
   const handleViewAssessmentScore = async (id) => {
-    // Implementation for viewing assessment score
-    console.log('Viewing assessment score for:', id);
+    const candidate = candidates.find(c => c._id === id);
+    if (candidate) {
+      // Fetch fresh details if needed, or use what's in local state.
+      // Since list endpoints might not return full nested details for performance, 
+      // we might want a fetch here. But assuming for now 'candidate' object has it 
+      // or we need to fetch it from the API.
+      // Let's first try to find it in the state, but 'assessmentDetails' wasn't mapped in fetchCandidates.
+
+      // We need to fetch the single candidate or ensure list has details. 
+      // Let's quickly fetch the single candidate to get full details including assessmentDetails.
+      try {
+        const response = await fetch(`/api/match-results`);
+        // Note: Optimally we should have a get-by-id endpoint, but we can reuse the list for now or add one.
+        // Wait, we can reuse the existing state if we map it correctly.
+        // Let's update fetchCandidates to include assessmentDetails first.
+        const res = await fetch(`/api/match-results`);
+        if (res.ok) {
+          const data = await res.json();
+          const fullCandidate = data.find((c: any) => c._id === id);
+          if (fullCandidate) {
+            setCurrentAssessment(fullCandidate);
+            setAssessmentModalOpen(true);
+          }
+        }
+      } catch (e) {
+        console.error("Failed to fetch assessment details", e);
+      }
+    }
+  };
+
+  const closeAssessmentModal = () => {
+    setAssessmentModalOpen(false);
+    setCurrentAssessment(null);
   };
 
   if (loading) {
@@ -219,14 +273,14 @@ export default function NextSteps() {
               </svg>
             </div>
             <div>
-              <motion.h1 
+              <motion.h1
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 className="text-2xl md:text-3xl font-bold text-indigo-700 tracking-tight"
               >
                 Next Steps
               </motion.h1>
-              <motion.p 
+              <motion.p
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 }}
@@ -239,7 +293,7 @@ export default function NextSteps() {
           </div>
           {/* Progress Bar */}
           <div className="w-full bg-gray-200 rounded-full h-2 mb-3">
-            <div 
+            <div
               className="bg-gradient-to-r from-indigo-500 to-blue-500 h-2 rounded-full transition-all duration-1000 ease-out"
               style={{ width: `${Math.min(progress + 20, 100)}%` }}
             ></div>
@@ -264,7 +318,7 @@ export default function NextSteps() {
         {/* Analytics Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
           {/* Total Candidates */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.2 }}
@@ -287,7 +341,7 @@ export default function NextSteps() {
           </motion.div>
 
           {/* Pending Communications */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.3 }}
@@ -310,7 +364,7 @@ export default function NextSteps() {
           </motion.div>
 
           {/* Assessments Completed */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.4 }}
@@ -333,7 +387,7 @@ export default function NextSteps() {
           </motion.div>
 
           {/* Progress */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.5 }}
@@ -352,7 +406,7 @@ export default function NextSteps() {
               </div>
             </div>
             <div className="w-full bg-gray-200 rounded-full h-1.5 mb-2">
-              <div 
+              <div
                 className="bg-gradient-to-r from-cyan-500 to-cyan-600 h-1.5 rounded-full transition-all duration-500"
                 style={{ width: `${progress}%` }}
               ></div>
@@ -363,7 +417,7 @@ export default function NextSteps() {
         </div>
 
         {/* Candidate Management Section */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6 }}
@@ -432,11 +486,10 @@ export default function NextSteps() {
             <button
               onClick={handleSendBulkByCategory}
               disabled={!filter.category || sendingBulk}
-              className={`px-3 py-2 rounded-lg text-sm font-medium transition-all min-w-[180px] ${
-                !filter.category || sendingBulk
-                  ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
-                  : 'bg-gradient-to-r from-indigo-600 to-blue-600 text-white hover:from-indigo-700 hover:to-blue-700 shadow-sm hover:shadow-md'
-              }`}
+              className={`px-3 py-2 rounded-lg text-sm font-medium transition-all min-w-[180px] ${!filter.category || sendingBulk
+                ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
+                : 'bg-gradient-to-r from-indigo-600 to-blue-600 text-white hover:from-indigo-700 hover:to-blue-700 shadow-sm hover:shadow-md'
+                }`}
             >
               {sendingBulk ? 'Sending…' : `Send All in ${filter.category || 'Category'}`}
             </button>
@@ -513,7 +566,7 @@ export default function NextSteps() {
                   </tr>
                 ) : (
                   filteredCandidates.map((candidate, index) => (
-                    <motion.tr 
+                    <motion.tr
                       key={candidate._id}
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
@@ -587,6 +640,15 @@ export default function NextSteps() {
                               </button>
                             </>
                           )}
+                          <button
+                            onClick={() => handleDeleteCandidate(candidate._id, candidate.name)}
+                            className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-gradient-to-r from-red-600 to-rose-600 text-white hover:from-red-700 hover:to-rose-700 transition-all duration-200 shadow-sm hover:shadow-md"
+                            title="Clear Candidate"
+                          >
+                            <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                          </button>
                         </div>
                       </td>
                     </motion.tr>
@@ -596,7 +658,163 @@ export default function NextSteps() {
             </table>
           </div>
         </motion.div>
+
+        {assessmentModalOpen && currentAssessment && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40" style={{ backdropFilter: 'blur(3px)' }}>
+            <div className="bg-white rounded-xl shadow-2xl p-6 max-w-2xl w-full relative max-h-[80vh] overflow-y-auto transform transition-all scale-100">
+              <button
+                className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-2xl font-bold focus:outline-none z-10"
+                onClick={closeAssessmentModal}
+              >
+                &times;
+              </button>
+
+              <div className="mb-6 relative">
+                <div className="absolute -left-6 -top-6 w-24 h-24 bg-indigo-50 rounded-br-full -z-10 opacity-50"></div>
+                <h3 className="text-2xl font-bold text-gray-800 mb-1">{currentAssessment.name}</h3>
+                <p className="text-gray-500 text-sm flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-green-500"></span>
+                  Assessment Report
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <div className="bg-gradient-to-br from-indigo-50 to-white p-6 rounded-2xl flex flex-col items-center justify-center border border-indigo-100 shadow-sm relative overflow-hidden">
+                  <div className="absolute top-0 right-0 w-16 h-16 bg-indigo-100 rounded-bl-full opacity-50"></div>
+                  <span className="text-indigo-600 font-bold text-sm mb-2 uppercase tracking-wider">Total Score</span>
+                  <div className="relative">
+                    <svg className="w-32 h-32 transform -rotate-90">
+                      <circle cx="64" cy="64" r="60" stroke="#e0e7ff" strokeWidth="8" fill="transparent" />
+                      <circle cx="64" cy="64" r="60" stroke="#4f46e5" strokeWidth="8" fill="transparent" strokeDasharray={2 * Math.PI * 60} strokeDashoffset={2 * Math.PI * 60 * (1 - (currentAssessment.assessmentScore || 0) / 100)} />
+                    </svg>
+                    <div className="absolute inset-0 flex items-center justify-center flex-col">
+                      <span className="text-4xl font-extrabold text-indigo-700">{currentAssessment.assessmentScore}%</span>
+                    </div>
+                  </div>
+                  <span className="text-xs text-indigo-400 mt-3 font-medium bg-indigo-50 px-3 py-1 rounded-full border border-indigo-100">
+                    Raw: {currentAssessment.assessmentDetails?.totalScore} / {currentAssessment.assessmentDetails?.maxScore}
+                  </span>
+                </div>
+
+                <div className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm flex flex-col justify-center gap-4">
+                  <div>
+                    <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Completed On</h4>
+                    <p className="text-sm font-medium text-gray-700 flex items-center gap-2">
+                      <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                      {currentAssessment.assessmentCompletedAt
+                        ? new Date(currentAssessment.assessmentCompletedAt).toLocaleDateString() + ' ' + new Date(currentAssessment.assessmentCompletedAt).toLocaleTimeString()
+                        : 'N/A'}
+                    </p>
+                  </div>
+                  <div>
+                    <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Duration</h4>
+                    <p className="text-sm font-medium text-gray-700 flex items-center gap-2">
+                      <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                      {currentAssessment.assessmentDetails?.timeTaken || 'N/A'}
+                    </p>
+                  </div>
+                  <div>
+                    <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Experience Level</h4>
+                    <p className="text-sm font-medium text-gray-700 flex items-center gap-2">
+                      <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                      {currentAssessment.assessmentDetails?.experienceLevel || 'N/A'}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Sections Breakdown */}
+              {currentAssessment.assessmentDetails?.sections && Array.isArray(currentAssessment.assessmentDetails.sections) && (
+                <div className="space-y-6">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="h-px bg-gray-200 flex-1"></div>
+                    <h4 className="text-sm font-bold text-gray-500 uppercase tracking-wider">Detailed Performance</h4>
+                    <div className="h-px bg-gray-200 flex-1"></div>
+                  </div>
+
+                  {currentAssessment.assessmentDetails.sections.map((section: any, idx: number) => (
+                    <div key={idx} className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+                      <div className="bg-gray-50/50 px-5 py-4 flex justify-between items-center border-b border-gray-100">
+                        <h5 className="font-bold text-gray-800 flex items-center gap-2">
+                          <span className="w-6 h-6 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center text-xs font-bold">{idx + 1}</span>
+                          {section.name}
+                        </h5>
+                        <div className="flex items-center gap-3">
+                          <div className="text-xs text-gray-500 font-medium">Score: {section.score}/{section.maxScore}</div>
+                          <span className={`px-3 py-1 rounded-full text-xs font-bold ${section.percentage >= 70 ? 'bg-green-100 text-green-700 border border-green-200' : section.percentage >= 40 ? 'bg-yellow-100 text-yellow-700 border border-yellow-200' : 'bg-red-100 text-red-700 border border-red-200'}`}>
+                            {section.percentage}%
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Questions Accordion (Simplified as list for now) */}
+                      {section.questions && Array.isArray(section.questions) && (
+                        <div className="divide-y divide-gray-100">
+                          {section.questions.map((q: any, qIdx: number) => (
+                            <div key={qIdx} className="p-5 hover:bg-gray-50 transition-colors group">
+                              <div className="flex justify-between gap-4 mb-3">
+                                <p className="text-sm font-medium text-gray-800 flex-1 leading-relaxed"><span className="text-gray-400 mr-2">Q{qIdx + 1}.</span>{q.question}</p>
+                                <span className={`flex-shrink-0 h-6 w-6 rounded-full flex items-center justify-center ${q.isCorrect ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'}`}>
+                                  {q.isCorrect ? <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg> : <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>}
+                                </span>
+                              </div>
+                              <div className="text-xs text-gray-600 grid grid-cols-1 sm:grid-cols-2 gap-4 bg-gray-50 p-3 rounded-lg border border-gray-100">
+                                <div>
+                                  <span className="block text-[10px] uppercase font-bold text-gray-400 mb-1">Candidate Answer</span>
+                                  <span className={`font-medium ${q.isCorrect ? 'text-green-700' : 'text-red-600'}`}>{q.userAnswer}</span>
+                                </div>
+                                {!q.isCorrect && (
+                                  <div>
+                                    <span className="block text-[10px] uppercase font-bold text-gray-400 mb-1">Correct Answer</span>
+                                    <span className="font-medium text-green-700">{q.correctAnswer}</span>
+                                  </div>
+                                )}
+                              </div>
+                              {q.feedback && (
+                                <div className="mt-3 flex gap-2 items-start text-xs text-blue-800 bg-blue-50/50 p-3 rounded-lg border border-blue-100">
+                                  <span className="text-lg">💡</span>
+                                  <span className="leading-relaxed opacity-90">{q.feedback}</span>
+                                </div>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Fallback for old simple key-value structure */}
+              {currentAssessment.assessmentDetails && !Array.isArray(currentAssessment.assessmentDetails.sections) && typeof currentAssessment.assessmentDetails === 'object' && !('sections' in currentAssessment.assessmentDetails) && (
+                <div>
+                  <h4 className="border-l-4 border-indigo-600 pl-3 text-lg font-bold text-gray-800 mb-4">Performance Breakdown</h4>
+                  <div className="grid grid-cols-1 gap-3">
+                    {Object.entries(currentAssessment.assessmentDetails).map(([key, value]: [string, any]) => (
+                      <div key={key} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-100 hover:border-gray-300 transition-colors">
+                        <span className="font-medium text-gray-700 capitalize">{key.replace(/_/g, ' ')}</span>
+                        <span className="font-bold text-gray-900 bg-white px-3 py-1 rounded shadow-sm border border-gray-200">
+                          {typeof value === 'object' ? JSON.stringify(value) : value}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              <div className="mt-8 flex justify-end sticky bottom-0 bg-white p-4 border-t border-gray-100 -mx-6 -mb-6 rounded-b-xl z-10">
+                <button
+                  onClick={closeAssessmentModal}
+                  className="px-6 py-2.5 bg-gray-900 text-white rounded-xl hover:bg-black transition-all shadow-lg hover:shadow-xl font-medium text-sm flex items-center gap-2"
+                >
+                  Close Report
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </DashboardLayout>
   );
 }
+

@@ -526,8 +526,7 @@ uploads/
 temp/
 logs/
 data/
-models/
-*.model
+
 *.weights
 *.h5
 *.pkl
