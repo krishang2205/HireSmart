@@ -75,8 +75,8 @@ a:hover { color: hsl(var(--foreground)); }
 body { background-color: hsl(var(--background)); color: hsl(var(--foreground)); -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
 
 /* Utility classes for landing page */
-.btn-hero { position: relative; overflow: hidden; background-image: linear-gradient(to right,#2563eb,#4f46e5,#7e22ce); color:#fff; box-shadow:0 4px 12px -2px rgba(0,0,0,.25); transition:all .25s ease; }
-.btn-hero:hover { filter:brightness(1.08); box-shadow:0 6px 18px -2px rgba(0,0,0,.35); }
+.btn-hero { position: relative; overflow: hidden; background-image: linear-gradient(to right, #4f46e5, #2563eb); color:#fff; box-shadow:0 4px 12px -2px rgba(0,0,0,.25); transition:all .25s ease; }
+.btn-hero:hover { filter:brightness(1.1); box-shadow:0 8px 20px -4px rgba(79, 70, 229, 0.4); }
 .btn-hero::after { content:''; position:absolute; inset:0; opacity:0; transition:opacity .3s ease; background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.35), transparent 70%); }
 .btn-hero:hover::after { opacity:1; }
 .hover-scale { transition: transform .2s ease; }
