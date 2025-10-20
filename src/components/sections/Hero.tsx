@@ -14,20 +14,20 @@ const Hero = () => {
     <header className="relative overflow-hidden pt-20 pb-16 md:pb-24">
       <div className="absolute inset-0 -z-10">
         <div className="pointer-events-none absolute -top-40 left-1/2 h-80 w-[48rem] -translate-x-1/2 rounded-full blur-3xl opacity-30 bg-gradient-primary"
-             aria-hidden />
+          aria-hidden />
       </div>
 
       <div className="container mx-auto px-6 md:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
           <Reveal>
             <div>
-              <p className="inline-flex items-center rounded-full bg-secondary px-3 py-1 text-xs font-medium text-secondary-foreground">
+              <p className="inline-flex items-center rounded-full bg-indigo-100 px-3 py-1 text-xs font-medium text-indigo-700">
                 Recruiter-friendly • AI-powered
               </p>
-              <h1 className="mt-4 font-display text-4xl leading-tight font-extrabold tracking-tight md:text-5xl lg:text-6xl">
+              <h1 className="mt-4 font-display text-4xl leading-tight font-extrabold tracking-tight md:text-5xl lg:text-6xl text-indigo-900">
                 HireSmart – AI-Powered Resume Screening
               </h1>
-              <p className="mt-4 text-lg text-muted-foreground md:text-xl">
+              <p className="mt-4 text-lg text-indigo-800/80 md:text-xl">
                 Evaluate resumes in seconds. Match skills. Hire smarter.
               </p>
 
