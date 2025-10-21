@@ -12,21 +12,23 @@ const features = [
 ];
 
 const Features = () => (
-  <section id="features" aria-label="Features" className="py-16 md:py-24 border-t border-border bg-white">
+  <section id="features" aria-label="Features" className="py-16 md:py-24 border-t border-indigo-100/50">
     <div className="container mx-auto px-6 md:px-8">
       <div className="mx-auto max-w-3xl text-center">
-        <h2 className="font-display text-3xl md:text-4xl font-bold">Features built for speed and clarity</h2>
-        <p className="mt-3 text-muted-foreground">Everything recruiters need to evaluate resumes faster with confidence.</p>
+        <h2 className="font-display text-3xl md:text-4xl font-bold text-indigo-900">Features built for speed and clarity</h2>
+        <p className="mt-3 text-indigo-800/80">Everything recruiters need to evaluate resumes faster with confidence.</p>
       </div>
       <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {features.map((f,i)=>(
-          <Reveal key={f.title} delayMs={i*60}>
-            <article className="rounded-xl border border-border bg-card p-6 shadow-sm hover-scale">
+        {features.map((f, i) => (
+          <Reveal key={f.title} delayMs={i * 60}>
+            <article className="rounded-xl border border-white/50 bg-white/60 backdrop-blur-lg p-6 shadow-lg hover:shadow-xl transition-all hover:-translate-y-1">
               <div className="flex items-center gap-3">
-                <f.icon className="text-primary" />
-                <h3 className="font-semibold">{f.title}</h3>
+                <div className={`p-2 rounded-lg bg-indigo-100 text-indigo-600`}>
+                  <f.icon className="w-5 h-5" />
+                </div>
+                <h3 className="font-semibold text-gray-900">{f.title}</h3>
               </div>
-              <p className="mt-2 text-sm text-muted-foreground">{f.desc}</p>
+              <p className="mt-2 text-sm text-gray-600">{f.desc}</p>
             </article>
           </Reveal>
         ))}
