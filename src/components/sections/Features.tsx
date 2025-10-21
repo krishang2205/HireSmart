@@ -3,12 +3,12 @@ import { Upload, FileText, BadgeCheck, GaugeCircle, ListTree, BarChart3 } from '
 import Reveal from '../../components/Reveal';
 
 const features = [
-  { icon: Upload, title: 'Resume Upload', desc: 'Upload PDF or DOCX resumes in bulk.' },
-  { icon: FileText, title: 'Job Description Matching', desc: 'Align candidates with your JD instantly.' },
-  { icon: BadgeCheck, title: 'Skill Extraction & Matching', desc: 'Parse skills and map to requirements.' },
-  { icon: GaugeCircle, title: 'Cosine Similarity Scoring', desc: 'Quantify fit with robust vector scoring.' },
-  { icon: ListTree, title: 'Candidate Categorization', desc: 'Auto-group by relevance tier.' },
-  { icon: BarChart3, title: 'Dynamic Visualization', desc: 'See insights with clear charts.' },
+  { icon: Upload, title: 'Resume Upload', desc: 'Upload PDF or DOCX resumes in bulk.', style: 'bg-indigo-100 text-indigo-600' },
+  { icon: FileText, title: 'Job Description Matching', desc: 'Align candidates with your JD instantly.', style: 'bg-blue-100 text-blue-600' },
+  { icon: BadgeCheck, title: 'Skill Extraction & Matching', desc: 'Parse skills and map to requirements.', style: 'bg-green-100 text-green-600' },
+  { icon: GaugeCircle, title: 'Cosine Similarity Scoring', desc: 'Quantify fit with robust vector scoring.', style: 'bg-cyan-100 text-cyan-600' },
+  { icon: ListTree, title: 'Candidate Categorization', desc: 'Auto-group by relevance tier.', style: 'bg-orange-100 text-orange-600' },
+  { icon: BarChart3, title: 'Dynamic Visualization', desc: 'See insights with clear charts.', style: 'bg-pink-100 text-pink-600' },
 ];
 
 const Features = () => (
@@ -23,7 +23,7 @@ const Features = () => (
           <Reveal key={f.title} delayMs={i * 60}>
             <article className="rounded-xl border border-white/50 bg-white/60 backdrop-blur-lg p-6 shadow-lg hover:shadow-xl transition-all hover:-translate-y-1">
               <div className="flex items-center gap-3">
-                <div className={`p-2 rounded-lg bg-indigo-100 text-indigo-600`}>
+                <div className={`p-2 rounded-lg ${f.style}`}>
                   <f.icon className="w-5 h-5" />
                 </div>
                 <h3 className="font-semibold text-gray-900">{f.title}</h3>
