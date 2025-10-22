@@ -41,15 +41,15 @@ const CTA = () => {
 		<section
 			id="cta"
 			aria-label="Call to action"
-			className="py-16 md:py-24 border-t border-border bg-white"
+			className="py-16 md:py-24 border-t border-indigo-100/50"
 		>
 			<div className="container mx-auto px-6 md:px-8">
 				<div className="mx-auto max-w-3xl text-center">
 					<Reveal>
-						<h2 className="font-display text-3xl md:text-4xl font-extrabold tracking-tight">
+						<h2 className="font-display text-3xl md:text-4xl font-extrabold tracking-tight text-indigo-900">
 							Start hiring smarter today
 						</h2>
-						<p className="mt-4 text-muted-foreground font-medium">
+						<p className="mt-4 text-indigo-800/80 font-medium text-lg">
 							Get a personalized demo or join the early access list.
 						</p>
 					</Reveal>
