@@ -16,7 +16,7 @@ const Header = () => (
           <Link to="/next-steps" className="text-sm font-semibold text-indigo-600 hover:text-indigo-700 transition-colors bg-indigo-50 px-3 py-1.5 rounded-full hover:bg-indigo-100">Next Steps</Link>
         </div>
         <div className="hidden md:flex items-center gap-3">
-          <Button variant="ghost" size="sm" asChild className="text-indigo-700 hover:text-indigo-900 hover:bg-indigo-50">
+          <Button variant="outline" size="sm" asChild className="border-transparent bg-transparent text-indigo-700 hover:text-indigo-900 hover:bg-indigo-50 shadow-none">
             <Link to="/auth/login" aria-label="Sign in to HireSmart" className="flex items-center gap-2"><LogIn className="size-4" /> Sign in</Link>
           </Button>
           <Button size="sm" asChild className="bg-indigo-600 hover:bg-indigo-700 text-white shadow-md shadow-indigo-200 hover:shadow-lg hover:-translate-y-0.5 transition-all">
