@@ -7,6 +7,9 @@ import Testimonials from "@/components/sections/Testimonials";
 import CTA from "@/components/sections/CTA";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
+import Pricing from "@/components/sections/Pricing";
+import dashboardPreview from "@/assets/dashboard-preview.png";
+
 const Index = () => {
 	const title = "HireSmart – AI-Powered Resume Screening";
 	const description = "Evaluate resumes in seconds. Match skills. Hire smarter.";
@@ -31,8 +34,22 @@ const Index = () => {
 			<main className="flex-1 flex flex-col px-4 py-4 gap-4 relative text-sm">
 				<Hero />
 				<Features />
+
+				<section className="py-12 md:py-16">
+					<div className="container mx-auto px-6 max-w-5xl">
+						<div className="rounded-2xl border border-indigo-100 bg-white/40 p-2 backdrop-blur-sm shadow-2xl">
+							<img
+								src={dashboardPreview}
+								alt="Dashboard Preview"
+								className="w-full h-auto rounded-xl shadow-inner bg-indigo-50/50"
+							/>
+						</div>
+					</div>
+				</section>
+
 				<HowItWorks />
 				<Results />
+				<Pricing />
 				<Testimonials />
 				<CTA />
 			</main>
