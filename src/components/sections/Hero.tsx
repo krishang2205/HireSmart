@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import heroImg from "@/assets/hiresmart-hero.png";
+import heroImg from "@/assets/hiresmart-hero-glass.png";
 import Reveal from "@/components/Reveal";
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
