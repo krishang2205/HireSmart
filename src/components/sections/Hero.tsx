@@ -18,17 +18,20 @@ const Hero = () => {
       </div>
 
       <div className="container mx-auto px-6 md:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <Reveal>
-            <div>
-              <p className="inline-flex items-center rounded-full bg-indigo-100 px-3 py-1 text-xs font-medium text-indigo-700">
+            <div className="relative z-10">
+              <div className="absolute -left-10 -top-10 w-20 h-20 bg-purple-200 rounded-full blur-2xl opacity-50"></div>
+              <p className="inline-flex items-center rounded-full bg-white/80 backdrop-blur-sm border border-indigo-100 px-4 py-1.5 text-xs font-bold text-indigo-600 shadow-sm mb-6">
+                <span className="w-2 h-2 rounded-full bg-green-400 mr-2 animate-pulse"></span>
                 Recruiter-friendly • AI-powered
               </p>
-              <h1 className="mt-4 font-display text-4xl leading-tight font-extrabold tracking-tight md:text-5xl lg:text-6xl text-indigo-900">
-                HireSmart – AI-Powered Resume Screening
+              <h1 className="font-display text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-indigo-900 via-violet-800 to-fuchsia-900 leading-[1.1]">
+                HireSmart <br />
+                <span className="text-4xl md:text-5xl lg:text-6xl text-indigo-900/80">Resume Screening</span>
               </h1>
-              <p className="mt-4 text-lg text-indigo-800/80 md:text-xl">
-                Evaluate resumes in seconds. Match skills. Hire smarter.
+              <p className="mt-6 text-lg text-indigo-900/70 md:text-xl font-medium max-w-lg leading-relaxed">
+                Evaluate resumes in seconds with <span className="text-indigo-600 font-bold border-b-2 border-indigo-200">advanced vector matching</span>. Hire smarter, faster, and without bias.
               </p>
 
               <div className="mt-8 flex flex-col sm:flex-row gap-3">
@@ -59,7 +62,8 @@ const Hero = () => {
           </Reveal>
 
           <Reveal animation="fade-in" delayMs={100}>
-            <div className="relative mx-auto max-w-xl">
+            <div className="relative mx-auto max-w-xl lg:-ml-12 lg:mt-0 mt-8">
+              <div className="absolute inset-0 bg-gradient-to-tr from-indigo-500/20 to-purple-500/20 rounded-xl blur-3xl -z-10"></div>
               <img
                 src={heroImg}
                 alt="Illustration of AI analyzing resumes with charts and documents"
