@@ -62,17 +62,26 @@ const Hero = () => {
           </Reveal>
 
           <Reveal animation="fade-in" delayMs={100}>
-            <div className="relative mx-auto max-w-xl lg:-ml-12 lg:mt-0 mt-8">
-              <div className="absolute inset-0 bg-gradient-to-tr from-indigo-500/20 to-purple-500/20 rounded-xl blur-3xl -z-10"></div>
-              <img
-                src={heroImg}
-                alt="Illustration of AI analyzing resumes with charts and documents"
-                width={960}
-                height={640}
-                className="w-full h-auto rounded-xl border border-border shadow-sm"
-                loading="eager"
-                decoding="async"
-              />
+            <div className="relative mx-auto max-w-xl lg:-ml-12 lg:mt-0 mt-8 group perspective-1000">
+              {/* Decorative Blobs */}
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-gradient-to-tr from-indigo-500/30 to-fuchsia-500/30 rounded-full blur-[80px] -z-10 animate-pulse-slow"></div>
+
+              {/* Image Container with Gradient Border */}
+              <div className="relative rounded-2xl p-1 bg-gradient-to-br from-white/80 via-indigo-100/50 to-white/80 backdrop-blur-sm shadow-2xl transform transition-transform duration-700 hover:rotate-y-6 hover:rotate-x-6">
+                <div className="rounded-xl overflow-hidden bg-white/10">
+                  <img
+                    src={heroImg}
+                    alt="Illustration of AI analyzing resumes with charts and documents"
+                    width={960}
+                    height={640}
+                    className="w-full h-auto object-cover transform scale-105 group-hover:scale-110 transition-transform duration-700"
+                    loading="eager"
+                    decoding="async"
+                  />
+                </div>
+                {/* Glass Reflection */}
+                <div className="absolute inset-0 rounded-2xl bg-gradient-to-tr from-white/20 to-transparent pointer-events-none"></div>
+              </div>
             </div>
           </Reveal>
         </div>
