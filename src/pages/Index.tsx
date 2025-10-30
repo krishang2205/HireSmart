@@ -28,7 +28,6 @@ const Index = () => {
 	};
 
 	return (
-	return (
 		<div className="min-h-screen bg-[radial-gradient(ellipse_at_top_left,_var(--tw-gradient-stops))] from-indigo-50 via-white to-blue-50 flex flex-col text-sm selection:bg-indigo-100">
 			<SeoHead title={title} description={description} jsonLd={jsonLd} />
 			<Header />
