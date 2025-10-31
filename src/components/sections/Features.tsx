@@ -18,10 +18,10 @@ const Features = () => (
         <h2 className="font-display text-3xl md:text-4xl font-bold text-indigo-900">Features built for speed and clarity</h2>
         <p className="mt-3 text-indigo-800/80">Everything recruiters need to evaluate resumes faster with confidence.</p>
       </div>
-      <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 mb-24">
+      <div className="mt-16 grid gap-8 sm:grid-cols-2 lg:grid-cols-3 mb-32">
         {features.map((f, i) => (
           <Reveal key={f.title} delayMs={i * 60}>
-            <article className="rounded-xl border border-white/50 bg-white/60 backdrop-blur-lg p-6 shadow-lg hover:shadow-xl transition-all hover:-translate-y-1">
+            <article className="rounded-2xl border border-white/60 bg-white/70 backdrop-blur-xl p-8 shadow-sm hover:shadow-lg transition-all hover:-translate-y-1">
               <div className="flex items-center gap-3">
                 <div className={`p-2 rounded-lg ${f.style}`}>
                   <f.icon className="w-5 h-5" />

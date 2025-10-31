@@ -18,9 +18,9 @@ const Hero = () => {
       </div>
 
       <div className="container mx-auto px-6 md:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
           <Reveal>
-            <div className="relative z-10">
+            <div className="relative z-10 lg:py-12">
               <div className="absolute -left-10 -top-10 w-20 h-20 bg-purple-200 rounded-full blur-2xl opacity-50"></div>
               <p className="inline-flex items-center rounded-full bg-white/80 backdrop-blur-sm border border-indigo-100 px-4 py-1.5 text-xs font-bold text-indigo-600 shadow-sm mb-6">
                 <span className="w-2 h-2 rounded-full bg-green-400 mr-2 animate-pulse"></span>
