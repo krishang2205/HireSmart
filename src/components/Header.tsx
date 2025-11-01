@@ -4,9 +4,9 @@ import { Link } from 'react-router-dom';
 import { Brand } from '@/components/Brand';
 
 const Header = () => (
-  <div className="sticky top-0 z-50 animate-fade-in">
-    <div className="bg-white/70 backdrop-blur-md supports-[backdrop-filter]:bg-white/60 border-b border-indigo-100/50 sticky top-0 z-50">
-      <nav aria-label="Primary" className="container mx-auto px-6 md:px-8 h-16 flex items-center justify-between">
+  <div className="fixed top-6 left-1/2 -translate-x-1/2 z-50 w-full max-w-[90%] md:max-w-5xl animate-fade-in-down">
+    <div className="bg-white/60 backdrop-blur-2xl border border-white/50 shadow-2xl shadow-indigo-500/10 rounded-full px-2 py-2">
+      <nav aria-label="Primary" className="flex items-center justify-between h-12 md:h-14 pl-6 pr-2">
         <Brand />
         <div className="hidden md:flex items-center gap-8">
           <a href="#features" className="text-sm font-medium text-indigo-900/70 hover:text-indigo-600 transition-colors">Features</a>
