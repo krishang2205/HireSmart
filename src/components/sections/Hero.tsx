@@ -26,9 +26,9 @@ const Hero = () => {
                 <span className="w-2 h-2 rounded-full bg-green-400 mr-2 animate-pulse"></span>
                 Recruiter-friendly • AI-powered
               </p>
-              <h1 className="font-display text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-indigo-900 via-violet-800 to-fuchsia-900 leading-[1.1]">
+              <h1 className="font-display text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-indigo-950 via-violet-900 to-fuchsia-900 leading-[1.05] drop-shadow-sm">
                 HireSmart <br />
-                <span className="text-4xl md:text-5xl lg:text-6xl text-indigo-900/80">Resume Screening</span>
+                <span className="text-4xl md:text-5xl lg:text-6xl text-indigo-900/80 font-extrabold tracking-tight">Resume Screening</span>
               </h1>
               <p className="mt-6 text-lg text-indigo-900/70 md:text-xl font-medium max-w-lg leading-relaxed">
                 Evaluate resumes in seconds with <span className="text-indigo-600 font-bold border-b-2 border-indigo-200">advanced vector matching</span>. Hire smarter, faster, and without bias.

@@ -18,17 +18,22 @@ const Features = () => (
         <h2 className="font-display text-3xl md:text-4xl font-bold text-indigo-900">Features built for speed and clarity</h2>
         <p className="mt-3 text-indigo-800/80">Everything recruiters need to evaluate resumes faster with confidence.</p>
       </div>
-      <div className="mt-16 grid gap-8 sm:grid-cols-2 lg:grid-cols-3 mb-32">
+      <div className="mt-16 grid gap-6 md:grid-cols-2 lg:grid-cols-3 auto-rows-[minmax(180px,auto)] mb-32">
         {features.map((f, i) => (
-          <Reveal key={f.title} delayMs={i * 60}>
-            <article className="rounded-2xl border border-white/60 bg-white/70 backdrop-blur-xl p-8 shadow-sm hover:shadow-lg transition-all hover:-translate-y-1">
-              <div className="flex items-center gap-3">
-                <div className={`p-2 rounded-lg ${f.style}`}>
-                  <f.icon className="w-5 h-5" />
+          <Reveal key={f.title} delayMs={i * 60} className={i === 0 || i === 3 ? "md:col-span-2 lg:col-span-2" : "md:col-span-1 lg:col-span-1"}>
+            <article className={`h-full rounded-3xl border border-white/60 bg-white/70 backdrop-blur-xl p-8 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 group relative overflow-hidden`}>
+              {/* Subtle Gradient Hover Overlay */}
+              <div className="absolute inset-0 bg-gradient-to-br from-transparent to-indigo-50/50 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+
+              <div className="relative z-10 flex flex-col items-start gap-4">
+                <div className={`p-3 rounded-2xl ${f.style} shadow-sm group-hover:scale-110 transition-transform duration-300`}>
+                  <f.icon className="w-6 h-6" />
                 </div>
-                <h3 className="font-semibold text-gray-900">{f.title}</h3>
+                <div>
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">{f.title}</h3>
+                  <p className="text-gray-600 leading-relaxed">{f.desc}</p>
+                </div>
               </div>
-              <p className="mt-2 text-sm text-gray-600">{f.desc}</p>
             </article>
           </Reveal>
         ))}
