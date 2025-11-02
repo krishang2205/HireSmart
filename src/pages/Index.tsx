@@ -30,8 +30,9 @@ const Index = () => {
 	return (
 		<div className="min-h-screen bg-[radial-gradient(ellipse_at_top_left,_var(--tw-gradient-stops))] from-indigo-50 via-white to-blue-50 flex flex-col text-sm selection:bg-indigo-100">
 			<SeoHead title={title} description={description} jsonLd={jsonLd} />
+			<div className="fixed inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-indigo-100/40 via-transparent to-transparent z-0"></div>
 			<Header />
-			<main className="flex-1 flex flex-col px-4 py-4 gap-4 relative text-sm">
+			<main className="flex-1 flex flex-col px-4 pt-24 pb-4 gap-4 relative text-sm z-10 selection:bg-indigo-100 selection:text-indigo-900">
 				<Hero />
 				<Features />
 

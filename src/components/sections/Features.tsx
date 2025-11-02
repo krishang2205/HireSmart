@@ -1,5 +1,5 @@
 // ...existing code...
-import { Upload, FileText, BadgeCheck, GaugeCircle, ListTree, BarChart3 } from 'lucide-react';
+import { Upload, FileText, BadgeCheck, GaugeCircle, ListTree, BarChart3, ArrowRight } from 'lucide-react';
 import Reveal from '../../components/Reveal';
 
 const features = [
