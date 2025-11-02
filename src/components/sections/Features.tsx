@@ -18,22 +18,22 @@ const Features = () => (
         <h2 className="font-display text-3xl md:text-4xl font-bold text-indigo-900">Features built for speed and clarity</h2>
         <p className="mt-3 text-indigo-800/80">Everything recruiters need to evaluate resumes faster with confidence.</p>
       </div>
-      <div className="mt-16 grid gap-6 md:grid-cols-2 lg:grid-cols-3 auto-rows-[minmax(180px,auto)] mb-32">
+      <div className="mt-16 grid gap-6 md:grid-cols-4 auto-rows-[minmax(0,240px)] mb-32">
         {features.map((f, i) => (
-          <Reveal key={f.title} delayMs={i * 60} className={i === 0 || i === 3 ? "md:col-span-2 lg:col-span-2" : "md:col-span-1 lg:col-span-1"}>
-            <article className={`h-full rounded-3xl border border-white/60 bg-white/70 backdrop-blur-xl p-8 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 group relative overflow-hidden`}>
-              {/* Subtle Gradient Hover Overlay */}
-              <div className="absolute inset-0 bg-gradient-to-br from-transparent to-indigo-50/50 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+          <Reveal key={f.title} delayMs={i * 60} className={`${(i === 0 || i === 3) ? 'md:col-span-2' : 'md:col-span-1'} ${(i === 4) ? 'md:col-span-2' : ''} h-full`}>
+            <article className={`h-full flex flex-col justify-between rounded-3xl border border-white/60 bg-white/70 backdrop-blur-xl p-8 shadow-sm hover:shadow-lg transition-all hover:-translate-y-1 group relative overflow-hidden`}>
+              {/* Background Decoration for larger cards */}
+              {(i === 0 || i === 3 || i === 4) && <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${f.style.replace('text-', 'from-').split(' ')[0]} to-transparent opacity-20 blur-2xl rounded-bl-full`}></div>}
 
-              <div className="relative z-10 flex flex-col items-start gap-4">
-                <div className={`p-3 rounded-2xl ${f.style} shadow-sm group-hover:scale-110 transition-transform duration-300`}>
+              <div className="relative z-10">
+                <div className={`w-12 h-12 rounded-2xl flex items-center justify-center mb-6 ${f.style} shadow-inner`}>
                   <f.icon className="w-6 h-6" />
                 </div>
-                <div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">{f.title}</h3>
-                  <p className="text-gray-600 leading-relaxed">{f.desc}</p>
-                </div>
+                <h3 className="font-display font-bold text-xl text-indigo-950 mb-2">{f.title}</h3>
+                <p className="text-indigo-900/70 leading-relaxed text-sm">{f.desc}</p>
               </div>
+
+              {(i === 0 || i === 3) && <ArrowRight className="absolute bottom-8 right-8 w-6 h-6 text-indigo-300 group-hover:text-indigo-500 group-hover:translate-x-1 transition-all" />}
             </article>
           </Reveal>
         ))}
