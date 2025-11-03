@@ -17,10 +17,18 @@ const Testimonials = () => (
       <div className="mt-10 grid gap-6 md:grid-cols-3">
         {testimonials.map((t, i) => (
           <Reveal key={t.name} delayMs={i * 80}>
-            <blockquote className="h-full rounded-xl border border-white/50 bg-white/60 backdrop-blur-lg p-6 shadow-lg hover:shadow-xl transition-all hover:-translate-y-1">
-              <Quote className="text-indigo-500" />
-              <p className="mt-3 text-indigo-950 font-medium">“{t.quote}”</p>
-              <footer className="mt-4 text-sm text-indigo-800/70"><span className="font-bold text-indigo-900">{t.name}</span> — {t.role}</footer>
+            <blockquote className="h-full rounded-3xl border border-white/60 bg-white/70 backdrop-blur-xl p-8 shadow-lg hover:shadow-xl transition-all hover:-translate-y-1">
+              <Quote className="text-indigo-500 w-8 h-8 mb-4 opacity-50" />
+              <p className="mt-2 text-indigo-950 font-medium text-lg leading-relaxed">“{t.quote}”</p>
+              <footer className="mt-6 flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-100 to-purple-100 flex items-center justify-center text-indigo-600 font-bold text-sm">
+                  {t.name.charAt(0)}
+                </div>
+                <div className="text-sm">
+                  <div className="font-bold text-indigo-900">{t.name}</div>
+                  <div className="text-indigo-800/60">{t.role}</div>
+                </div>
+              </footer>
             </blockquote>
           </Reveal>
         ))}

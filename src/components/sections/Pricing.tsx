@@ -46,7 +46,7 @@ const Pricing = () => (
             <div className="grid gap-8 md:grid-cols-3">
                 {plans.map((plan, i) => (
                     <Reveal key={plan.name} delayMs={i * 100}>
-                        <div className={`relative h-full rounded-2xl border ${plan.popular ? 'border-indigo-500 ring-4 ring-indigo-500/10' : 'border-white/50'} bg-white/60 backdrop-blur-lg p-8 shadow-xl flex flex-col hover:-translate-y-1 transition-transform duration-300`}>
+                        <div className={`relative h-full rounded-3xl border ${plan.popular ? 'border-indigo-500 ring-4 ring-indigo-500/10' : 'border-white/60'} bg-white/70 backdrop-blur-xl p-8 shadow-xl flex flex-col hover:-translate-y-1 transition-transform duration-300`}>
                             {plan.popular && (
                                 <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-indigo-600 to-blue-600 text-white px-4 py-1 rounded-full text-xs font-bold uppercase tracking-wide shadow-md flex items-center gap-1">
                                     <Star className="w-3 h-3 fill-current" /> Most Popular
@@ -74,7 +74,7 @@ const Pricing = () => (
 
                             <Button
                                 variant={plan.popular ? 'hero' : 'outline'}
-                                className={`w-full ${plan.popular ? 'shadow-lg shadow-indigo-200' : 'bg-transparent border-indigo-200 text-indigo-700 hover:bg-indigo-50'}`}
+                                className={`w-full rounded-full ${plan.popular ? 'shadow-lg shadow-indigo-200' : 'bg-transparent border-indigo-200 text-indigo-700 hover:bg-indigo-50'}`}
                             >
                                 {plan.cta}
                             </Button>
