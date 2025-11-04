@@ -47,84 +47,92 @@ const Features = () => (
       </div>
 
       {/* Feature Deep Dive - Overlapping Layout */}
-      {/* Feature Deep Dive - Modern Cards */}
-      <div className="space-y-16">
-        {/* Feature 1 Card */}
-        <Reveal>
-          <div className="group relative overflow-hidden rounded-[2.5rem] bg-indigo-900/5 border border-indigo-100/50 p-8 md:p-16">
-            <div className="absolute top-0 right-0 -mt-20 -mr-20 w-96 h-96 bg-blue-400/20 rounded-full blur-3xl pointer-events-none"></div>
-
-            <div className="relative z-10 grid lg:grid-cols-2 gap-12 items-center">
-              <div className="order-2 lg:order-1">
-                <div className="inline-flex items-center rounded-full bg-white/60 backdrop-blur-md px-4 py-1.5 text-xs font-bold text-blue-600 mb-6 border border-white/40 shadow-sm">
-                  <span className="w-2 h-2 rounded-full bg-blue-500 mr-2 animate-pulse"></span>
-                  Intelligent Parsing
-                </div>
-                <h3 className="text-3xl md:text-4xl font-display font-bold text-indigo-950 mb-6">Precision Resume Scanning</h3>
-                <p className="text-lg text-indigo-900/70 leading-relaxed mb-8 max-w-lg">
-                  Our AI reads resumes like a human expert, but thousands of times faster. It extracts skills, experience, and education with high accuracy.
-                </p>
-                <div className="space-y-4">
-                  <div className="flex items-center gap-4 bg-white/60 p-4 rounded-2xl border border-white/50 hover:bg-white/80 transition-colors shadow-sm">
-                    <div className="bg-green-100 p-2 rounded-lg">
-                      <BadgeCheck className="text-green-600 w-5 h-5" />
+      <div className="space-y-24">
+        {/* Feature 1 */}
+        {/* Feature 1: Precision Resume Scanning (Overlap Right) */}
+        <div className="relative isolate">
+          <Reveal>
+            <div className="flex flex-col lg:flex-row items-center">
+              {/* Text Card - Overlapping */}
+              <div className="w-full lg:w-[45%] z-20 -mb-16 lg:mb-0 lg:-mr-20 relative">
+                <div className="bg-white/80 backdrop-blur-xl border border-white/60 p-8 md:p-10 rounded-[2.5rem] shadow-2xl">
+                  <div className="inline-flex items-center rounded-full bg-blue-50 px-3 py-1 text-xs font-bold text-blue-600 mb-6 border border-blue-100">
+                    <span className="w-1.5 h-1.5 rounded-full bg-blue-500 mr-2"></span>
+                    Intelligent Parsing
+                  </div>
+                  <h3 className="text-3xl md:text-4xl font-display font-bold text-indigo-950 mb-4">Precision Resume Scanning</h3>
+                  <p className="text-lg text-indigo-900/70 leading-relaxed mb-8">
+                    Our AI reads resumes like a human expert, but thousands of times faster. It extracts skills, experience, and education with high accuracy.
+                  </p>
+                  <div className="flex flex-col gap-3">
+                    <div className="flex items-center gap-3 bg-white/50 p-3 rounded-xl border border-indigo-50/50">
+                      <BadgeCheck className="text-green-500 w-5 h-5" />
+                      <span className="text-sm font-medium text-gray-700">98% Accuracy on PDF & Docx</span>
                     </div>
-                    <span className="font-semibold text-gray-800">98% Accuracy on PDF & Docx</span>
-                  </div>
-                  <div className="flex items-center gap-4 bg-white/60 p-4 rounded-2xl border border-white/50 hover:bg-white/80 transition-colors shadow-sm">
-                    <div className="bg-orange-100 p-2 rounded-lg">
-                      <ListTree className="text-orange-600 w-5 h-5" />
+                    <div className="flex items-center gap-3 bg-white/50 p-3 rounded-xl border border-indigo-50/50">
+                      <ListTree className="text-orange-500 w-5 h-5" />
+                      <span className="text-sm font-medium text-gray-700">Structured Data Extraction</span>
                     </div>
-                    <span className="font-semibold text-gray-800">Structured Data Extraction</span>
                   </div>
                 </div>
               </div>
 
-              <div className="relative order-1 lg:order-2 lg:-mr-24">
-                <img
-                  src="/src/assets/feat-scan.png"
-                  alt="AI Resume Scanning Interface"
-                  className="w-full h-auto rounded-xl shadow-2xl border border-white/20 transform group-hover:scale-[1.02] group-hover:-rotate-1 transition-all duration-700"
-                />
-              </div>
-            </div>
-          </div>
-        </Reveal>
-
-        {/* Feature 2 Card */}
-        <Reveal delayMs={100}>
-          <div className="group relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-fuchsia-50 to-indigo-50 border border-fuchsia-100/50 p-8 md:p-16">
-            <div className="absolute bottom-0 left-0 -mb-20 -ml-20 w-96 h-96 bg-purple-400/20 rounded-full blur-3xl pointer-events-none"></div>
-
-            <div className="relative z-10 grid lg:grid-cols-2 gap-12 items-center">
-              <div className="relative lg:-ml-24">
-                <img
-                  src="/src/assets/feat-analytics.png"
-                  alt="Hiring Analytics Dashboard"
-                  className="w-full h-auto rounded-xl shadow-2xl border border-white/20 transform group-hover:scale-[1.02] group-hover:rotate-1 transition-all duration-700"
-                />
-              </div>
-
-              <div className="lg:pl-12">
-                <div className="inline-flex items-center rounded-full bg-white/60 backdrop-blur-md px-4 py-1.5 text-xs font-bold text-fuchsia-600 mb-6 border border-white/40 shadow-sm">
-                  <span className="w-2 h-2 rounded-full bg-fuchsia-500 mr-2 animate-pulse"></span>
-                  Data-Driven Decisions
-                </div>
-                <h3 className="text-3xl md:text-4xl font-display font-bold text-indigo-950 mb-6">Visualize Your Pipeline</h3>
-                <p className="text-lg text-indigo-900/70 leading-relaxed mb-8">
-                  Stop guessing. See exactly where your best candidates are coming from and how your pipeline is performing in real-time.
-                </p>
-                <div className="bg-white/60 p-5 rounded-2xl border border-white/50 hover:bg-white/80 transition-colors shadow-sm inline-block">
-                  <div className="flex items-center gap-3 mb-2">
-                    <BarChart3 className="text-purple-600 w-5 h-5" />
-                    <span className="font-bold text-indigo-900">Live Metrics</span>
-                  </div>
-                  <div className="text-sm text-indigo-800/60">Time-to-hire, Source Quality, and more.</div>
+              {/* Image - Background Layer */}
+              <div className="w-full lg:w-[65%] lg:ml-auto relative z-10">
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-indigo-500/10 rounded-[3rem] blur-3xl -z-10"></div>
+                <div className="rounded-[3rem] overflow-hidden shadow-2xl border border-white/20 relative group">
+                  <div className="absolute inset-0 bg-indigo-900/5 group-hover:bg-transparent transition-colors duration-500"></div>
+                  <img
+                    src="/src/assets/feat-scan.png"
+                    alt="AI Resume Scanning Interface"
+                    className="w-full h-auto object-cover transform transition-transform duration-700 group-hover:scale-105"
+                  />
                 </div>
               </div>
             </div>
-          </div>
-        </Reveal>
+          </Reveal>
+        </div>
+
+        {/* Feature 2 (Reversed) */}
+        {/* Feature 2: Pipeline Visualization (Overlap Left) */}
+        <div className="relative isolate pt-12">
+          <Reveal delayMs={200}>
+            <div className="flex flex-col lg:flex-row items-center font-sans">
+              {/* Image - Background Layer (Left) */}
+              <div className="w-full lg:w-[65%] lg:mr-auto relative z-10 order-2 lg:order-1">
+                <div className="absolute inset-0 bg-gradient-to-l from-fuchsia-500/10 to-purple-500/10 rounded-[3rem] blur-3xl -z-10"></div>
+                <div className="rounded-[3rem] overflow-hidden shadow-2xl border border-white/20 relative group">
+                  <div className="absolute inset-0 bg-purple-900/5 group-hover:bg-transparent transition-colors duration-500"></div>
+                  <img
+                    src="/src/assets/feat-analytics.png"
+                    alt="Hiring Analytics Dashboard"
+                    className="w-full h-auto object-cover transform transition-transform duration-700 group-hover:scale-105"
+                  />
+                </div>
+              </div>
+
+              {/* Text Card - Overlapping (Right) */}
+              <div className="w-full lg:w-[45%] z-20 -mt-16 lg:mt-0 lg:-ml-20 relative order-1 lg:order-2">
+                <div className="bg-white/80 backdrop-blur-xl border border-white/60 p-8 md:p-10 rounded-[2.5rem] shadow-2xl">
+                  <div className="inline-flex items-center rounded-full bg-fuchsia-50 px-3 py-1 text-xs font-bold text-fuchsia-600 mb-6 border border-fuchsia-100">
+                    <span className="w-1.5 h-1.5 rounded-full bg-fuchsia-500 mr-2"></span>
+                    Data-Driven Decisions
+                  </div>
+                  <h3 className="text-3xl md:text-4xl font-display font-bold text-indigo-950 mb-4">Visualize Your Hiring Pipeline</h3>
+                  <p className="text-lg text-indigo-900/70 leading-relaxed mb-8">
+                    Stop guessing. See exactly where your best candidates are coming from and how your pipeline is performing in real-time.
+                  </p>
+                  <div className="flex flex-col gap-3">
+                    <div className="flex items-center gap-3 bg-white/50 p-3 rounded-xl border border-indigo-50/50">
+                      <BarChart3 className="text-purple-500 w-5 h-5" />
+                      <span className="text-sm font-medium text-gray-700">Real-time Hiring Metrics</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Reveal>
+        </div>
       </div>
     </div>
   </section>
