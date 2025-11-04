@@ -13,15 +13,21 @@ const Hero = () => {
 
   return (
     <header className="relative overflow-hidden pt-20 pb-16 md:pb-24">
-      <div className="absolute inset-0 -z-10">
-        <div className="pointer-events-none absolute -top-40 left-1/2 h-80 w-[48rem] -translate-x-1/2 rounded-full blur-3xl opacity-30 bg-gradient-primary"
-          aria-hidden />
+      {/* Background Image - Absolute */}
+      <div className="absolute inset-0 z-0 flex items-center justify-center overflow-hidden">
+        <img
+          src={heroImg}
+          alt="Background illustration"
+          className="w-full h-full object-cover opacity-10 md:opacity-15 md:scale-110"
+          loading="eager"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-white/90 via-white/40 to-white/90"></div>
       </div>
 
-      <div className="container mx-auto px-6 md:px-8 pt-10 pb-20">
+      <div className="container mx-auto px-6 md:px-8 pt-20 pb-24 relative z-10">
         <div className="flex flex-col items-center text-center max-w-5xl mx-auto">
           <Reveal>
-            <div className="relative z-10 flex flex-col items-center">
+            <div className="flex flex-col items-center">
               <div className="absolute -left-10 -top-10 w-20 h-20 bg-purple-200 rounded-full blur-2xl opacity-50"></div>
               <p className="inline-flex items-center rounded-full bg-white/80 backdrop-blur-sm border border-indigo-100 px-4 py-1.5 text-xs font-bold text-indigo-600 shadow-sm mb-6">
                 <span className="w-2 h-2 rounded-full bg-green-400 mr-2 animate-pulse"></span>
