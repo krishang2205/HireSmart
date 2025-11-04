@@ -46,12 +46,25 @@ const Testimonials = () => (
       {/* Duplicate for seamless loop (CSS animation handles the movement) */}
       <div className="flex gap-8 animate-marquee whitespace-nowrap py-4 absolute top-0 left-0">
         {/* Rendered twice above to ensure width, this second div is conceptually handled by the animation class usually, 
-                 but for a simple vivid CSS marquee, we often duplicate content inline. 
-                 
-                 *Self-Correction*: Standard Tailwind marquee requires specific duplicate set or custom CSS.
-                 I will assume `animate-marquee` exists or I will add the style inline if needed.
-                 For safety, I'll rely on a standard double-render approach in the flex container above.
-              */}
+          {[...testimonials, ...testimonials, ...testimonials].map((t, i) => (
+            <div
+              key={`${t.name}-duplicate-${i}`}
+              className="w-[350px] md:w-[450px] flex-shrink-0 rounded-[2rem] bg-indigo-50/50 border border-white/60 p-8 shadow-xl hover:-translate-y-1 transition-transform duration-300 backdrop-blur-sm"
+            >
+              <Quote className="text-indigo-400 w-8 h-8 mb-6 opacity-30 fill-current" />
+              <p className="text-indigo-950 font-medium text-lg md:text-xl leading-relaxed whitespace-normal">“{t.quote}”</p>
+
+              <div className="mt-8 flex items-center gap-4">
+                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold text-lg shadow-md">
+                  {t.name.charAt(0)}
+                </div>
+                <div>
+                  <div className="font-bold text-indigo-950 text-base">{t.name}</div>
+                  <div className="text-indigo-500 font-medium text-sm">{t.role}</div>
+                </div>
+              </div>
+            </div>
+          ))}
       </div>
     </div>
   </section>
