@@ -68,7 +68,7 @@ const Features = () => (
           <Reveal delayMs={200}>
             <div className="relative">
               <div className="absolute -inset-4 bg-gradient-to-r from-blue-100 to-indigo-100 rounded-2xl rotate-3 blur-md -z-10 opacity-60"></div>
-              <img src="/src/assets/feat-scan.png" alt="AI Resume Scanning" className="w-full h-auto rounded-2xl shadow-2xl border border-white/40 bg-white/20 backdrop-blur-sm -ml-4 hover:ml-0 transition-all duration-500" />
+              <img src="/src/assets/feat-scan.png" alt="AI Resume Scanning" className="w-full h-auto rounded-2xl shadow-2xl border border-white/40 -ml-4 hover:ml-0 transition-all duration-500" />
             </div>
           </Reveal>
         </div>
@@ -78,7 +78,7 @@ const Features = () => (
           <Reveal delayMs={200}>
             <div className="relative order-2 lg:order-1">
               <div className="absolute -inset-4 bg-gradient-to-l from-fuchsia-100 to-purple-100 rounded-2xl -rotate-2 blur-md -z-10 opacity-60"></div>
-              <img src="/src/assets/feat-analytics.png" alt="Hiring Analytics" className="w-full h-auto rounded-2xl shadow-2xl border border-white/40 bg-white/20 backdrop-blur-sm ml-4 hover:ml-0 transition-all duration-500" />
+              <img src="/src/assets/feat-analytics.png" alt="Hiring Analytics" className="w-full h-auto rounded-2xl shadow-2xl border border-white/40 ml-4 hover:ml-0 transition-all duration-500" />
             </div>
           </Reveal>
           <Reveal className="order-1 lg:order-2">

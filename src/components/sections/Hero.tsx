@@ -67,8 +67,8 @@ const Hero = () => {
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-gradient-to-tr from-indigo-500/30 to-fuchsia-500/30 rounded-full blur-[80px] -z-10 animate-pulse-slow"></div>
 
               {/* Image Container with Gradient Border */}
-              <div className="relative rounded-2xl p-1 bg-gradient-to-br from-white/80 via-indigo-100/50 to-white/80 backdrop-blur-sm shadow-2xl transform transition-transform duration-700 hover:rotate-y-6 hover:rotate-x-6">
-                <div className="rounded-xl overflow-hidden bg-white/10">
+              <div className="relative rounded-2xl p-1 shadow-2xl transform transition-transform duration-700 hover:rotate-y-6 hover:rotate-x-6">
+                <div className="rounded-xl overflow-hidden">
                   <img
                     src={heroImg}
                     alt="Illustration of AI analyzing resumes with charts and documents"
@@ -79,8 +79,6 @@ const Hero = () => {
                     decoding="async"
                   />
                 </div>
-                {/* Glass Reflection */}
-                <div className="absolute inset-0 rounded-2xl bg-gradient-to-tr from-white/20 to-transparent pointer-events-none"></div>
               </div>
             </div>
           </Reveal>
