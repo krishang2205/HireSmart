@@ -32,7 +32,7 @@ const Index = () => {
 			<SeoHead title={title} description={description} jsonLd={jsonLd} />
 			<div className="fixed inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-indigo-100/40 via-transparent to-transparent z-0"></div>
 			<Header />
-			<main className="flex-1 flex flex-col px-4 pt-24 pb-4 gap-4 relative text-sm z-10 selection:bg-indigo-100 selection:text-indigo-900">
+			<main className="flex-1 flex flex-col px-4 pt-32 pb-4 gap-4 relative text-sm z-10 selection:bg-indigo-100 selection:text-indigo-900">
 				<Hero />
 				<Features />
 

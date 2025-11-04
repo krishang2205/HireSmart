@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { Brand } from '@/components/Brand';
 
 const Header = () => (
-  <div className="fixed top-6 left-1/2 -translate-x-1/2 z-50 w-full max-w-[90%] md:max-w-5xl animate-fade-in-down">
+  <div className="fixed top-6 left-1/2 -translate-x-1/2 z-50 w-full max-w-[95%] md:max-w-7xl animate-fade-in-down">
     <div className="bg-white/60 backdrop-blur-2xl border border-white/50 shadow-2xl shadow-indigo-500/10 rounded-full px-2 py-2">
       <nav aria-label="Primary" className="flex items-center justify-between h-12 md:h-14 pl-6 pr-2">
         <Brand />
