@@ -131,6 +131,7 @@ const Features = () => (
                 </div>
               </div>
             </div>
+          </Reveal>
         </div>
       </div>
     </div>
