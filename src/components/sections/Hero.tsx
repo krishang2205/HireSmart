@@ -79,21 +79,6 @@ const Hero = () => {
             </div>
           </Reveal>
 
-          <Reveal animation="fade-in" delayMs={100} className="w-full mt-16 md:mt-24">
-            <div className="relative rounded-2xl p-1 shadow-2xl transform transition-transform duration-700 hover:rotate-y-2 hover:rotate-x-2 perspective-1000 mx-auto max-w-4xl">
-              <div className="rounded-xl overflow-hidden">
-                <img
-                  src={heroImg}
-                  alt="Illustration of AI analyzing resumes with charts and documents"
-                  width={1200}
-                  height={800}
-                  className="w-full h-auto object-cover"
-                  loading="eager"
-                  decoding="async"
-                />
-              </div>
-            </div>
-          </Reveal>
         </div>
       </div>
     </header>
