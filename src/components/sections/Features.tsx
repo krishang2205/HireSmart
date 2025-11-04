@@ -30,17 +30,17 @@ const Features = () => (
           >
             <article className={`h-full flex flex-col justify-between rounded-3xl border border-white/60 bg-white/70 backdrop-blur-xl p-8 shadow-sm hover:shadow-lg transition-all hover:-translate-y-1 group relative overflow-hidden`}>
               {/* Background Decoration for larger cards */}
-              {(i === 0 || i === 3 || i === 4) && <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${f.style.replace('text-', 'from-').split(' ')[0]} to-transparent opacity-20 blur-2xl rounded-bl-full`}></div>}
+              {(i === 0 || i === 5) && <div className={`absolute top-0 right-0 w-48 h-48 bg-gradient-to-br ${f.style.replace('text-', 'from-').split(' ')[0]} to-transparent opacity-10 blur-3xl rounded-bl-full pointer-events-none`}></div>}
 
               <div className="relative z-10">
-                <div className={`w-12 h-12 rounded-2xl flex items-center justify-center mb-6 ${f.style} shadow-inner`}>
-                  <f.icon className="w-6 h-6" />
+                <div className={`w-14 h-14 rounded-2xl flex items-center justify-center mb-6 ${f.style} bg-opacity-20 shadow-inner`}>
+                  <f.icon className="w-7 h-7" />
                 </div>
-                <h3 className="font-display font-bold text-xl text-indigo-950 mb-2">{f.title}</h3>
-                <p className="text-indigo-900/70 leading-relaxed text-sm">{f.desc}</p>
+                <h3 className="font-display font-bold text-xl text-indigo-950 mb-3">{f.title}</h3>
+                <p className="text-indigo-900/60 leading-relaxed text-sm font-medium">{f.desc}</p>
               </div>
 
-              {(i === 0 || i === 3) && <ArrowRight className="absolute bottom-8 right-8 w-6 h-6 text-indigo-300 group-hover:text-indigo-500 group-hover:translate-x-1 transition-all" />}
+              {(i === 0 || i === 5) && <div className="absolute bottom-8 right-8 w-8 h-8 rounded-full border border-indigo-100 flex items-center justify-center text-indigo-300 group-hover:text-indigo-600 group-hover:bg-white group-hover:border-indigo-200 transition-all"><ArrowRight className="w-4 h-4" /></div>}
             </article>
           </Reveal>
         ))}
