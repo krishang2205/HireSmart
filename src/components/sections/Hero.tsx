@@ -17,7 +17,7 @@ const Hero = () => {
           aria-hidden />
       </div>
 
-      <div className="container mx-auto px-6 md:px-8">
+      <div className="container mx-auto px-6 md:px-8 pt-10 pb-20">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
           <Reveal>
             <div className="relative z-10 lg:py-12">
