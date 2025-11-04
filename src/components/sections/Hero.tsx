@@ -13,15 +13,9 @@ const Hero = () => {
 
   return (
     <header className="relative overflow-hidden pt-20 pb-16 md:pb-24">
-      {/* Background Image - Absolute */}
-      <div className="absolute inset-0 z-0 flex items-center justify-center overflow-hidden">
-        <img
-          src={heroImg}
-          alt="Background illustration"
-          className="w-full h-full object-cover opacity-10 md:opacity-15 md:scale-110"
-          loading="eager"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-white/90 via-white/40 to-white/90"></div>
+      <div className="absolute inset-0 -z-10">
+        <div className="pointer-events-none absolute -top-40 left-1/2 h-80 w-[48rem] -translate-x-1/2 rounded-full blur-3xl opacity-30 bg-gradient-primary"
+          aria-hidden />
       </div>
 
       <div className="container mx-auto px-6 md:px-8 pt-20 pb-24 relative z-10">
