@@ -38,11 +38,11 @@ const Index = () => {
 
 				<section className="py-12 md:py-16">
 					<div className="container mx-auto px-6 max-w-5xl">
-						<div className="rounded-2xl border border-indigo-100 bg-white/40 p-2 backdrop-blur-sm shadow-2xl">
+						<div className="rounded-2xl border border-indigo-100/50 p-2 shadow-2xl">
 							<img
 								src={dashboardPreview}
 								alt="Dashboard Preview"
-								className="w-full h-auto rounded-xl shadow-inner bg-indigo-50/50"
+								className="w-full h-auto rounded-xl shadow-inner"
 							/>
 						</div>
 					</div>
