@@ -18,9 +18,16 @@ const Features = () => (
         <h2 className="font-display text-3xl md:text-4xl font-bold text-indigo-900">Features built for speed and clarity</h2>
         <p className="mt-3 text-indigo-800/80">Everything recruiters need to evaluate resumes faster with confidence.</p>
       </div>
-      <div className="mt-16 grid gap-6 md:grid-cols-4 auto-rows-[minmax(0,240px)] mb-32">
+      <div className="mt-16 grid gap-6 md:grid-cols-4 auto-rows-[300px] mb-32">
         {features.map((f, i) => (
-          <Reveal key={f.title} delayMs={i * 60} className={`${(i === 0 || i === 3) ? 'md:col-span-2' : 'md:col-span-1'} ${(i === 4) ? 'md:col-span-2' : ''} h-full`}>
+          <Reveal
+            key={f.title}
+            delayMs={i * 60}
+            className={`
+              ${(i === 0 || i === 5) ? 'md:col-span-2' : 'md:col-span-1'} 
+              h-full
+            `}
+          >
             <article className={`h-full flex flex-col justify-between rounded-3xl border border-white/60 bg-white/70 backdrop-blur-xl p-8 shadow-sm hover:shadow-lg transition-all hover:-translate-y-1 group relative overflow-hidden`}>
               {/* Background Decoration for larger cards */}
               {(i === 0 || i === 3 || i === 4) && <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${f.style.replace('text-', 'from-').split(' ')[0]} to-transparent opacity-20 blur-2xl rounded-bl-full`}></div>}
