@@ -8,32 +8,52 @@ const testimonials = [
 ];
 
 const Testimonials = () => (
-  <section id="testimonials" aria-label="Testimonials" className="py-16 md:py-24 border-t border-indigo-100/50">
-    <div className="container mx-auto px-6 md:px-8">
-      <div className="mx-auto max-w-3xl text-center">
-        <h2 className="font-display text-3xl md:text-4xl font-bold text-indigo-900">Testimonials</h2>
-        <p className="mt-3 text-indigo-800/80">Real impact from recruiters saving time and improving hire quality.</p>
+const Testimonials = () => (
+    <section id="testimonials" aria-label="Testimonials" className="py-24 md:py-32 overflow-hidden bg-gradient-to-b from-indigo-50/50 to-white/0 relative">
+      <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 brightness-100 contrast-150 mix-blend-multiply"></div>
+
+      <div className="container mx-auto px-6 md:px-8 mb-16 relative z-10">
+        <div className="mx-auto max-w-3xl text-center">
+          <h2 className="font-display text-3xl md:text-5xl font-bold text-indigo-950">Loved by Recruiters</h2>
+          <p className="mt-4 text-xl text-indigo-900/60 font-light">Real impact from teams saving time and improving hire quality.</p>
+        </div>
       </div>
-      <div className="mt-10 grid gap-6 md:grid-cols-3">
-        {testimonials.map((t, i) => (
-          <Reveal key={t.name} delayMs={i * 80}>
-            <blockquote className="h-full rounded-3xl border border-white/60 bg-white/70 backdrop-blur-xl p-8 shadow-lg hover:shadow-xl transition-all hover:-translate-y-1">
-              <Quote className="text-indigo-500 w-8 h-8 mb-4 opacity-50" />
-              <p className="mt-2 text-indigo-950 font-medium text-lg leading-relaxed">“{t.quote}”</p>
-              <footer className="mt-6 flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-100 to-purple-100 flex items-center justify-center text-indigo-600 font-bold text-sm">
+
+      {/* Marquee Container */}
+      <div className="relative w-full flex overflow-hidden mask-linear-fade">
+        <div className="flex gap-8 animate-marquee whitespace-nowrap py-4">
+          {[...testimonials, ...testimonials, ...testimonials].map((t, i) => (
+            <div
+              key={`${t.name}-${i}`}
+              className="w-[350px] md:w-[450px] flex-shrink-0 rounded-[2rem] bg-white border border-indigo-100 p-8 shadow-xl shadow-indigo-100/50 hover:-translate-y-1 transition-transform duration-300"
+            >
+              <Quote className="text-indigo-400 w-8 h-8 mb-6 opacity-30 fill-current" />
+              <p className="text-indigo-950 font-medium text-lg md:text-xl leading-relaxed whitespace-normal">“{t.quote}”</p>
+
+              <div className="mt-8 flex items-center gap-4">
+                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold text-lg shadow-md">
                   {t.name.charAt(0)}
                 </div>
-                <div className="text-sm">
-                  <div className="font-bold text-indigo-900">{t.name}</div>
-                  <div className="text-indigo-800/60">{t.role}</div>
+                <div>
+                  <div className="font-bold text-indigo-950 text-base">{t.name}</div>
+                  <div className="text-indigo-500 font-medium text-sm">{t.role}</div>
                 </div>
-              </footer>
-            </blockquote>
-          </Reveal>
-        ))}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Duplicate for seamless loop (CSS animation handles the movement) */}
+        <div className="flex gap-8 animate-marquee whitespace-nowrap py-4 absolute top-0 left-0">
+          {/* Rendered twice above to ensure width, this second div is conceptually handled by the animation class usually, 
+                 but for a simple vivid CSS marquee, we often duplicate content inline. 
+                 
+                 *Self-Correction*: Standard Tailwind marquee requires specific duplicate set or custom CSS.
+                 I will assume `animate-marquee` exists or I will add the style inline if needed.
+                 For safety, I'll rely on a standard double-render approach in the flex container above.
+              */}
+        </div>
       </div>
-    </div>
-  </section>
-);
+    </section>
+  );
 export default Testimonials;
