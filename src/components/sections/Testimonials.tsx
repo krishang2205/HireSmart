@@ -7,7 +7,7 @@ const testimonials = [
 ];
 
 const Testimonials = () => (
-  <section id="testimonials" aria-label="Testimonials" className="py-24 md:py-32 overflow-hidden bg-gradient-to-b from-white via-indigo-50/50 to-white relative">
+  <section id="testimonials" aria-label="Testimonials" className="py-24 md:py-32 overflow-hidden bg-white relative">
     {/* Subtle noise texture for premium feel */}
     <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-10 brightness-100 contrast-150 mix-blend-multiply"></div>
 
@@ -47,7 +47,7 @@ const Testimonials = () => (
         {[...testimonials, ...testimonials, ...testimonials].map((t, i) => (
           <div
             key={`${t.name}-duplicate-${i}`}
-            className="w-[350px] md:w-[450px] flex-shrink-0 rounded-[2rem] bg-indigo-50/30 border border-white/60 p-8 shadow-xl hover:-translate-y-1 transition-transform duration-300 backdrop-blur-sm"
+            className="w-[350px] md:w-[450px] flex-shrink-0 rounded-[2rem] bg-white border border-indigo-100 p-8 shadow-xl hover:-translate-y-1 transition-transform duration-300 backdrop-blur-sm"
           >
             <Quote className="text-indigo-400 w-8 h-8 mb-6 opacity-30 fill-current" />
             <p className="text-indigo-950 font-medium text-lg md:text-xl leading-relaxed whitespace-normal">“{t.quote}”</p>

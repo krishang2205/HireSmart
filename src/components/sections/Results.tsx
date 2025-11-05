@@ -1,7 +1,7 @@
 import Reveal from '../../components/Reveal';
 
 const Results = () => (
-	<section className="relative bg-indigo-50 py-24 md:py-32 overflow-hidden">
+	<section className="relative bg-white py-24 md:py-32 overflow-hidden">
 		{/* Angled Overlay similar to Flux Split (Light) */}
 		<div
 			className="absolute top-0 right-0 h-full w-[60%] bg-gradient-to-l from-white to-white/0 pointer-events-none"
