@@ -1,5 +1,4 @@
 import { Quote } from 'lucide-react';
-import Reveal from '../../components/Reveal';
 
 const testimonials = [
   { quote: 'HireSmart cut our resume review time by 70%. We shortlist with confidence now.', name: 'Alicia Chen', role: 'Senior Recruiter, FinServ Co.' },
@@ -8,7 +7,6 @@ const testimonials = [
 ];
 
 const Testimonials = () => (
-
   <section id="testimonials" aria-label="Testimonials" className="py-24 md:py-32 overflow-hidden bg-gradient-to-b from-indigo-50/50 to-white/0 relative">
     <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 brightness-100 contrast-150 mix-blend-multiply"></div>
 
@@ -44,27 +42,26 @@ const Testimonials = () => (
       </div>
 
       {/* Duplicate for seamless loop (CSS animation handles the movement) */}
-      <div className="flex gap-8 animate-marquee whitespace-nowrap py-4 absolute top-0 left-0">
-        {/* Rendered twice above to ensure width, this second div is conceptually handled by the animation class usually, 
-          {[...testimonials, ...testimonials, ...testimonials].map((t, i) => (
-            <div
-              key={`${t.name}-duplicate-${i}`}
-              className="w-[350px] md:w-[450px] flex-shrink-0 rounded-[2rem] bg-indigo-50/50 border border-white/60 p-8 shadow-xl hover:-translate-y-1 transition-transform duration-300 backdrop-blur-sm"
-            >
-              <Quote className="text-indigo-400 w-8 h-8 mb-6 opacity-30 fill-current" />
-              <p className="text-indigo-950 font-medium text-lg md:text-xl leading-relaxed whitespace-normal">“{t.quote}”</p>
+      <div className="flex gap-8 animate-marquee whitespace-nowrap py-4 absolute top-0 left-0" aria-hidden="true">
+        {[...testimonials, ...testimonials, ...testimonials].map((t, i) => (
+          <div
+            key={`${t.name}-duplicate-${i}`}
+            className="w-[350px] md:w-[450px] flex-shrink-0 rounded-[2rem] bg-indigo-50/50 border border-white/60 p-8 shadow-xl hover:-translate-y-1 transition-transform duration-300 backdrop-blur-sm"
+          >
+            <Quote className="text-indigo-400 w-8 h-8 mb-6 opacity-30 fill-current" />
+            <p className="text-indigo-950 font-medium text-lg md:text-xl leading-relaxed whitespace-normal">“{t.quote}”</p>
 
-              <div className="mt-8 flex items-center gap-4">
-                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold text-lg shadow-md">
-                  {t.name.charAt(0)}
-                </div>
-                <div>
-                  <div className="font-bold text-indigo-950 text-base">{t.name}</div>
-                  <div className="text-indigo-500 font-medium text-sm">{t.role}</div>
-                </div>
+            <div className="mt-8 flex items-center gap-4">
+              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold text-lg shadow-md">
+                {t.name.charAt(0)}
+              </div>
+              <div>
+                <div className="font-bold text-indigo-950 text-base">{t.name}</div>
+                <div className="text-indigo-500 font-medium text-sm">{t.role}</div>
               </div>
             </div>
-          ))}
+          </div>
+        ))}
       </div>
     </div>
   </section>
