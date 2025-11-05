@@ -7,7 +7,8 @@ const testimonials = [
 ];
 
 const Testimonials = () => (
-  <section id="testimonials" aria-label="Testimonials" className="py-24 md:py-32 overflow-hidden bg-gradient-to-b from-indigo-50/50 to-white/0 relative">
+  <section id="testimonials" aria-label="Testimonials" className="py-24 md:py-32 overflow-hidden bg-gradient-to-b from-indigo-950 via-indigo-50/50 to-white relative">
+    <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-indigo-950 to-transparent pointer-events-none"></div>
     <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 brightness-100 contrast-150 mix-blend-multiply"></div>
 
     <div className="container mx-auto px-6 md:px-8 mb-16 relative z-10">
