@@ -22,7 +22,6 @@ const HowItWorks = () => (
             A simple, guided flow from upload to insights. No complex setup required.
           </p>
         </div>
-        <div className="hidden md:block h-px flex-1 bg-indigo-100 ml-12 mb-4"></div>
       </div>
 
       <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
