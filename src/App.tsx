@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import Hero from '@/components/sections/Hero';
 import Features from '@/components/sections/Features';
 import HowItWorks from '@/components/sections/HowItWorks';
+import FeatureVisualize from '@/components/sections/FeatureVisualize';
 import Results from '@/components/sections/Results';
 import Testimonials from '@/components/sections/Testimonials';
 import CTA from '@/components/sections/CTA';
@@ -30,6 +31,7 @@ const App: React.FC = () => {
         <Hero />
         <Features />
         <HowItWorks />
+        <FeatureVisualize />
         <Results />
         <Testimonials />
         <CTA />
