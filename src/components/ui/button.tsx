@@ -22,11 +22,11 @@ export const Button: React.FC<ButtonProps> = ({
 		md: 'text-base',
 		lg: 'text-lg py-3 px-6',
 	};
-	const variants: Record<string,string> = {
-		default: 'bg-blue-600 text-white hover:bg-blue-700 shadow-sm',
+	const variants: Record<string, string> = {
+		default: 'bg-indigo-600 text-white hover:bg-indigo-700 shadow-sm',
 		outline: 'border border-slate-300/70 text-slate-700 bg-white hover:bg-slate-50 shadow-sm',
-		hero: 'bg-blue-600 text-white hover:bg-blue-700 shadow-lg shadow-blue-500/30',
-		gradient: 'text-white bg-gradient-to-r from-blue-600 via-blue-500 to-blue-400 hover:from-blue-600 hover:via-blue-500 hover:to-blue-400 shadow-[0_8px_28px_-8px_rgba(37,99,235,0.55)]',
+		hero: 'bg-indigo-600 text-white hover:bg-indigo-700 shadow-lg shadow-indigo-500/30',
+		gradient: 'text-white bg-gradient-to-r from-indigo-600 via-violet-600 to-fuchsia-600 hover:from-indigo-600 hover:via-violet-600 hover:to-fuchsia-600 shadow-lg shadow-indigo-500/30',
 	};
 
 	const classes = `${baseStyles} ${sizeStyles[size] || ''} ${variants[variant] || ''} ${className}`;
