@@ -29,8 +29,8 @@ const App: React.FC = () => {
       <Header />
       <main className="flex-1">
         <Hero />
-        <HowItWorks />
         <Features />
+        <HowItWorks />
         <FeatureVisualize />
         <Results />
         <Testimonials />
