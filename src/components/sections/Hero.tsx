@@ -38,7 +38,7 @@ const Hero = () => {
                 <span className="text-4xl md:text-6xl lg:text-7xl text-indigo-900/80">Resume Screening</span>
               </h1>
               <p className="text-xl text-indigo-900/70 md:text-2xl font-medium max-w-2xl leading-relaxed mb-10">
-                Evaluate resumes in seconds with <span className="text-indigo-600 font-bold border-b-2 border-indigo-200">advanced vector matching</span>. Hire smarter, faster, and without bias.
+                Evaluate resumes in seconds with <span className="text-indigo-600 font-bold border-b-2 border-indigo-200">advanced matching algorithms</span>. Hire smarter, faster, and without bias.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto justify-center">
