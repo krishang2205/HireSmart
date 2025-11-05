@@ -17,7 +17,7 @@ const FeatureVisualize = () => (
 
             {/* Angled Overlay - Text Background (Right side - Light) */}
             <div
-                className="absolute top-0 right-0 h-full w-full md:w-[65%] bg-gradient-to-l from-white via-white/80 to-white/60 z-10"
+                className="absolute top-0 right-0 h-full w-full md:w-[65%] bg-gradient-to-l from-white via-white/95 to-white/80 z-10"
                 style={{ clipPath: 'polygon(15% 0, 100% 0, 100% 100%, 0% 100%)' }}
             ></div>
 

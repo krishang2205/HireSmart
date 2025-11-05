@@ -64,7 +64,7 @@ const Features = () => (
 
         {/* Angled Overlay - Text Background (Light) */}
         <div
-          className="absolute top-0 left-0 h-full w-full md:w-[65%] bg-gradient-to-r from-white via-white/80 to-white/60 z-10"
+          className="absolute top-0 left-0 h-full w-full md:w-[65%] bg-gradient-to-r from-white via-white/95 to-white/80 z-10"
           style={{ clipPath: 'polygon(0 0, 100% 0, 85% 100%, 0% 100%)' }}
         ></div>
 
