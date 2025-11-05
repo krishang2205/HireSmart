@@ -7,9 +7,9 @@ const testimonials = [
 ];
 
 const Testimonials = () => (
-  <section id="testimonials" aria-label="Testimonials" className="py-24 md:py-32 overflow-hidden bg-gradient-to-b from-indigo-950 via-indigo-50/50 to-white relative">
-    <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-indigo-950 to-transparent pointer-events-none"></div>
-    <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 brightness-100 contrast-150 mix-blend-multiply"></div>
+  <section id="testimonials" aria-label="Testimonials" className="py-24 md:py-32 overflow-hidden bg-gradient-to-b from-white via-indigo-50/50 to-white relative">
+    {/* Subtle noise texture for premium feel */}
+    <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-10 brightness-100 contrast-150 mix-blend-multiply"></div>
 
     <div className="container mx-auto px-6 md:px-8 mb-16 relative z-10">
       <div className="mx-auto max-w-3xl text-center">
@@ -24,13 +24,13 @@ const Testimonials = () => (
         {[...testimonials, ...testimonials, ...testimonials].map((t, i) => (
           <div
             key={`${t.name}-${i}`}
-            className="w-[350px] md:w-[450px] flex-shrink-0 rounded-[2rem] bg-white border border-indigo-100 p-8 shadow-xl shadow-indigo-100/50 hover:-translate-y-1 transition-transform duration-300"
+            className="w-[350px] md:w-[450px] flex-shrink-0 rounded-[2rem] bg-white border border-indigo-100 p-8 shadow-xl shadow-indigo-100/20 hover:-translate-y-1 transition-transform duration-300"
           >
             <Quote className="text-indigo-400 w-8 h-8 mb-6 opacity-30 fill-current" />
             <p className="text-indigo-950 font-medium text-lg md:text-xl leading-relaxed whitespace-normal">“{t.quote}”</p>
 
             <div className="mt-8 flex items-center gap-4">
-              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold text-lg shadow-md">
+              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-indigo-100 to-indigo-200 flex items-center justify-center text-indigo-600 font-bold text-lg shadow-sm border border-indigo-200">
                 {t.name.charAt(0)}
               </div>
               <div>
@@ -47,13 +47,13 @@ const Testimonials = () => (
         {[...testimonials, ...testimonials, ...testimonials].map((t, i) => (
           <div
             key={`${t.name}-duplicate-${i}`}
-            className="w-[350px] md:w-[450px] flex-shrink-0 rounded-[2rem] bg-indigo-50/50 border border-white/60 p-8 shadow-xl hover:-translate-y-1 transition-transform duration-300 backdrop-blur-sm"
+            className="w-[350px] md:w-[450px] flex-shrink-0 rounded-[2rem] bg-indigo-50/30 border border-white/60 p-8 shadow-xl hover:-translate-y-1 transition-transform duration-300 backdrop-blur-sm"
           >
             <Quote className="text-indigo-400 w-8 h-8 mb-6 opacity-30 fill-current" />
             <p className="text-indigo-950 font-medium text-lg md:text-xl leading-relaxed whitespace-normal">“{t.quote}”</p>
 
             <div className="mt-8 flex items-center gap-4">
-              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold text-lg shadow-md">
+              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-indigo-100 to-indigo-200 flex items-center justify-center text-indigo-600 font-bold text-lg shadow-sm border border-indigo-200">
                 {t.name.charAt(0)}
               </div>
               <div>
