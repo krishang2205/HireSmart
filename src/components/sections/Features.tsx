@@ -44,109 +44,112 @@ const Features = () => (
           </Reveal>
         ))}
       </div>
+    </div>
 
-      {/* Transition Bridge */}
-      <div className="w-full h-32 bg-gradient-to-b from-transparent to-indigo-950"></div>
+    {/* Transition Bridge */}
+    <div className="w-full h-32 bg-gradient-to-b from-transparent to-indigo-50"></div>
 
-      {/* Feature Deep Dive - Full Bleed Flux Split */}
-      <div className="w-full relative z-0 flex flex-col bg-indigo-950">
+    {/* Feature Deep Dive - Full Bleed Flux Split (Light Theme) */}
+    <div className="w-full relative z-0 flex flex-col bg-indigo-50">
 
-        {/* Feature 1: Flux Split Layout (Text Left / Image Right) */}
-        <div className="relative w-full overflow-hidden bg-indigo-950 isolate min-h-[600px] flex items-center group py-24">
-          {/* Background Image - Absolute Right */}
-          <div className="absolute inset-0 w-full h-full">
-            <img
-              src="/src/assets/feat-scan.png"
-              alt="AI Resume Scanning"
-              className="w-full h-full object-cover object-right md:object-center opacity-90 transition-transform duration-700 group-hover:scale-105"
-            />
-            <div className="absolute inset-0 bg-indigo-950/20"></div>
-          </div>
-
-          {/* Angled Overlay - Text Background */}
-          <div
-            className="absolute top-0 left-0 h-full w-full md:w-[65%] bg-gradient-to-r from-indigo-950 via-indigo-900 to-indigo-900/90 z-10"
-            style={{ clipPath: 'polygon(0 0, 100% 0, 85% 100%, 0% 100%)' }}
-          ></div>
-
-          {/* Mobile Fallback Overlay */}
-          <div className="absolute inset-0 bg-indigo-950/90 md:hidden z-10"></div>
-
-          {/* Content Container */}
-          <div className="container mx-auto px-6 md:px-8 relative z-20">
-            <div className="w-full md:w-[55%] text-white">
-              <div className="inline-flex items-center rounded-full bg-white/10 backdrop-blur-md px-3 py-1 text-xs font-bold text-indigo-200 mb-6 border border-white/20">
-                <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 mr-2 animate-pulse"></span>
-                Intelligent Parsing
-              </div>
-              <h3 className="text-4xl md:text-6xl font-display font-bold mb-6">Precision Resume Scanning</h3>
-              <p className="text-xl text-indigo-100/80 leading-relaxed mb-8 font-light max-w-xl">
-                Our AI reads resumes like a human expert, but thousands of times faster. It extracts skills, experience, and education with high accuracy.
-              </p>
-
-              <div className="flex flex-col gap-4">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center backdrop-blur-sm border border-white/10">
-                    <BadgeCheck className="text-indigo-300 w-6 h-6" />
-                  </div>
-                  <span className="text-lg font-medium text-indigo-100">98% Accuracy on PDF & Docx</span>
-                </div>
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center backdrop-blur-sm border border-white/10">
-                    <ListTree className="text-indigo-300 w-6 h-6" />
-                  </div>
-                  <span className="text-lg font-medium text-indigo-100">Structured Data Extraction</span>
-                </div>
-              </div>
-            </div>
-          </div>
+      {/* Feature 1: Flux Split Layout (Text Left / Image Right) */}
+      <div className="relative w-full overflow-hidden bg-indigo-50 isolate min-h-[600px] flex items-center group py-24">
+        {/* Background Image - Absolute Right */}
+        <div className="absolute inset-0 w-full h-full">
+          <img
+            src="/src/assets/feat-scan.png"
+            alt="AI Resume Scanning"
+            className="w-full h-full object-cover object-right md:object-center opacity-90 transition-transform duration-700 group-hover:scale-105 mix-blend-multiply"
+          />
+          {/* Lighter overlay for image to blend with light theme */}
+          <div className="absolute inset-0 bg-white/30"></div>
         </div>
 
-        {/* Feature 2: Flux Split Layout (Image Left / Text Right) */}
-        <div className="relative w-full overflow-hidden bg-fuchsia-950 isolate min-h-[600px] flex items-center group py-24">
-          {/* Background Image - Absolute Left */}
-          <div className="absolute inset-0 w-full h-full">
-            <img
-              src="/src/assets/feat-analytics.png"
-              alt="Hiring Analytics"
-              className="w-full h-full object-cover object-left md:object-center opacity-90 transition-transform duration-700 group-hover:scale-105"
-            />
-            <div className="absolute inset-0 bg-fuchsia-950/20"></div>
-          </div>
+        {/* Angled Overlay - Text Background (Light) */}
+        <div
+          className="absolute top-0 left-0 h-full w-full md:w-[65%] bg-gradient-to-r from-white via-indigo-50 to-indigo-50/90 z-10"
+          style={{ clipPath: 'polygon(0 0, 100% 0, 85% 100%, 0% 100%)' }}
+        ></div>
 
-          {/* Angled Overlay - Text Background (Right side) */}
-          <div
-            className="absolute top-0 right-0 h-full w-full md:w-[65%] bg-gradient-to-l from-fuchsia-950 via-fuchsia-900 to-fuchsia-900/90 z-10"
-            style={{ clipPath: 'polygon(15% 0, 100% 0, 100% 100%, 0% 100%)' }}
-          ></div>
+        {/* Mobile Fallback Overlay */}
+        <div className="absolute inset-0 bg-indigo-50/95 md:hidden z-10"></div>
 
-          {/* Mobile Fallback Overlay */}
-          <div className="absolute inset-0 bg-fuchsia-950/90 md:hidden z-10"></div>
+        {/* Content Container */}
+        <div className="container mx-auto px-6 md:px-8 relative z-20">
+          <div className="w-full md:w-[55%] text-indigo-950">
+            <div className="inline-flex items-center rounded-full bg-indigo-100 px-3 py-1 text-xs font-bold text-indigo-600 mb-6 border border-indigo-200">
+              <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 mr-2 animate-pulse"></span>
+              Intelligent Parsing
+            </div>
+            <h3 className="text-4xl md:text-6xl font-display font-bold mb-6">Precision Resume Scanning</h3>
+            <p className="text-xl text-indigo-900/70 leading-relaxed mb-8 font-light max-w-xl">
+              Our AI reads resumes like a human expert, but thousands of times faster. It extracts skills, experience, and education with high accuracy.
+            </p>
 
-          {/* Content Container (Aligned Right) */}
-          <div className="container mx-auto px-6 md:px-8 relative z-20">
-            <div className="w-full md:w-[55%] ml-auto text-white md:pl-24">
-              <div className="inline-flex items-center rounded-full bg-white/10 backdrop-blur-md px-3 py-1 text-xs font-bold text-fuchsia-200 mb-6 border border-white/20">
-                <span className="w-1.5 h-1.5 rounded-full bg-fuchsia-400 mr-2 animate-pulse"></span>
-                Data-Driven Decisions
-              </div>
-              <h3 className="text-4xl md:text-6xl font-display font-bold mb-6">Visualize Your Hiring Pipeline</h3>
-              <p className="text-xl text-fuchsia-100/80 leading-relaxed mb-8 font-light max-w-xl">
-                Stop guessing. See exactly where your best candidates are coming from and how your pipeline is performing in real-time.
-              </p>
-
-              <div className="flex flex-col gap-4">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center backdrop-blur-sm border border-white/10">
-                    <BarChart3 className="text-fuchsia-300 w-6 h-6" />
-                  </div>
-                  <span className="text-lg font-medium text-fuchsia-100">Real-time Hiring Metrics</span>
+            <div className="flex flex-col gap-4">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center border border-indigo-200">
+                  <BadgeCheck className="text-indigo-600 w-6 h-6" />
                 </div>
+                <span className="text-lg font-medium text-indigo-900">98% Accuracy on PDF & Docx</span>
+              </div>
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center border border-indigo-200">
+                  <ListTree className="text-indigo-600 w-6 h-6" />
+                </div>
+                <span className="text-lg font-medium text-indigo-900">Structured Data Extraction</span>
               </div>
             </div>
           </div>
         </div>
       </div>
+
+      {/* Feature 2: Flux Split Layout (Image Left / Text Right) */}
+      <div className="relative w-full overflow-hidden bg-fuchsia-50 isolate min-h-[600px] flex items-center group py-24">
+        {/* Background Image - Absolute Left */}
+        <div className="absolute inset-0 w-full h-full">
+          <img
+            src="/src/assets/feat-analytics.png"
+            alt="Hiring Analytics"
+            className="w-full h-full object-cover object-left md:object-center opacity-90 transition-transform duration-700 group-hover:scale-105 mix-blend-multiply"
+          />
+          {/* Lighter overlay for image */}
+          <div className="absolute inset-0 bg-white/30"></div>
+        </div>
+
+        {/* Angled Overlay - Text Background (Right side - Light) */}
+        <div
+          className="absolute top-0 right-0 h-full w-full md:w-[65%] bg-gradient-to-l from-white via-fuchsia-50 to-fuchsia-50/90 z-10"
+          style={{ clipPath: 'polygon(15% 0, 100% 0, 100% 100%, 0% 100%)' }}
+        ></div>
+
+        {/* Mobile Fallback Overlay */}
+        <div className="absolute inset-0 bg-fuchsia-50/95 md:hidden z-10"></div>
+
+        {/* Content Container (Aligned Right) */}
+        <div className="container mx-auto px-6 md:px-8 relative z-20">
+          <div className="w-full md:w-[55%] ml-auto text-indigo-950 md:pl-24">
+            <div className="inline-flex items-center rounded-full bg-fuchsia-100 px-3 py-1 text-xs font-bold text-fuchsia-600 mb-6 border border-fuchsia-200">
+              <span className="w-1.5 h-1.5 rounded-full bg-fuchsia-500 mr-2 animate-pulse"></span>
+              Data-Driven Decisions
+            </div>
+            <h3 className="text-4xl md:text-6xl font-display font-bold mb-6">Visualize Your Hiring Pipeline</h3>
+            <p className="text-xl text-indigo-900/70 leading-relaxed mb-8 font-light max-w-xl">
+              Stop guessing. See exactly where your best candidates are coming from and how your pipeline is performing in real-time.
+            </p>
+
+            <div className="flex flex-col gap-4">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-full bg-fuchsia-100 flex items-center justify-center border border-fuchsia-200">
+                  <BarChart3 className="text-fuchsia-600 w-6 h-6" />
+                </div>
+                <span className="text-lg font-medium text-indigo-900">Real-time Hiring Metrics</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </section>
 );
 
