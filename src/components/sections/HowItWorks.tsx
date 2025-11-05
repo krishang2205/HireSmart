@@ -9,7 +9,7 @@ const steps = [
 ];
 
 const HowItWorks = () => (
-  <section id="how-it-works" aria-label="How it works" className="relative py-24 md:py-32 bg-slate-950 overflow-hidden">
+  <section id="how-it-works" aria-label="How it works" className="relative py-24 md:py-32 bg-gradient-to-b from-fuchsia-950 to-indigo-950 overflow-hidden">
     {/* Ambient Glows */}
     <div className="absolute top-1/2 left-1/4 w-[500px] h-[500px] bg-indigo-500/10 rounded-full blur-[100px] -translate-y-1/2 pointer-events-none"></div>
     <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-fuchsia-500/5 rounded-full blur-[80px] pointer-events-none"></div>
